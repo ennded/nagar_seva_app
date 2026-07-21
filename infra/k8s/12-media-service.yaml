@@ -1,0 +1,61 @@
+# PVC below is a dev/early-stage convenience so uploads survive pod restarts on a single node.
+# It does NOT work correctly with replicas > 1 (each pod would see a different volume unless
+# your cluster's storage class supports ReadWriteMany) — move to S3/Cloudinary before scaling
+# this service horizontally, per the storage-provider abstraction already in the code.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-uploads
+  namespace: nagar-seva
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-service
+  namespace: nagar-seva
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: media-service }
+  template:
+    metadata:
+      labels: { app: media-service }
+    spec:
+      containers:
+        - name: media-service
+          image: nagar-seva/media-service:latest
+          ports:
+            - containerPort: 4003
+          env:
+            - name: MEDIA_SERVICE_PORT
+              value: "4003"
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: nagar-seva-secrets, key: JWT_SECRET } }
+            - name: STORAGE_PROVIDER
+              value: "local"
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+          readinessProbe:
+            httpGet: { path: /healthz, port: 4003 }
+            initialDelaySeconds: 5
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: media-uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-service
+  namespace: nagar-seva
+spec:
+  selector: { app: media-service }
+  ports:
+    - port: 4003
+      targetPort: 4003

@@ -1,0 +1,88 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  core-service:
+    build:
+      context: ..
+      dockerfile: services/core-service/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/nagar_seva
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string}
+      JWT_EXPIRES_IN: 7d
+      CORE_SERVICE_PORT: 4001
+      NOTIFICATION_INTERNAL_URL: http://notification-service:4002/internal
+      SMS_PROVIDER: console
+    ports:
+      - "4001:4001"
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: services/notification-service/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/nagar_seva
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string}
+      NOTIFICATION_SERVICE_PORT: 4002
+    ports:
+      - "4002:4002"
+
+  media-service:
+    build:
+      context: ..
+      dockerfile: services/media-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-string}
+      MEDIA_SERVICE_PORT: 4003
+      STORAGE_PROVIDER: local
+    volumes:
+      - media_uploads:/app/uploads
+    ports:
+      - "4003:4003"
+
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: services/api-gateway/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - core-service
+      - notification-service
+    environment:
+      GATEWAY_PORT: 4000
+      CORE_SERVICE_GRAPHQL_URL: http://core-service:4001/graphql
+      NOTIFICATION_SERVICE_GRAPHQL_URL: http://notification-service:4002/graphql
+    ports:
+      - "4000:4000"
+
+  # NOTE: Vite bakes VITE_* vars in at build time, not container runtime — for local iteration
+  # on the client prefer `npm run dev -w client` directly; this service is a full-stack smoke test.
+  client:
+    build:
+      context: ..
+      dockerfile: client/Dockerfile
+      args:
+        VITE_GRAPHQL_URL: http://localhost:4000/graphql
+        VITE_UPLOAD_URL: http://localhost:4003/api/upload
+    restart: unless-stopped
+    depends_on:
+      - api-gateway
+      - media-service
+    ports:
+      - "5173:5173"
+
+volumes:
+  mongo_data:
+  media_uploads:

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+.env
+services/media-service/uploads/complaints/*
+!services/media-service/uploads/complaints/.gitkeep
+services/media-service/uploads/kyc/*
+!services/media-service/uploads/kyc/.gitkeep
+*.log
+.DS_Store
+infra/k8s/01-secrets.yaml

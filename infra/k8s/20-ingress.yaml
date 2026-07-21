@@ -1,0 +1,33 @@
+# Requires an ingress controller (e.g. ingress-nginx) already installed on the cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nagar-seva
+  namespace: nagar-seva
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  rules:
+    - host: nagarseva.example.com # replace with the real domain before applying
+      http:
+        paths:
+          - path: /graphql
+            pathType: Exact
+            backend:
+              service: { name: api-gateway, port: { number: 4000 } }
+          - path: /api/upload
+            pathType: Prefix
+            backend:
+              service: { name: media-service, port: { number: 4003 } }
+          - path: /api/kyc
+            pathType: Prefix
+            backend:
+              service: { name: media-service, port: { number: 4003 } }
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service: { name: media-service, port: { number: 4003 } }
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: client, port: { number: 5173 } }

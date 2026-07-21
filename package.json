@@ -1,0 +1,24 @@
+{
+  "name": "nagar-seva-app",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "shared",
+    "services/core-service",
+    "services/notification-service",
+    "services/media-service",
+    "services/api-gateway",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run build -w shared && concurrently -n core,notif,media,gateway,client -c blue,cyan,yellow,magenta,green \"npm run dev -w services/core-service\" \"npm run dev -w services/notification-service\" \"npm run dev -w services/media-service\" \"npm run dev -w services/api-gateway\" \"npm run dev -w client\"",
+    "build": "npm run build -w shared && npm run build -w services/core-service && npm run build -w services/notification-service && npm run build -w services/media-service && npm run build -w services/api-gateway && npm run build -w client",
+    "onboard-city": "npm run onboard-city -w services/core-service --",
+    "test": "npm run test -w services/core-service && npm run test -w services/notification-service && npm run test -w services/media-service",
+    "compose:up": "docker compose -f infra/docker-compose.yml up --build",
+    "compose:down": "docker compose -f infra/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
