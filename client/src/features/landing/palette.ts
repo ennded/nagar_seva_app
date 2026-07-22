@@ -1,0 +1,12 @@
+export const NAVY = '#0B3D66';
+export const NAVY_DARK = '#082A47';
+export const ORANGE = '#E07A1F';
+export const GREEN = '#1E8A5F';
+export const BG = '#EEF2F6';
+export const TEXT = '#14181C';
+export const MUTED = '#5B6670';
+export const BORDER = '#E2E6EA';
+export const NAVY_LIGHT = '#E7ECF2';
+export const GREEN_LIGHT = '#E6F4EC';
+export const SERIF = "'Source Serif 4', serif";
+export const SANS = "'Public Sans', system-ui, sans-serif";

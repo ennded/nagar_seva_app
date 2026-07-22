@@ -6,3 +6,4 @@ export * from './OtpRequest.js';
 export * from './Request.js';
 export * from './Announcement.js';
 export * from './EmergencyContact.js';
+export * from './Vehicle.js';

@@ -7,6 +7,13 @@ import { notify } from '../../services/notificationClient.js';
 import type { GraphQLContext } from '../../auth/context.js';
 
 export const announcementResolvers = {
+  Query: {
+    announcementsAdmin: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin', 'nagaradhyaksh']);
+      const docs = await AnnouncementModel.find({ city }).sort({ createdAt: -1 });
+      return docs.map(mapAnnouncement);
+    },
+  },
   Mutation: {
     createAnnouncement: async (_: unknown, { input }: { input: any }, ctx: GraphQLContext) => {
       const { city, user } = requireRole(ctx, ['admin', 'nagaradhyaksh']);

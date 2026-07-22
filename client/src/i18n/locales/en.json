@@ -1,0 +1,351 @@
+{
+  "common": {
+    "appName": "Nagar Seva",
+    "loading": "Loading...",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "logout": "Logout",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "citizenLogin": "Citizen Login",
+    "staffLogin": "Staff Login",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "mobile": "Mobile Number",
+    "ward": "Ward",
+    "selectWard": "Select your ward",
+    "requestOtp": "Send OTP",
+    "otpCode": "Enter OTP",
+    "verifyOtp": "Verify OTP",
+    "otpSent": "OTP sent. Check the server console (dev mode).",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "registerHere": "Register here",
+    "loginHere": "Login here",
+    "isStaff": "Are you a city staff member?",
+    "loginAsStaff": "Login with your mobile number instead"
+  },
+  "landing": {
+    "announcements": "Announcements",
+    "emergencyContacts": "Emergency Contacts",
+    "noAnnouncements": "No announcements yet.",
+    "totalCitizens": "Registered Citizens",
+    "totalResolved": "Complaints Resolved",
+    "totalWards": "Wards",
+    "getStarted": "Get Started",
+    "cityCode": "City code",
+    "cityCodePlaceholder": "e.g. pune"
+  },
+  "citizen": {
+    "dashboard": "My Dashboard",
+    "myRequests": "My Requests",
+    "newComplaint": "Report a Complaint",
+    "newAppointment": "Book an Appointment",
+    "noRequests": "You haven't submitted any requests yet.",
+    "title": "Title",
+    "category": "Category",
+    "description": "Description",
+    "address": "Address",
+    "photos": "Photos",
+    "purpose": "Purpose",
+    "department": "Department",
+    "selectDepartment": "Select a department",
+    "officerAvailability": "Officer availability in this department",
+    "noAvailabilitySet": "No availability set yet",
+    "remarks": "Remarks (optional)",
+    "submittedOn": "Submitted on",
+    "viewDetails": "View Details",
+    "statusHistory": "Status History",
+    "resolutionRemarks": "Resolution Remarks",
+    "resolutionProof": "Resolution Proof"
+  },
+  "status": {
+    "REGISTERED": "Registered",
+    "VERIFIED": "Verified",
+    "ASSIGNED": "Assigned",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "SCHEDULED": "Scheduled",
+    "CLOSED": "Closed",
+    "REJECTED": "Rejected"
+  },
+  "role": {
+    "ADMIN": "Municipal Admin",
+    "NAGARSEVAK": "Nagarsevak (Ward Rep.)",
+    "NAGARADHYAKSH": "Nagaradhyaksh (Municipality Head)",
+    "OFFICER": "Department Officer",
+    "CITIZEN": "Citizen",
+    "DRIVER": "Garbage Vehicle Driver"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "requests": "Requests",
+      "wards": "Wards",
+      "departments": "Departments",
+      "staff": "Staff",
+      "announcements": "Notices",
+      "emergencyContacts": "Emergency Contacts"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "totalRequests": "Total Requests",
+      "pendingRequests": "Pending Verification",
+      "byStatus": "Requests by Status",
+      "byDepartment": "Requests by Department",
+      "byWard": "Requests by Ward",
+      "viewPending": "Review Pending Requests"
+    },
+    "wards": {
+      "title": "Wards",
+      "addWard": "Add Ward",
+      "name": "Ward Name",
+      "code": "Ward Code",
+      "nagarsevak": "Nagarsevak",
+      "none": "Not assigned",
+      "empty": "No wards added yet.",
+      "created": "Ward added successfully."
+    },
+    "departments": {
+      "title": "Departments",
+      "addDepartment": "Add Department",
+      "name": "Department Name",
+      "description": "Description (optional)",
+      "empty": "No departments added yet.",
+      "created": "Department added successfully."
+    },
+    "staff": {
+      "title": "Staff",
+      "addStaff": "Add Staff Member",
+      "role": "Role",
+      "selectRole": "Select a role",
+      "empty": "No staff added yet.",
+      "created": "Staff member added successfully.",
+      "filterAll": "All roles",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "requests": {
+      "pendingTitle": "Pending Verification",
+      "allTitle": "All Requests",
+      "noPending": "No requests waiting for verification.",
+      "noResults": "No requests match these filters.",
+      "approve": "Verify & Approve",
+      "reject": "Reject",
+      "rejectReason": "Reason for rejection",
+      "assign": "Assign",
+      "assignOfficer": "Assign to Officer",
+      "selectDepartment": "Select department",
+      "selectOfficer": "Select officer",
+      "reviewClose": "Review & Close",
+      "note": "Note (optional)",
+      "filterStatus": "Status",
+      "filterType": "Type",
+      "allStatuses": "All statuses",
+      "allTypes": "All types",
+      "viewDetail": "View",
+      "citizen": "Citizen",
+      "ward": "Ward",
+      "department": "Department",
+      "submittedOn": "Submitted"
+    },
+    "announcements": {
+      "title": "Notices",
+      "create": "Create Notice",
+      "publish": "Publish",
+      "draft": "Draft",
+      "published": "Published",
+      "titleField": "Title",
+      "body": "Message",
+      "category": "Category",
+      "empty": "No notices yet.",
+      "created": "Notice saved as draft."
+    },
+    "emergencyContacts": {
+      "title": "Emergency Contacts",
+      "add": "Add Contact",
+      "edit": "Edit",
+      "delete": "Delete",
+      "name": "Name",
+      "category": "Category",
+      "phoneNumber": "Phone Number",
+      "order": "Display Order",
+      "empty": "No emergency contacts added yet.",
+      "confirmDelete": "Remove this emergency contact?"
+    },
+    "vehicles": {
+      "title": "Garbage Vehicles",
+      "add": "Add Vehicle",
+      "registrationNumber": "Registration Number",
+      "driver": "Driver",
+      "unassigned": "Unassigned",
+      "assignDriver": "Assign driver",
+      "status": "Status",
+      "onDuty": "On Duty",
+      "offDuty": "Off Duty",
+      "empty": "No vehicles added yet."
+    }
+  },
+  "garbage": {
+    "nav": "Garbage Tracking",
+    "title": "Garbage Collection",
+    "vehicleFor": "Vehicle serving",
+    "noVehicle": "No collection vehicle has been assigned to this ward yet.",
+    "driver": "Driver",
+    "startDuty": "Start Duty",
+    "endDuty": "End Duty",
+    "sharingLocation": "Sharing live location...",
+    "locationError": "Could not access your device location. Location sharing requires browser permission.",
+    "noVehicleAssigned": "No vehicle is assigned to you yet. Contact your Admin."
+  },
+  "officer": {
+    "nav": {
+      "myWork": "My Assigned Work",
+      "availability": "My Availability"
+    },
+    "availabilityIntro": "Set the days and hours you're generally available. Citizens see this when requesting an appointment with your department — it doesn't book a slot automatically, you'll still confirm the exact date and time yourself.",
+    "saveAvailability": "Save Availability",
+    "availabilitySaved": "Availability updated.",
+    "active": "Active",
+    "history": "History",
+    "empty": "No requests assigned to you.",
+    "startWork": "Start Work",
+    "complete": "Mark as Complete",
+    "resolutionProof": "Upload Resolution Proof",
+    "confirmSchedule": "Confirm Appointment",
+    "confirmedDate": "Appointment Date",
+    "confirmedTimeSlot": "Time Slot",
+    "selectTimeSlot": "Select a time slot",
+    "waitingReview": "Submitted. Waiting for Admin review."
+  },
+  "monitor": {
+    "nav": {
+      "requests": "Requests",
+      "overview": "Overview"
+    },
+    "wardTitle": "Ward Requests",
+    "cityTitle": "Municipality Overview",
+    "readOnlyNotice": "You can monitor requests here. Only the Admin can take action on them.",
+    "empty": "No requests found."
+  },
+  "marketing": {
+    "topBar": "Nagar Seva — Municipal Services Portal",
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "howItWorks": "How It Works",
+      "notices": "Notices",
+      "contact": "Contact"
+    },
+    "hero": {
+      "badge": "Smart City · Clean City · Green City",
+      "headlinePrefix": "Building a Better City with",
+      "headlineHighlight": "Smart Governance",
+      "subtitle": "Nagar Seva is your digital platform to report issues, book appointments, track services and stay updated with your municipality.",
+      "cta": "Explore Services"
+    },
+    "stats": {
+      "citizensServed": "Citizens Served",
+      "complaintsResolved": "Complaints Resolved",
+      "wards": "Wards",
+      "departments": "Departments",
+      "digitalServices": "Digital Services"
+    },
+    "roles": {
+      "title": "Choose Your Role to Continue",
+      "subtitle": "Select the appropriate role to access relevant features and services",
+      "selectRole": "Select Role",
+      "citizen": { "label": "Citizen", "desc": "Report issues & track services" },
+      "admin": { "label": "Municipal Admin", "desc": "Manage city operations" },
+      "officer": { "label": "Department Officer", "desc": "Resolve assigned complaints" },
+      "nagarsevak": { "label": "Nagarsevak", "desc": "Ward level monitoring" },
+      "nagaradhyaksh": { "label": "Nagaradhyaksh", "desc": "City wide oversight" },
+      "driver": { "label": "Garbage Driver", "desc": "View pickup routes" }
+    },
+    "footer": {
+      "description": "Official municipal services portal connecting citizens with their local government.",
+      "quickLinks": "Quick Links",
+      "policies": "Policies",
+      "termsOfUse": "Terms of Use",
+      "privacyPolicy": "Privacy Policy",
+      "accessibilityStatement": "Accessibility Statement",
+      "contact": "Contact",
+      "helpline": "Municipal Helpline",
+      "copyright": "Municipal Corporation · Powered by Nagar Seva"
+    },
+    "about": {
+      "title": "About Nagar Seva",
+      "subtitle": "A digital municipality platform that connects citizens directly with the people responsible for solving their problems.",
+      "governance": { "title": "Citizen-Centric Governance", "desc": "Every feature is built around what a citizen needs to get an issue resolved, not around internal paperwork." },
+      "transparency": { "title": "Transparency by Default", "desc": "Every request carries a visible status history — who verified it, who it was assigned to, and when it closed." },
+      "resolution": { "title": "Faster Resolution", "desc": "A structured verify → assign → resolve → close workflow keeps requests moving instead of sitting in an inbox." },
+      "communication": { "title": "Better Communication", "desc": "Citizens, ward representatives, and the municipality head all see live status without needing to ask around." }
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Everything a citizen needs from their municipality, in one portal.",
+      "complaint": { "title": "Register a Complaint", "desc": "Report civic issues — garbage, roads, water supply, streetlights — with a photo, in a couple of minutes." },
+      "track": { "title": "Track Your Complaint", "desc": "Follow the full status history from submission to verification, assignment, and resolution." },
+      "appointment": { "title": "Book an Appointment", "desc": "Request a time with a municipal department and get a confirmed date and time slot." },
+      "garbage": { "title": "Garbage Vehicle Tracking", "desc": "See your ward's collection vehicle live on a map while it's on its route." },
+      "notices": { "title": "Municipal Notices", "desc": "Read official announcements from your municipality as soon as they're published." },
+      "emergency": { "title": "Emergency Contacts", "desc": "Police, fire, ambulance, and utility helplines for your city, always one tap away." }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "The same four-step process for every complaint and appointment.",
+      "stepLabel": "Step {{n}}: {{title}}",
+      "submit": { "title": "Citizen Submits", "desc": "A complaint or appointment request, with photos where relevant." },
+      "verify": { "title": "Admin Verifies & Assigns", "desc": "The Municipal Admin reviews it and assigns it to the right department and officer." },
+      "resolve": { "title": "Officer Resolves", "desc": "The assigned officer does the work and uploads proof of resolution, or confirms an appointment slot." },
+      "notify": { "title": "Citizen Is Notified", "desc": "The Admin reviews and closes the request, and the citizen is notified at every step." }
+    },
+    "features": {
+      "title": "Features",
+      "subtitle": "What's actually running under the hood.",
+      "complaintRegistration": "Online complaint registration with photo evidence",
+      "statusTracking": "Live status tracking from submission to closure",
+      "appointmentScheduling": "Appointment scheduling with confirmed time slots",
+      "notifications": "Real-time notifications at every status change",
+      "wardMonitoring": "Ward-wise monitoring for Nagarsevaks",
+      "garbageTracking": "Live garbage vehicle tracking on a map",
+      "secureAccess": "Secure, role-based access across 6 municipal roles"
+    },
+    "testimonials": {
+      "title": "What People Say",
+      "subtitle": "Illustrative of how the platform is used day to day.",
+      "citizen": { "quote": "I could see exactly when my complaint was verified, assigned, and fixed — no phone calls needed.", "role": "Citizen, Ward 12" },
+      "admin": { "quote": "Assigning a complaint straight to the right department officer takes a few clicks now.", "role": "Municipal Admin" },
+      "nagarsevak": { "quote": "I can monitor every request in my ward without chasing anyone for updates.", "role": "Nagarsevak" }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "register": { "q": "How do I register a complaint?", "a": "Select \"Citizen\" on the home page, log in or register, then choose \"Report a Complaint\" from your dashboard. Fill in the category, description, address, and optionally a photo, then submit." },
+      "track": { "q": "How do I track my complaint?", "a": "Open \"My Requests\" on your citizen dashboard and select the complaint. You'll see its full status history — registered, verified, assigned, in progress, completed, and closed." },
+      "appointment": { "q": "How do I request an appointment?", "a": "From your citizen dashboard, choose \"Book an Appointment\", pick a department, and describe your purpose. An officer will confirm a date and time slot once it's assigned." },
+      "free": { "q": "Is the service free?", "a": "Yes, for citizens the platform is free to use for registering complaints, tracking requests, and booking appointments." },
+      "notifications": { "q": "How do I receive notifications?", "a": "You'll see in-app notifications whenever your request changes status — verified, assigned, completed — right on your dashboard." }
+    },
+    "cityNotFound": "City \"{{citySlug}}\" was not found.",
+    "contact": {
+      "title": "Contact {{city}} Municipal Corporation",
+      "addressFallback": "Contact your local municipal office for the address.",
+      "phoneFallback": "Municipal Helpline: 1800-123-4567",
+      "emailFallback": "Contact your local municipal office for an email address.",
+      "formName": "Name",
+      "formMessage": "Message",
+      "formSend": "Send",
+      "thankYou": "Thanks — your message has been noted. For urgent civic issues, please use \"Register a Complaint\" instead so it reaches the right department."
+    }
+  }
+}

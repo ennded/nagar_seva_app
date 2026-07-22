@@ -22,7 +22,7 @@ export const publicResolvers = {
     },
     wardsByCity: async (_: unknown, { citySlug }: { citySlug: string }) => {
       const city = await cityIdFromSlug(citySlug);
-      const wards = await WardModel.find({ city: city._id }).sort({ name: 1 });
+      const wards = await WardModel.find({ city: city._id }).sort({ name: 1 }).populate('nagarsevak');
       return wards.map(mapWard);
     },
     departmentsByCity: async (_: unknown, { citySlug }: { citySlug: string }) => {

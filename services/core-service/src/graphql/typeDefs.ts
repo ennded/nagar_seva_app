@@ -86,6 +86,19 @@ export const typeDefs = gql`
     department: Department
     kycStatus: KycStatus
     isActive: Boolean!
+    availability: [AvailabilitySlot!]!
+  }
+
+  type AvailabilitySlot {
+    dayOfWeek: Int!
+    startTime: String!
+    endTime: String!
+  }
+
+  input AvailabilitySlotInput {
+    dayOfWeek: Int!
+    startTime: String!
+    endTime: String!
   }
 
   type Photo {
@@ -220,6 +233,23 @@ export const typeDefs = gql`
     citySlug: String!
   }
 
+  type Vehicle {
+    id: ID!
+    registrationNumber: String!
+    ward: Ward!
+    driver: User
+    onDuty: Boolean!
+    currentLat: Float
+    currentLng: Float
+    locationUpdatedAt: String
+  }
+
+  input CreateVehicleInput {
+    registrationNumber: String!
+    wardId: ID!
+    driverId: ID
+  }
+
   input RegisterCitizenInput {
     citySlug: String!
     name: String!
@@ -235,6 +265,13 @@ export const typeDefs = gql`
     name: String!
     mobile: String!
     role: Role!
+    wardId: ID
+    departmentId: ID
+  }
+
+  input UpdateStaffUserInput {
+    name: String
+    mobile: String
     wardId: ID
     departmentId: ID
   }
@@ -280,10 +317,12 @@ export const typeDefs = gql`
     publicDashboardStats(citySlug: String!): PublicDashboardStats!
     announcements(citySlug: String!, category: AnnouncementCategory): [Announcement!]!
     emergencyContacts(citySlug: String!): [EmergencyContact!]!
+    announcementsAdmin: [Announcement!]!
 
     me: User
 
     officersByDepartment(departmentId: ID!): [User!]!
+    staffByCity(role: Role): [User!]!
 
     myRequests(status: RequestStatus): [RequestUnion!]!
     request(id: ID!): RequestUnion
@@ -297,6 +336,10 @@ export const typeDefs = gql`
 
     municipalityRequests(filter: RequestFilter, page: Int, limit: Int): RequestPage!
     dashboardStats: DashboardStats!
+
+    vehiclesByCity: [Vehicle!]!
+    myVehicle: Vehicle
+    myWardVehicle: Vehicle
   }
 
   type Mutation {
@@ -308,6 +351,8 @@ export const typeDefs = gql`
     createWard(name: String!, code: String!): Ward!
     createDepartment(name: String!, description: String): Department!
     createStaffUser(input: CreateStaffUserInput!): User!
+    updateStaffUser(id: ID!, input: UpdateStaffUserInput!): User!
+    setStaffActive(id: ID!, isActive: Boolean!): User!
 
     submitComplaint(input: SubmitComplaintInput!): Complaint!
     submitAppointment(input: SubmitAppointmentInput!): Appointment!
@@ -319,6 +364,7 @@ export const typeDefs = gql`
     startWork(id: ID!): RequestUnion!
     completeComplaint(id: ID!, resolutionProofUrls: [String!]!, remarks: String): Complaint!
     scheduleAppointment(id: ID!, confirmedDate: String!, confirmedTimeSlot: String!): Appointment!
+    updateMyAvailability(slots: [AvailabilitySlotInput!]!): User!
 
     createAnnouncement(input: CreateAnnouncementInput!): Announcement!
     publishAnnouncement(id: ID!): Announcement!
@@ -326,5 +372,11 @@ export const typeDefs = gql`
     createEmergencyContact(input: CreateEmergencyContactInput!): EmergencyContact!
     updateEmergencyContact(id: ID!, input: CreateEmergencyContactInput!): EmergencyContact!
     deleteEmergencyContact(id: ID!): Boolean!
+
+    createVehicle(input: CreateVehicleInput!): Vehicle!
+    assignVehicleDriver(vehicleId: ID!, driverId: ID!): Vehicle!
+    startDuty: Vehicle!
+    endDuty: Vehicle!
+    updateVehicleLocation(lat: Float!, lng: Float!): Vehicle!
   }
 `;

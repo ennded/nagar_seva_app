@@ -16,7 +16,7 @@ export async function buildContext({ req }: { req: IncomingMessage }): Promise<G
   if (!payload) {
     return { user: null };
   }
-  const user = await UserModel.findById(payload.sub);
+  const user = await UserModel.findById(payload.sub).populate('ward').populate('department');
   if (!user || !user.isActive) {
     return { user: null };
   }

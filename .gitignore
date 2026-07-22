@@ -7,5 +7,6 @@ services/media-service/uploads/complaints/*
 services/media-service/uploads/kyc/*
 !services/media-service/uploads/kyc/.gitkeep
 *.log
+*.tsbuildinfo
 .DS_Store
 infra/k8s/01-secrets.yaml

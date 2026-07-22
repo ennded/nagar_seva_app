@@ -7,6 +7,13 @@ import { mapRequest, mapUser } from '../serialize.js';
 import * as requestService from '../../services/request.service.js';
 import type { GraphQLContext } from '../../auth/context.js';
 
+// After .populate(), a ref field is a full document (not a raw ObjectId) — String(doc) doesn't
+// yield the _id hex string, so comparisons must unwrap ._id first. Works for populated docs,
+// raw ObjectIds, and plain id strings alike.
+function idOf(ref: any): string {
+  return String(ref?._id ?? ref);
+}
+
 function applyPopulate(query: any) {
   return query
     .populate('citizen')
@@ -21,7 +28,9 @@ export const requestResolvers = {
   Query: {
     officersByDepartment: async (_: unknown, { departmentId }: { departmentId: string }, ctx: GraphQLContext) => {
       const { city } = requireRole(ctx, ['admin', 'citizen']);
-      const officers = await UserModel.find({ department: departmentId, city, role: 'officer', isActive: true });
+      const officers = await UserModel.find({ department: departmentId, city, role: 'officer', isActive: true }).populate(
+        'department',
+      );
       return officers.map(mapUser);
     },
 
@@ -37,9 +46,9 @@ export const requestResolvers = {
       const { user, city } = requireRole(ctx, ['citizen', 'admin', 'officer', 'nagarsevak', 'nagaradhyaksh']);
       const doc = await applyPopulate(RequestModel.findOne({ _id: id, city }));
       if (!doc) return null;
-      if (user.role === 'citizen' && String(doc.citizen) !== String(user._id)) notFound('Request not found');
-      if (user.role === 'officer' && String(doc.assignedOfficer) !== String(user._id)) notFound('Request not found');
-      if (user.role === 'nagarsevak' && String(doc.ward) !== String(user.ward)) notFound('Request not found');
+      if (user.role === 'citizen' && idOf(doc.citizen) !== idOf(user._id)) notFound('Request not found');
+      if (user.role === 'officer' && idOf(doc.assignedOfficer) !== idOf(user._id)) notFound('Request not found');
+      if (user.role === 'nagarsevak' && idOf(doc.ward) !== idOf(user.ward)) notFound('Request not found');
       return mapRequest(doc);
     },
 
@@ -168,6 +177,14 @@ export const requestResolvers = {
       const { user } = requireRole(ctx, ['officer']);
       const doc = await requestService.scheduleAppointment(user as any, id, confirmedDate, confirmedTimeSlot);
       return mapRequest(await applyPopulate(RequestModel.findById(doc._id)));
+    },
+
+    updateMyAvailability: async (_: unknown, { slots }: { slots: any[] }, ctx: GraphQLContext) => {
+      const { user } = requireRole(ctx, ['officer']);
+      const updated = await UserModel.findByIdAndUpdate(user._id, { availability: slots }, { new: true })
+        .populate('ward')
+        .populate('department');
+      return mapUser(updated);
     },
   },
 

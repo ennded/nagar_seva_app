@@ -10,7 +10,8 @@ import type { GraphQLContext } from '../../auth/context.js';
 async function issueAuthPayload(user: any, citySlugHint?: string) {
   const city = citySlugHint ? { slug: citySlugHint } : await CityModel.findById(user.city).select('slug');
   const token = signToken({ sub: String(user._id), role: user.role, city: String(user.city) });
-  return { token, user: mapUser(user), citySlug: city?.slug ?? '' };
+  const populated = await user.populate(['ward', 'department']);
+  return { token, user: mapUser(populated), citySlug: city?.slug ?? '' };
 }
 
 export const authResolvers = {
