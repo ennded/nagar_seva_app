@@ -8,7 +8,9 @@ export const WARD_REQUESTS = gql`
         id
         type
         status
+        priority
         title
+        category
         createdAt
         citizen {
           name
@@ -21,6 +23,7 @@ export const WARD_REQUESTS = gql`
         id
         type
         status
+        priority
         purpose
         createdAt
         citizen {
@@ -46,7 +49,9 @@ export const MUNICIPALITY_REQUESTS = gql`
           id
           type
           status
+          priority
           title
+          category
           createdAt
           citizen {
             name
@@ -62,6 +67,7 @@ export const MUNICIPALITY_REQUESTS = gql`
           id
           type
           status
+          priority
           purpose
           createdAt
           citizen {

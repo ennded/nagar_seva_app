@@ -31,6 +31,7 @@ export const REQUEST_BASE_FIELDS = gql`
     id
     type
     status
+    priority
     adminReviewNote
     createdAt
     closedAt

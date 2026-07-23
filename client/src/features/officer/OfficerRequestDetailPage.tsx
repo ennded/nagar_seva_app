@@ -6,6 +6,7 @@ import { REQUEST_DETAIL } from '../../graphql/queries/request.queries';
 import { COMPLETE_COMPLAINT, SCHEDULE_APPOINTMENT, START_WORK } from '../../graphql/mutations/officer.mutations';
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { PriorityBadge } from '../../components/PriorityBadge';
 import { uploadComplaintPhoto } from '../../apollo/upload';
 
 const TIME_SLOTS = ['9:00 AM - 11:00 AM', '11:00 AM - 1:00 PM', '2:00 PM - 4:00 PM', '4:00 PM - 6:00 PM'];
@@ -67,130 +68,144 @@ export function OfficerRequestDetailPage() {
     <div>
       <div className="page-header">
         <h1>{r.__typename === 'Complaint' ? r.title : r.purpose}</h1>
-        <StatusBadge status={r.status} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <StatusBadge status={r.status} />
+          <PriorityBadge priority={r.priority} />
+        </div>
       </div>
 
-      <div className="admin-panel">
-        <p>
-          <strong>{t('admin.requests.citizen')}:</strong> {r.citizen.name} ({r.citizen.mobile})
-        </p>
-        <p>
-          <strong>{t('admin.requests.ward')}:</strong> {r.ward.name}
-        </p>
-        {r.__typename === 'Complaint' ? (
-          <>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="admin-panel">
             <p>
-              <strong>{t('citizen.category')}:</strong> {r.category}
+              <strong>{t('admin.requests.citizen')}:</strong> {r.citizen.name} ({r.citizen.mobile})
             </p>
             <p>
-              <strong>{t('citizen.description')}:</strong> {r.description}
+              <strong>{t('admin.requests.ward')}:</strong> {r.ward.name}
             </p>
-            <p>
-              <strong>{t('citizen.address')}:</strong> {r.address}
-            </p>
-            {r.photos.length > 0 && (
-              <div className="photo-preview-list">
-                {r.photos.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
-                ))}
-              </div>
+            {r.__typename === 'Complaint' ? (
+              <>
+                <p>
+                  <strong>{t('citizen.category')}:</strong> {r.category}
+                </p>
+                <p>
+                  <strong>{t('citizen.description')}:</strong> {r.description}
+                </p>
+                <p>
+                  <strong>{t('citizen.address')}:</strong> {r.address}
+                </p>
+                {r.photos.length > 0 && (
+                  <div className="photo-preview-list">
+                    {r.photos.map((p) => (
+                      <img key={p.url} src={p.url} alt="" />
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <>{r.remarks && (
+                <p>
+                  <strong>{t('citizen.remarks')}:</strong> {r.remarks}
+                </p>
+              )}</>
             )}
-          </>
-        ) : (
-          <>
-            {r.remarks && (
-              <p>
-                <strong>{t('citizen.remarks')}:</strong> {r.remarks}
-              </p>
-            )}
-          </>
-        )}
-      </div>
+          </div>
 
-      {r.__typename === 'Complaint' && r.status === 'ASSIGNED' && (
-        <div className="admin-panel">
-          <div className="action-row">
-            <button type="button" onClick={handleStartWork} disabled={starting}>
-              {t('officer.startWork')}
-            </button>
+          <div className="admin-panel">
+            <h3>{t('citizen.statusHistory')}</h3>
+            <ul className="status-history">
+              {r.statusHistory.map((event, i) => (
+                <li key={i}>
+                  <StatusBadge status={event.status} /> — {new Date(event.changedAt).toLocaleString()}
+                  {event.changedBy && ` (${event.changedBy.name})`}
+                  {event.note && <p>{event.note}</p>}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-      )}
 
-      {r.__typename === 'Complaint' && r.status === 'IN_PROGRESS' && (
-        <div className="admin-panel">
-          <h2>{t('officer.complete')}</h2>
-          <label>
-            {t('officer.resolutionProof')}
-            <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFileChange} />
-          </label>
-          {uploading && <p>{t('common.loading')}</p>}
-          {proofUrls.length > 0 && (
-            <div className="photo-preview-list">
-              {proofUrls.map((url) => (
-                <img key={url} src={url} alt="" />
-              ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {r.__typename === 'Complaint' && r.status === 'ASSIGNED' && (
+            <div className="admin-panel">
+              <h2>{t('officer.startWork')}</h2>
+              <div className="action-row">
+                <button type="button" onClick={handleStartWork} disabled={starting}>
+                  {t('officer.startWork')}
+                </button>
+              </div>
             </div>
           )}
-          <label>
-            {t('citizen.resolutionRemarks')}
-            <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} />
-          </label>
-          <div className="action-row">
-            <button type="button" onClick={handleComplete} disabled={completing || uploading || proofUrls.length === 0}>
-              {t('officer.complete')}
-            </button>
-          </div>
+
+          {r.__typename === 'Complaint' && r.status === 'IN_PROGRESS' && (
+            <div className="admin-panel">
+              <h2>{t('officer.complete')}</h2>
+              <label>
+                {t('officer.resolutionProof')}
+                <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFileChange} />
+              </label>
+              {uploading && <p>{t('common.loading')}</p>}
+              {proofUrls.length > 0 && (
+                <div className="photo-preview-list">
+                  {proofUrls.map((url) => (
+                    <img key={url} src={url} alt="" />
+                  ))}
+                </div>
+              )}
+              <label>
+                {t('citizen.resolutionRemarks')}
+                <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+              </label>
+              <div className="action-row">
+                <button
+                  type="button"
+                  className="btn-success"
+                  onClick={handleComplete}
+                  disabled={completing || uploading || proofUrls.length === 0}
+                >
+                  {t('officer.complete')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {r.__typename === 'Appointment' && r.status === 'ASSIGNED' && (
+            <div className="admin-panel">
+              <h2>{t('officer.confirmSchedule')}</h2>
+              <label>
+                {t('officer.confirmedDate')}
+                <input type="date" value={confirmedDate} onChange={(e) => setConfirmedDate(e.target.value)} required />
+              </label>
+              <label>
+                {t('officer.confirmedTimeSlot')}
+                <select value={confirmedTimeSlot} onChange={(e) => setConfirmedTimeSlot(e.target.value)} required>
+                  <option value="" disabled>
+                    {t('officer.selectTimeSlot')}
+                  </option>
+                  {TIME_SLOTS.map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="action-row">
+                <button
+                  type="button"
+                  className="btn-success"
+                  onClick={handleSchedule}
+                  disabled={scheduling || !confirmedDate || !confirmedTimeSlot}
+                >
+                  {t('officer.confirmSchedule')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {(r.status === 'COMPLETED' || r.status === 'SCHEDULED' || r.status === 'CLOSED') && (
+            <div className="info-banner">{t('officer.waitingReview')}</div>
+          )}
         </div>
-      )}
-
-      {r.__typename === 'Appointment' && r.status === 'ASSIGNED' && (
-        <div className="admin-panel">
-          <h2>{t('officer.confirmSchedule')}</h2>
-          <label>
-            {t('officer.confirmedDate')}
-            <input type="date" value={confirmedDate} onChange={(e) => setConfirmedDate(e.target.value)} required />
-          </label>
-          <label>
-            {t('officer.confirmedTimeSlot')}
-            <select value={confirmedTimeSlot} onChange={(e) => setConfirmedTimeSlot(e.target.value)} required>
-              <option value="" disabled>
-                {t('officer.selectTimeSlot')}
-              </option>
-              {TIME_SLOTS.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="action-row">
-            <button
-              type="button"
-              onClick={handleSchedule}
-              disabled={scheduling || !confirmedDate || !confirmedTimeSlot}
-            >
-              {t('officer.confirmSchedule')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {(r.status === 'COMPLETED' || r.status === 'SCHEDULED' || r.status === 'CLOSED') && (
-        <div className="info-banner">{t('officer.waitingReview')}</div>
-      )}
-
-      <div className="admin-panel">
-        <h3>{t('citizen.statusHistory')}</h3>
-        <ul className="status-history">
-          {r.statusHistory.map((event, i) => (
-            <li key={i}>
-              <StatusBadge status={event.status} /> — {new Date(event.changedAt).toLocaleString()}
-              {event.changedBy && ` (${event.changedBy.name})`}
-              {event.note && <p>{event.note}</p>}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

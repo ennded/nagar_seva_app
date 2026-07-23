@@ -5,23 +5,25 @@ import { useTranslation } from 'react-i18next';
 import { ALL_REQUESTS } from '../../graphql/queries/admin.queries';
 import type { RequestPage, RequestStatus, RequestType } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { PriorityBadge } from '../../components/PriorityBadge';
 
-const STATUSES: RequestStatus[] = [
-  'REGISTERED',
-  'VERIFIED',
-  'ASSIGNED',
-  'IN_PROGRESS',
-  'SCHEDULED',
-  'COMPLETED',
-  'CLOSED',
-  'REJECTED',
+const STATUS_PILLS: { label: string; value: RequestStatus | '' }[] = [
+  { label: 'All', value: '' },
+  { label: 'Registered', value: 'REGISTERED' },
+  { label: 'Verified', value: 'VERIFIED' },
+  { label: 'Assigned', value: 'ASSIGNED' },
+  { label: 'In Progress', value: 'IN_PROGRESS' },
+  { label: 'Completed', value: 'COMPLETED' },
+  { label: 'Scheduled', value: 'SCHEDULED' },
+  { label: 'Closed', value: 'CLOSED' },
+  { label: 'Rejected', value: 'REJECTED' },
 ];
 const TYPES: RequestType[] = ['COMPLAINT', 'APPOINTMENT'];
 
 export function AllRequestsPage() {
   const { t } = useTranslation();
   const { citySlug } = useParams<{ citySlug: string }>();
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<RequestStatus | ''>('');
   const [type, setType] = useState('');
   const [page, setPage] = useState(1);
   const limit = 20;
@@ -41,24 +43,20 @@ export function AllRequestsPage() {
       <h1>{t('admin.requests.allTitle')}</h1>
 
       <div className="filter-bar">
-        <label>
-          {t('admin.requests.filterStatus')}
-          <select
-            value={status}
-            onChange={(e) => {
-              setStatus(e.target.value);
+        {STATUS_PILLS.map((s) => (
+          <button
+            key={s.label}
+            type="button"
+            className={`filter-pill${status === s.value ? ' active' : ''}`}
+            onClick={() => {
+              setStatus(s.value);
               setPage(1);
             }}
           >
-            <option value="">{t('admin.requests.allStatuses')}</option>
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {t(`status.${s}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
+            {s.label}
+          </button>
+        ))}
+        <label style={{ marginLeft: 'auto' }}>
           {t('admin.requests.filterType')}
           <select
             value={type}
@@ -88,23 +86,27 @@ export function AllRequestsPage() {
             <thead>
               <tr>
                 <th>{t('citizen.title')}</th>
-                <th>Status</th>
                 <th>{t('admin.requests.citizen')}</th>
                 <th>{t('admin.requests.ward')}</th>
+                <th>Priority</th>
                 <th>{t('admin.requests.department')}</th>
+                <th>Status</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {data?.allRequests.items.map((r) => (
                 <tr key={r.id}>
-                  <td>{r.__typename === 'Complaint' ? r.title : r.purpose}</td>
+                  <td>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</td>
+                  <td>{r.citizen.name}</td>
+                  <td>{r.ward.name}</td>
+                  <td>
+                    <PriorityBadge priority={r.priority} />
+                  </td>
+                  <td>{r.department?.name ?? '—'}</td>
                   <td>
                     <StatusBadge status={r.status} />
                   </td>
-                  <td>{r.citizen.name}</td>
-                  <td>{r.ward.name}</td>
-                  <td>{r.department?.name ?? '—'}</td>
                   <td>
                     <Link to={`/${citySlug}/admin/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
                   </td>

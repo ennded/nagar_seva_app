@@ -23,6 +23,10 @@ export const DASHBOARD_STATS = gql`
         }
         count
       }
+      byCategory {
+        category
+        count
+      }
     }
   }
 `;
@@ -57,7 +61,9 @@ export const ALL_REQUESTS = gql`
           id
           type
           status
+          priority
           title
+          category
           createdAt
           citizen {
             name
@@ -73,6 +79,7 @@ export const ALL_REQUESTS = gql`
           id
           type
           status
+          priority
           purpose
           createdAt
           citizen {
@@ -98,7 +105,9 @@ export const PENDING_REQUESTS = gql`
         id
         type
         status
+        priority
         title
+        category
         createdAt
         citizen {
           name
@@ -111,6 +120,7 @@ export const PENDING_REQUESTS = gql`
         id
         type
         status
+        priority
         purpose
         createdAt
         citizen {
@@ -127,6 +137,20 @@ export const PENDING_REQUESTS = gql`
 export const ANNOUNCEMENTS_ADMIN = gql`
   query AnnouncementsAdmin {
     announcementsAdmin {
+      id
+      title
+      body
+      category
+      status
+      publishedAt
+      createdAt
+    }
+  }
+`;
+
+export const WARD_ANNOUNCEMENTS = gql`
+  query WardAnnouncements {
+    wardAnnouncements {
       id
       title
       body

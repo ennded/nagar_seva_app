@@ -79,6 +79,7 @@ export function mapRequest(doc: any) {
     department: mapDepartment(doc.department),
     assignedOfficer: mapUser(doc.assignedOfficer),
     status: doc.status,
+    priority: (doc.priority ?? 'medium').toUpperCase(),
     statusHistory: (doc.statusHistory ?? []).map((event: any) => ({
       status: event.status,
       changedBy: mapUser(event.changedBy),
@@ -123,6 +124,8 @@ export function mapAnnouncement(doc: any) {
     body: doc.body,
     category: categoryToGQL(doc.category),
     status: doc.status,
+    ward: doc.ward && typeof doc.ward === 'object' && doc.ward.name ? mapWard(doc.ward) : null,
+    isEmergency: doc.isEmergency ?? false,
     publishedAt: doc.publishedAt ? new Date(doc.publishedAt).toISOString() : null,
     createdAt: new Date(doc.createdAt).toISOString(),
   };

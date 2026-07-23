@@ -9,6 +9,7 @@ export type RequestStatus =
   | 'CLOSED'
   | 'REJECTED';
 export type RequestType = 'COMPLAINT' | 'APPOINTMENT';
+export type RequestPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface WardRef {
   id: string;
@@ -53,6 +54,7 @@ interface RequestBaseFields {
   id: string;
   type: RequestType;
   status: RequestStatus;
+  priority: RequestPriority;
   adminReviewNote: string | null;
   createdAt: string;
   closedAt: string | null;
@@ -110,6 +112,7 @@ export interface Announcement {
   body: string;
   category: string;
   status: string;
+  isEmergency: boolean;
   publishedAt: string | null;
   createdAt: string;
 }
@@ -143,11 +146,17 @@ export interface WardCount {
   count: number;
 }
 
+export interface CategoryCount {
+  category: string;
+  count: number;
+}
+
 export interface DashboardStats {
   totalRequests: number;
   byStatus: StatusCount[];
   byDepartment: DepartmentCount[];
   byWard: WardCount[];
+  byCategory: CategoryCount[];
 }
 
 export interface RequestSummary {
@@ -155,7 +164,9 @@ export interface RequestSummary {
   id: string;
   type: RequestType;
   status: RequestStatus;
+  priority: RequestPriority;
   title?: string;
+  category?: string;
   purpose?: string;
   createdAt: string;
   citizen: { name: string };

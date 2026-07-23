@@ -48,6 +48,22 @@ export const SET_STAFF_ACTIVE = gql`
   }
 `;
 
+export const SET_REQUEST_PRIORITY = gql`
+  mutation SetRequestPriority($id: ID!, $priority: RequestPriority!) {
+    setRequestPriority(id: $id, priority: $priority) {
+      __typename
+      ... on Complaint {
+        id
+        priority
+      }
+      ... on Appointment {
+        id
+        priority
+      }
+    }
+  }
+`;
+
 export const VERIFY_REQUEST = gql`
   mutation VerifyRequest($id: ID!, $approve: Boolean!, $note: String) {
     verifyRequest(id: $id, approve: $approve, note: $note) {
@@ -113,6 +129,12 @@ export const PUBLISH_ANNOUNCEMENT = gql`
       status
       publishedAt
     }
+  }
+`;
+
+export const DELETE_ANNOUNCEMENT = gql`
+  mutation DeleteAnnouncement($id: ID!) {
+    deleteAnnouncement(id: $id)
   }
 `;
 

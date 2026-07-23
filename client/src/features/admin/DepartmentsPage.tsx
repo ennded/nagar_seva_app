@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { Building2 } from 'lucide-react';
 import { DEPARTMENTS_BY_CITY } from '../../graphql/queries/public.queries';
 import { CREATE_DEPARTMENT } from '../../graphql/mutations/admin.mutations';
-import type { DepartmentRef } from '../../graphql/types';
+import { DASHBOARD_STATS, STAFF_BY_CITY } from '../../graphql/queries/admin.queries';
+import type { DashboardStats, DepartmentRef, UserFields } from '../../graphql/types';
 import { useAuth } from '../auth/AuthContext';
 
 export function DepartmentsPage() {
@@ -18,6 +20,8 @@ export function DepartmentsPage() {
   const { data, loading } = useQuery<{ departmentsByCity: DepartmentRef[] }>(DEPARTMENTS_BY_CITY, {
     variables: { citySlug },
   });
+  const { data: staffData } = useQuery<{ staffByCity: UserFields[] }>(STAFF_BY_CITY, { variables: { role: 'OFFICER' } });
+  const { data: statsData } = useQuery<{ dashboardStats: DashboardStats }>(DASHBOARD_STATS);
   const [createDepartment, { loading: creating, error }] = useMutation(CREATE_DEPARTMENT, {
     refetchQueries: [{ query: DEPARTMENTS_BY_CITY, variables: { citySlug } }],
   });
@@ -54,30 +58,37 @@ export function DepartmentsPage() {
         {successMsg && <p className="form-success">{t('admin.departments.created')}</p>}
       </div>
 
-      <div className="admin-panel">
-        {loading ? (
-          <p>{t('common.loading')}</p>
-        ) : data?.departmentsByCity.length === 0 ? (
-          <p>{t('admin.departments.empty')}</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>{t('admin.departments.name')}</th>
-                <th>{t('admin.departments.description')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.departmentsByCity.map((d) => (
-                <tr key={d.id}>
-                  <td>{d.name}</td>
-                  <td>{d.description ?? '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+      {loading ? (
+        <p>{t('common.loading')}</p>
+      ) : data?.departmentsByCity.length === 0 ? (
+        <p>{t('admin.departments.empty')}</p>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+          {data?.departmentsByCity.map((d) => {
+            const officerCount = staffData?.staffByCity.filter((o) => o.department?.id === d.id).length ?? 0;
+            const assignedCount = statsData?.dashboardStats.byDepartment.find((bd) => bd.department.id === d.id)?.count ?? 0;
+            return (
+              <div key={d.id} className="admin-panel" style={{ marginBottom: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                  <div className="stat-tile-icon" style={{ margin: 0 }}>
+                    <Building2 size={21} color="#0B3D66" />
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 800 }}>{d.name}</div>
+                </div>
+                {d.description && <p style={{ fontSize: 13.5, color: 'var(--color-muted)', marginTop: 0 }}>{d.description}</p>}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13.5, marginBottom: 6 }}>
+                  <span style={{ color: 'var(--color-muted)' }}>Officers</span>
+                  <span style={{ fontWeight: 700 }}>{officerCount}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13.5 }}>
+                  <span style={{ color: 'var(--color-muted)' }}>Assigned Requests</span>
+                  <span style={{ fontWeight: 700 }}>{assignedCount}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

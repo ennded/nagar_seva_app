@@ -1,22 +1,26 @@
 :root {
   color-scheme: light;
-  --color-bg: #f3f5f9;
+  --color-bg: #eef2f6;
   --color-surface: #ffffff;
-  --color-surface-alt: #f8fafc;
-  --color-border: #e2e6ed;
-  --color-text: #16202e;
-  --color-muted: #64748b;
-  --color-primary: #1450a3;
-  --color-primary-dark: #0d3a7d;
-  --color-primary-light: #e8f0fc;
-  --color-accent: #b5540a;
-  --color-success: #1e7a46;
-  --color-danger: #b3261e;
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
-  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08);
-  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
-  --radius: 10px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  --color-surface-alt: #f5f7fa;
+  --color-border: #e2e6ea;
+  --color-text: #14181c;
+  --color-muted: #5b6670;
+  --color-primary: #0b3d66;
+  --color-primary-dark: #082a47;
+  --color-primary-light: #e7ecf2;
+  --color-accent: #e07a1f;
+  --color-success: #1e8a5f;
+  --color-success-light: #e6f4ec;
+  --color-danger: #dc2626;
+  --color-danger-light: #fbeaea;
+  --color-warning: #b85b12;
+  --color-warning-light: #fceee1;
+  --shadow-sm: 0 1px 2px rgba(20, 24, 28, 0.06);
+  --shadow-md: 0 4px 12px rgba(20, 24, 28, 0.08);
+  --shadow-lg: 0 20px 60px rgba(20, 24, 28, 0.08);
+  --radius: 14px;
+  font-family: 'Public Sans', system-ui, sans-serif;
 }
 
 * {
@@ -61,6 +65,7 @@ a {
 }
 
 .app-brand {
+  font-family: 'Source Serif 4', serif;
   font-weight: 700;
   font-size: 1.15rem;
   text-decoration: none;
@@ -88,7 +93,7 @@ a {
   background: white;
   color: var(--color-primary-dark);
   border: none;
-  border-radius: 6px;
+  border-radius: 9px;
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
@@ -104,6 +109,7 @@ a {
 h1, h2, h3 {
   color: var(--color-text);
   letter-spacing: -0.01em;
+  font-family: 'Source Serif 4', serif;
 }
 
 form {
@@ -123,14 +129,14 @@ label {
   flex-direction: column;
   gap: 0.35rem;
   font-size: 0.9rem;
-  color: var(--color-muted);
-  font-weight: 500;
+  color: var(--color-text);
+  font-weight: 700;
 }
 
 input, select, textarea {
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   font-family: inherit;
   min-height: 48px;
@@ -152,15 +158,15 @@ textarea {
 button {
   padding: 0.7rem 1.2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--color-primary);
   color: white;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 800;
   cursor: pointer;
   min-height: 48px;
   transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 button:disabled {
@@ -171,7 +177,6 @@ button:disabled {
 
 button:hover:not(:disabled) {
   background: var(--color-primary-dark);
-  box-shadow: var(--shadow-md);
 }
 
 button:active:not(:disabled) {
@@ -181,9 +186,9 @@ button:active:not(:disabled) {
 .form-error {
   color: var(--color-danger);
   font-size: 0.9rem;
-  background: #fdecea;
+  background: var(--color-danger-light);
   padding: 0.6rem 0.9rem;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
 .page-header {
@@ -205,15 +210,12 @@ button:active:not(:disabled) {
   color: white;
   text-decoration: none;
   padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.15s ease, background 0.15s ease;
+  border-radius: 10px;
+  font-weight: 700;
 }
 
 .page-header-actions a:hover {
   background: var(--color-primary-dark);
-  box-shadow: var(--shadow-md);
 }
 
 .request-list {
@@ -231,14 +233,8 @@ button:active:not(:disabled) {
   gap: 1rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: 16px;
   padding: 1rem 1.25rem;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.15s ease, transform 0.1s ease;
-}
-
-.request-list-item:hover {
-  box-shadow: var(--shadow-md);
 }
 
 .request-meta {
@@ -250,33 +246,23 @@ button:active:not(:disabled) {
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  background: #e2e8f0;
-  color: #334155;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   white-space: nowrap;
 }
 
-.status-badge::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-}
-
-.status-registered { background: #e2e8f0; color: #334155; }
+.status-registered { background: #e7ecf2; color: #0b3d66; }
 .status-verified { background: #dbeafe; color: #1d4ed8; }
-.status-assigned { background: #fef3c7; color: #92400e; }
-.status-in_progress { background: #fef3c7; color: #92400e; }
+.status-assigned { background: var(--color-warning-light); color: var(--color-warning); }
+.status-in_progress { background: var(--color-warning-light); color: var(--color-warning); }
 .status-scheduled { background: #dbeafe; color: #1d4ed8; }
-.status-completed { background: #dcfce7; color: #166534; }
-.status-closed { background: #dcfce7; color: #166534; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
+.status-completed { background: var(--color-success-light); color: var(--color-success); }
+.status-closed { background: var(--color-success-light); color: var(--color-success); }
+.status-rejected { background: var(--color-danger-light); color: var(--color-danger); }
 
 .stats-row {
   display: flex;
@@ -288,25 +274,36 @@ button:active:not(:disabled) {
 .stat-tile {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: 16px;
   padding: 1.1rem 1.5rem;
   display: flex;
   flex-direction: column;
   min-width: 150px;
-  box-shadow: var(--shadow-sm);
-  border-top: 3px solid var(--color-primary);
+  flex: 1;
+}
+
+.stat-tile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
 }
 
 .stat-tile strong {
-  font-size: 1.9rem;
-  color: var(--color-primary-dark);
-  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--color-text);
+  font-weight: 800;
 }
 
 .stat-tile span {
   color: var(--color-muted);
   font-size: 0.85rem;
   margin-top: 0.15rem;
+  font-weight: 600;
 }
 
 .photo-preview-list {
@@ -321,9 +318,8 @@ button:active:not(:disabled) {
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
 }
 
 .status-history {
@@ -337,63 +333,98 @@ button:active:not(:disabled) {
 .status-history li {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-primary);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.75rem 1rem;
 }
 
-/* Staff shell (Admin / Officer / Nagarsevak / Nagaradhyaksh) */
-.admin-shell {
+/* Staff shell (Admin / Officer / Nagarsevak / Nagaradhyaksh / Driver) — a centered,
+   rounded, shadowed "card" with a tricolor top stripe, matching the design system. */
+.admin-shell-outer {
   min-height: 100vh;
   display: flex;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-bg);
+}
+
+.admin-shell {
+  width: 100%;
+  max-width: 1360px;
+  height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-shell-stripe {
+  width: 100%;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.admin-shell-stripe div {
+  flex: 1;
+  height: 4px;
+}
+
+.admin-shell-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
 }
 
 .admin-sidebar {
-  width: 250px;
+  width: 236px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, var(--color-primary-dark), #0a2c5e);
-  color: white;
+  border-right: 1px solid var(--color-border);
+  padding: 20px 14px;
   display: flex;
   flex-direction: column;
-  padding: 1.1rem 0.85rem;
+  gap: 4px;
+  overflow-y: auto;
 }
 
 .admin-sidebar-brand {
-  font-weight: 700;
-  font-size: 1.2rem;
-  padding: 0.75rem 0.75rem 1.5rem;
-  letter-spacing: 0.01em;
+  font-family: 'Source Serif 4', serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  padding: 0.75rem 0.75rem 0.25rem;
+  color: var(--color-text);
 }
 
 .admin-sidebar-role {
   padding: 0 0.75rem 1rem;
-  margin-top: -1rem;
-  font-size: 0.8rem;
-  color: #9fb8dc;
+  font-size: 0.78rem;
+  color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  font-weight: 700;
 }
 
 .admin-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   flex: 1;
 }
 
 .admin-nav-link {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 0.9rem;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
   min-height: 48px;
-  border-radius: 8px;
-  color: #dde6f4;
+  border-radius: 10px;
+  color: var(--color-text);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.92rem;
+  font-weight: 700;
   background: transparent;
   border: none;
-  border-left: 3px solid transparent;
   cursor: pointer;
   text-align: left;
   width: 100%;
@@ -401,14 +432,12 @@ button:active:not(:disabled) {
 }
 
 .admin-nav-link:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-surface-alt);
 }
 
 .admin-nav-link.active {
-  background: rgba(255, 255, 255, 0.14);
-  color: white;
-  font-weight: 600;
-  border-left-color: #6fa8ff;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .admin-logout {
@@ -423,42 +452,41 @@ button:active:not(:disabled) {
 }
 
 .admin-topbar {
-  padding: 1.1rem 1.75rem;
-  background: var(--color-surface);
+  height: 72px;
+  flex-shrink: 0;
+  padding: 0 1.5rem;
   border-bottom: 1px solid var(--color-border);
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .admin-topbar-role {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: var(--color-muted);
-  background: var(--color-primary-light);
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
 }
 
 .admin-main {
+  flex: 1;
+  overflow: auto;
   padding: 1.75rem;
-  max-width: 1150px;
-  width: 100%;
 }
 
 .admin-panel {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.5rem 1.75rem;
+  border-radius: 16px;
+  padding: 1.25rem 1.25rem;
   margin-bottom: 1.5rem;
-  box-shadow: var(--shadow-sm);
 }
 
 .admin-panel h2 {
   margin-top: 0;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
+  font-family: inherit;
+  font-weight: 800;
 }
 
 .admin-panel form {
@@ -478,22 +506,23 @@ button:active:not(:disabled) {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .admin-table th,
 .admin-table td {
   text-align: left;
-  padding: 0.85rem 0.75rem;
+  padding: 0.85rem 0.6rem;
   border-bottom: 1px solid var(--color-border);
 }
 
 .admin-table th {
   color: var(--color-muted);
-  font-weight: 600;
-  font-size: 0.82rem;
+  font-weight: 700;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  background: var(--color-surface-alt);
 }
 
 .admin-table tbody tr {
@@ -506,17 +535,36 @@ button:active:not(:disabled) {
 
 .filter-bar {
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
+  align-items: center;
 }
 
 .filter-bar label {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--color-muted);
+}
+
+.filter-pill {
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.filter-pill.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
 }
 
 .action-row {
@@ -533,14 +581,13 @@ button:active:not(:disabled) {
 
 .btn-secondary {
   background: white;
-  color: var(--color-primary-dark);
-  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
   box-shadow: none;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--color-surface-alt);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-primary-light);
 }
 
 .btn-danger {
@@ -548,21 +595,29 @@ button:active:not(:disabled) {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #8f1e18;
+  background: #b32020;
+}
+
+.btn-success {
+  background: var(--color-success);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #166b49;
 }
 
 .form-success {
   color: var(--color-success);
-  background: #e7f7ee;
+  background: var(--color-success-light);
   padding: 0.6rem 0.9rem;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 0.9rem;
 }
 
 .info-banner {
   background: var(--color-primary-light);
   color: var(--color-primary-dark);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.85rem 1.1rem;
   font-size: 0.92rem;
   margin-bottom: 1.25rem;
@@ -574,30 +629,29 @@ button:active:not(:disabled) {
 .tab-bar {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1.1rem;
 }
 
 .tab-bar button {
-  background: transparent;
+  background: var(--color-surface-alt);
   color: var(--color-muted);
   box-shadow: none;
-  border-radius: 0;
-  padding: 0.75rem 0.25rem;
-  margin-right: 1.5rem;
+  border-radius: 9px;
+  padding: 0.6rem 1.1rem;
   min-height: auto;
-  border-bottom: 3px solid transparent;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
 .tab-bar button:hover:not(:disabled) {
-  background: transparent;
-  color: var(--color-primary-dark);
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
 }
 
 .tab-bar button.active {
+  background: var(--color-surface);
   color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
 .city-picker-page {

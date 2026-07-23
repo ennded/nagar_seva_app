@@ -41,6 +41,9 @@ export type EmergencyContactCategory = (typeof EMERGENCY_CONTACT_CATEGORIES)[num
 export const KYC_STATUSES = ['pending', 'verified', 'rejected'] as const;
 export type KycStatus = (typeof KYC_STATUSES)[number];
 
+export const REQUEST_PRIORITIES = ['low', 'medium', 'high'] as const;
+export type RequestPriority = (typeof REQUEST_PRIORITIES)[number];
+
 // Legal status transitions per request type, used by core-service's request.service.ts
 // to centrally validate every status change instead of scattering checks per resolver.
 export const COMPLAINT_TRANSITIONS: Record<RequestStatus, RequestStatus[]> = {

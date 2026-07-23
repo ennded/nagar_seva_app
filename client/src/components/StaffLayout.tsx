@@ -3,6 +3,7 @@ import { LogOut, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../features/auth/AuthContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { StaffShellFrame } from './StaffShellFrame';
 
 export interface StaffNavItem {
   to: string;
@@ -23,7 +24,7 @@ export function StaffLayout({ navItems, roleLabel }: { navItems: StaffNavItem[];
   }
 
   return (
-    <div className="admin-shell">
+    <StaffShellFrame>
       <aside className="admin-sidebar">
         <div className="admin-sidebar-brand">{t('common.appName')}</div>
         <div className="admin-sidebar-role">{roleLabel}</div>
@@ -57,6 +58,6 @@ export function StaffLayout({ navItems, roleLabel }: { navItems: StaffNavItem[];
           <Outlet />
         </main>
       </div>
-    </div>
+    </StaffShellFrame>
   );
 }

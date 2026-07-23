@@ -52,6 +52,12 @@ export const typeDefs = gql`
     REJECTED
   }
 
+  enum RequestPriority {
+    LOW
+    MEDIUM
+    HIGH
+  }
+
   type City {
     id: ID!
     name: String!
@@ -127,6 +133,7 @@ export const typeDefs = gql`
     department: Department
     assignedOfficer: User
     status: RequestStatus!
+    priority: RequestPriority!
     statusHistory: [StatusEvent!]!
     adminReviewNote: String
     createdAt: String!
@@ -141,6 +148,7 @@ export const typeDefs = gql`
     department: Department
     assignedOfficer: User
     status: RequestStatus!
+    priority: RequestPriority!
     statusHistory: [StatusEvent!]!
     adminReviewNote: String
     createdAt: String!
@@ -162,6 +170,7 @@ export const typeDefs = gql`
     department: Department
     assignedOfficer: User
     status: RequestStatus!
+    priority: RequestPriority!
     statusHistory: [StatusEvent!]!
     adminReviewNote: String
     createdAt: String!
@@ -196,11 +205,17 @@ export const typeDefs = gql`
     count: Int!
   }
 
+  type CategoryCount {
+    category: String!
+    count: Int!
+  }
+
   type DashboardStats {
     totalRequests: Int!
     byStatus: [StatusCount!]!
     byDepartment: [DepartmentCount!]!
     byWard: [WardCount!]!
+    byCategory: [CategoryCount!]!
   }
 
   type PublicDashboardStats {
@@ -215,6 +230,8 @@ export const typeDefs = gql`
     body: String!
     category: AnnouncementCategory!
     status: String!
+    ward: Ward
+    isEmergency: Boolean!
     publishedAt: String
     createdAt: String!
   }
@@ -301,6 +318,7 @@ export const typeDefs = gql`
     title: String!
     body: String!
     category: AnnouncementCategory
+    isEmergency: Boolean
   }
 
   input CreateEmergencyContactInput {
@@ -318,6 +336,7 @@ export const typeDefs = gql`
     announcements(citySlug: String!, category: AnnouncementCategory): [Announcement!]!
     emergencyContacts(citySlug: String!): [EmergencyContact!]!
     announcementsAdmin: [Announcement!]!
+    wardAnnouncements: [Announcement!]!
 
     me: User
 
@@ -364,10 +383,12 @@ export const typeDefs = gql`
     startWork(id: ID!): RequestUnion!
     completeComplaint(id: ID!, resolutionProofUrls: [String!]!, remarks: String): Complaint!
     scheduleAppointment(id: ID!, confirmedDate: String!, confirmedTimeSlot: String!): Appointment!
+    setRequestPriority(id: ID!, priority: RequestPriority!): RequestUnion!
     updateMyAvailability(slots: [AvailabilitySlotInput!]!): User!
 
     createAnnouncement(input: CreateAnnouncementInput!): Announcement!
     publishAnnouncement(id: ID!): Announcement!
+    deleteAnnouncement(id: ID!): Boolean!
 
     createEmergencyContact(input: CreateEmergencyContactInput!): EmergencyContact!
     updateEmergencyContact(id: ID!, input: CreateEmergencyContactInput!): EmergencyContact!

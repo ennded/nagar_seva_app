@@ -86,7 +86,7 @@ export const requestResolvers = {
 
     dashboardStats: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
       const { city } = requireRole(ctx, ['nagaradhyaksh', 'admin']);
-      const [totalRequests, byStatusRaw, byDepartmentRaw, byWardRaw] = await Promise.all([
+      const [totalRequests, byStatusRaw, byDepartmentRaw, byWardRaw, byCategoryRaw] = await Promise.all([
         RequestModel.countDocuments({ city }),
         RequestModel.aggregate([{ $match: { city } }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
         RequestModel.aggregate([
@@ -94,6 +94,10 @@ export const requestResolvers = {
           { $group: { _id: '$department', count: { $sum: 1 } } },
         ]),
         RequestModel.aggregate([{ $match: { city } }, { $group: { _id: '$ward', count: { $sum: 1 } } }]),
+        RequestModel.aggregate([
+          { $match: { city, type: 'complaint' } },
+          { $group: { _id: '$category', count: { $sum: 1 } } },
+        ]),
       ]);
       const [departments, wards] = await Promise.all([
         DepartmentModel.find({ _id: { $in: byDepartmentRaw.map((d) => d._id) } }),
@@ -110,6 +114,7 @@ export const requestResolvers = {
           ward: wards.find((wd) => String(wd._id) === String(w._id)),
           count: w.count,
         })),
+        byCategory: byCategoryRaw.map((c) => ({ category: c._id, count: c.count })),
       };
     },
   },
@@ -185,6 +190,13 @@ export const requestResolvers = {
         .populate('ward')
         .populate('department');
       return mapUser(updated);
+    },
+
+    setRequestPriority: async (_: unknown, { id, priority }: { id: string; priority: string }, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const doc = await RequestModel.findOneAndUpdate({ _id: id, city }, { priority: priority.toLowerCase() }, { new: true });
+      if (!doc) notFound('Request not found');
+      return mapRequest(await applyPopulate(RequestModel.findById(doc!._id)));
     },
   },
 

@@ -5,10 +5,18 @@ import { useTranslation } from 'react-i18next';
 import { REQUEST_DETAIL } from '../../graphql/queries/request.queries';
 import { DEPARTMENTS_BY_CITY } from '../../graphql/queries/public.queries';
 import { OFFICERS_BY_DEPARTMENT } from '../../graphql/queries/admin.queries';
-import { ASSIGN_REQUEST, REVIEW_AND_CLOSE, VERIFY_REQUEST } from '../../graphql/mutations/admin.mutations';
-import type { DepartmentRef, RequestUnion, UserFields } from '../../graphql/types';
+import {
+  ASSIGN_REQUEST,
+  REVIEW_AND_CLOSE,
+  SET_REQUEST_PRIORITY,
+  VERIFY_REQUEST,
+} from '../../graphql/mutations/admin.mutations';
+import type { DepartmentRef, RequestPriority, RequestUnion, UserFields } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { PriorityBadge } from '../../components/PriorityBadge';
 import { useAuth } from '../auth/AuthContext';
+
+const PRIORITIES: RequestPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
 
 export function AdminRequestDetailPage() {
   const { t } = useTranslation();
@@ -21,8 +29,8 @@ export function AdminRequestDetailPage() {
   });
 
   const [note, setNote] = useState('');
+  const [assignPanel, setAssignPanel] = useState<'department' | 'officer' | null>(null);
   const [departmentId, setDepartmentId] = useState('');
-  const [officerId, setOfficerId] = useState('');
 
   const { data: deptData } = useQuery<{ departmentsByCity: DepartmentRef[] }>(DEPARTMENTS_BY_CITY, {
     variables: { citySlug },
@@ -35,6 +43,7 @@ export function AdminRequestDetailPage() {
   const [verifyRequest, { loading: verifying }] = useMutation(VERIFY_REQUEST);
   const [assignRequest, { loading: assigning }] = useMutation(ASSIGN_REQUEST);
   const [reviewAndClose, { loading: closing }] = useMutation(REVIEW_AND_CLOSE);
+  const [setRequestPriority] = useMutation(SET_REQUEST_PRIORITY);
 
   if (loading) return <p>{t('common.loading')}</p>;
   if (error) return <p className="form-error">{error.message}</p>;
@@ -48,10 +57,10 @@ export function AdminRequestDetailPage() {
     refetch();
   }
 
-  async function handleAssign() {
+  async function handleAssignOfficer(officerId: string) {
     await assignRequest({ variables: { id, departmentId, officerId } });
+    setAssignPanel(null);
     setDepartmentId('');
-    setOfficerId('');
     refetch();
   }
 
@@ -61,159 +70,224 @@ export function AdminRequestDetailPage() {
     refetch();
   }
 
+  async function handlePriority(priority: RequestPriority) {
+    await setRequestPriority({ variables: { id, priority } });
+    refetch();
+  }
+
   return (
     <div>
       <div className="page-header">
         <h1>{r.__typename === 'Complaint' ? r.title : r.purpose}</h1>
-        <StatusBadge status={r.status} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <StatusBadge status={r.status} />
+          <PriorityBadge priority={r.priority} />
+        </div>
       </div>
 
-      <div className="admin-panel">
-        <p>
-          <strong>{t('admin.requests.citizen')}:</strong> {r.citizen.name} ({r.citizen.mobile})
-        </p>
-        <p>
-          <strong>{t('admin.requests.ward')}:</strong> {r.ward.name}
-        </p>
-        {r.__typename === 'Complaint' ? (
-          <>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="admin-panel">
             <p>
-              <strong>{t('citizen.category')}:</strong> {r.category}
+              <strong>{t('admin.requests.citizen')}:</strong> {r.citizen.name} ({r.citizen.mobile})
             </p>
             <p>
-              <strong>{t('citizen.description')}:</strong> {r.description}
+              <strong>{t('admin.requests.ward')}:</strong> {r.ward.name}
             </p>
-            <p>
-              <strong>{t('citizen.address')}:</strong> {r.address}
-            </p>
-            {r.photos.length > 0 && (
+            {r.__typename === 'Complaint' ? (
+              <>
+                <p>
+                  <strong>{t('citizen.category')}:</strong> {r.category}
+                </p>
+                <p>
+                  <strong>{t('citizen.description')}:</strong> {r.description}
+                </p>
+                <p>
+                  <strong>{t('citizen.address')}:</strong> {r.address}
+                </p>
+              </>
+            ) : (
+              <>
+                {r.department && (
+                  <p>
+                    <strong>{t('citizen.department')}:</strong> {r.department.name}
+                  </p>
+                )}
+                {r.remarks && (
+                  <p>
+                    <strong>{t('citizen.remarks')}:</strong> {r.remarks}
+                  </p>
+                )}
+                {r.confirmedDate && (
+                  <p>
+                    <strong>Confirmed:</strong> {new Date(r.confirmedDate).toLocaleDateString()} ({r.confirmedTimeSlot})
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+
+          {r.__typename === 'Complaint' && r.photos.length > 0 && (
+            <div className="admin-panel">
+              <h2>{t('citizen.photos')}</h2>
               <div className="photo-preview-list">
                 {r.photos.map((p) => (
                   <img key={p.url} src={p.url} alt="" />
                 ))}
               </div>
-            )}
-            {r.resolutionRemarks && (
-              <p>
-                <strong>{t('citizen.resolutionRemarks')}:</strong> {r.resolutionRemarks}
-              </p>
-            )}
-            {r.resolutionProof.length > 0 && (
-              <div className="photo-preview-list">
-                {r.resolutionProof.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
-                ))}
+            </div>
+          )}
+
+          {r.__typename === 'Complaint' && (r.resolutionRemarks || r.resolutionProof.length > 0) && (
+            <div className="admin-panel">
+              {r.resolutionRemarks && (
+                <p>
+                  <strong>{t('citizen.resolutionRemarks')}:</strong> {r.resolutionRemarks}
+                </p>
+              )}
+              {r.resolutionProof.length > 0 && (
+                <div className="photo-preview-list">
+                  {r.resolutionProof.map((p) => (
+                    <img key={p.url} src={p.url} alt="" />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {r.status === 'REGISTERED' && (
+            <div className="admin-panel">
+              <h2>{t('admin.requests.approve')}</h2>
+              <label>
+                {t('admin.requests.note')}
+                <textarea value={note} onChange={(e) => setNote(e.target.value)} />
+              </label>
+              <div className="action-row">
+                <button type="button" className="btn-success" onClick={() => handleVerify(true)} disabled={verifying}>
+                  {t('admin.requests.approve')}
+                </button>
+                <button type="button" className="btn-danger" onClick={() => handleVerify(false)} disabled={verifying}>
+                  {t('admin.requests.reject')}
+                </button>
               </div>
-            )}
-          </>
-        ) : (
-          <>
-            {r.department && (
-              <p>
-                <strong>{t('citizen.department')}:</strong> {r.department.name}
-              </p>
-            )}
-            {r.remarks && (
-              <p>
-                <strong>{t('citizen.remarks')}:</strong> {r.remarks}
-              </p>
-            )}
-            {r.confirmedDate && (
-              <p>
-                <strong>Confirmed:</strong> {new Date(r.confirmedDate).toLocaleDateString()} ({r.confirmedTimeSlot})
-              </p>
-            )}
-          </>
-        )}
-      </div>
+            </div>
+          )}
 
-      {r.status === 'REGISTERED' && (
-        <div className="admin-panel">
-          <h2>{t('admin.requests.approve')}</h2>
-          <label>
-            {t('admin.requests.note')}
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} />
-          </label>
-          <div className="action-row">
-            <button type="button" onClick={() => handleVerify(true)} disabled={verifying}>
-              {t('admin.requests.approve')}
-            </button>
-            <button type="button" className="btn-danger" onClick={() => handleVerify(false)} disabled={verifying}>
-              {t('admin.requests.reject')}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {r.status === 'VERIFIED' && (
-        <div className="admin-panel">
-          <h2>{t('admin.requests.assign')}</h2>
-          <label>
-            {t('admin.requests.selectDepartment')}
-            <select
-              value={departmentId}
-              onChange={(e) => {
-                setDepartmentId(e.target.value);
-                setOfficerId('');
-              }}
-            >
-              <option value="" disabled>
-                {t('admin.requests.selectDepartment')}
-              </option>
-              {deptData?.departmentsByCity.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
+          <div className="admin-panel">
+            <h3>{t('citizen.statusHistory')}</h3>
+            <ul className="status-history">
+              {r.statusHistory.map((event, i) => (
+                <li key={i}>
+                  <StatusBadge status={event.status} /> — {new Date(event.changedAt).toLocaleString()}
+                  {event.changedBy && ` (${event.changedBy.name})`}
+                  {event.note && <p>{event.note}</p>}
+                </li>
               ))}
-            </select>
-          </label>
-          <label>
-            {t('admin.requests.selectOfficer')}
-            <select value={officerId} onChange={(e) => setOfficerId(e.target.value)} disabled={!departmentId}>
-              <option value="" disabled>
-                {t('admin.requests.selectOfficer')}
-              </option>
-              {officersData?.officersByDepartment.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.name}
-                </option>
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {r.status === 'VERIFIED' && (
+            <div className="admin-panel">
+              <h2>{t('admin.requests.assign')}</h2>
+              <p style={{ fontSize: 14, color: 'var(--color-muted)' }}>
+                {r.department?.name ?? t('admin.requests.selectDepartment')} · {r.assignedOfficer?.name ?? '—'}
+              </p>
+              <div className="action-row">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setAssignPanel(assignPanel === 'department' ? null : 'department')}
+                >
+                  {t('admin.requests.selectDepartment')}
+                </button>
+              </div>
+              {assignPanel === 'department' && (
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {deptData?.departmentsByCity.map((d) => (
+                    <div
+                      key={d.id}
+                      onClick={() => {
+                        setDepartmentId(d.id);
+                        setAssignPanel('officer');
+                      }}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        padding: '10px 12px',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 10,
+                        cursor: 'pointer',
+                        fontSize: 13.5,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {d.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {assignPanel === 'officer' && (
+                <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {officersData?.officersByDepartment.length === 0 && (
+                    <p style={{ fontSize: 13.5, color: 'var(--color-muted)' }}>No officers in this department.</p>
+                  )}
+                  {officersData?.officersByDepartment.map((o) => (
+                    <div
+                      key={o.id}
+                      onClick={() => handleAssignOfficer(o.id)}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        padding: '10px 12px',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 10,
+                        cursor: assigning ? 'not-allowed' : 'pointer',
+                        fontSize: 13.5,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {o.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="admin-panel">
+            <h2>Priority</h2>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {PRIORITIES.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={r.priority === p ? '' : 'btn-secondary'}
+                  style={{ flex: 1, fontSize: 13.5 }}
+                  onClick={() => handlePriority(p)}
+                >
+                  {p.charAt(0) + p.slice(1).toLowerCase()}
+                </button>
               ))}
-            </select>
-          </label>
-          <div className="action-row">
-            <button type="button" onClick={handleAssign} disabled={assigning || !departmentId || !officerId}>
-              {t('admin.requests.assign')}
-            </button>
+            </div>
           </div>
-        </div>
-      )}
 
-      {(r.status === 'COMPLETED' || r.status === 'SCHEDULED') && (
-        <div className="admin-panel">
-          <h2>{t('admin.requests.reviewClose')}</h2>
-          <label>
-            {t('admin.requests.note')}
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} />
-          </label>
-          <div className="action-row">
-            <button type="button" onClick={handleClose} disabled={closing}>
-              {t('admin.requests.reviewClose')}
-            </button>
-          </div>
+          {(r.status === 'COMPLETED' || r.status === 'SCHEDULED') && (
+            <div className="admin-panel">
+              <h2>{t('admin.requests.reviewClose')}</h2>
+              <label>
+                {t('admin.requests.note')}
+                <textarea value={note} onChange={(e) => setNote(e.target.value)} />
+              </label>
+              <div className="action-row">
+                <button type="button" className="btn-success" onClick={handleClose} disabled={closing}>
+                  {t('admin.requests.reviewClose')}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-
-      <div className="admin-panel">
-        <h3>{t('citizen.statusHistory')}</h3>
-        <ul className="status-history">
-          {r.statusHistory.map((event, i) => (
-            <li key={i}>
-              <StatusBadge status={event.status} /> — {new Date(event.changedAt).toLocaleString()}
-              {event.changedBy && ` (${event.changedBy.name})`}
-              {event.note && <p>{event.note}</p>}
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

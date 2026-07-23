@@ -1,5 +1,5 @@
 import { Schema, model, type InferSchemaType, Types } from 'mongoose';
-import { REQUEST_TYPES, REQUEST_STATUSES } from 'shared';
+import { REQUEST_TYPES, REQUEST_STATUSES, REQUEST_PRIORITIES } from 'shared';
 
 const photoSchema = new Schema(
   {
@@ -42,6 +42,7 @@ const requestSchema = new Schema(
     department: { type: Schema.Types.ObjectId, ref: 'Department' },
     assignedOfficer: { type: Schema.Types.ObjectId, ref: 'User' },
     status: { type: String, enum: REQUEST_STATUSES, default: 'REGISTERED', index: true },
+    priority: { type: String, enum: REQUEST_PRIORITIES, default: 'medium' },
     statusHistory: { type: [statusEventSchema], default: [] },
     adminReviewNote: { type: String },
     closedAt: { type: Date },

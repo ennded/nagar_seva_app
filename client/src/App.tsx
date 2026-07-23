@@ -34,6 +34,7 @@ import { MonitorRequestDetailPage } from './features/monitor/MonitorRequestDetai
 import { VehiclesPage } from './features/admin/VehiclesPage';
 import { GarbageTrackingPage } from './features/citizen/GarbageTrackingPage';
 import { WardGarbagePage } from './features/nagarsevak/WardGarbagePage';
+import { WardAnnouncementsPage } from './features/nagarsevak/WardAnnouncementsPage';
 import { DriverLayout } from './features/driver/DriverLayout';
 import { DriverDashboardPage } from './features/driver/DriverDashboardPage';
 
@@ -87,6 +88,7 @@ export function App() {
         <Route element={<NagarsevakLayout />}>
           <Route index element={<WardRequestsPage />} />
           <Route path="requests/:id" element={<MonitorRequestDetailPage />} />
+          <Route path="announcements" element={<WardAnnouncementsPage />} />
           <Route path="garbage" element={<WardGarbagePage />} />
         </Route>
       </Route>
