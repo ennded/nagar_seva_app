@@ -6,6 +6,7 @@ import { SUBMIT_COMPLAINT } from '../../graphql/mutations/request.mutations';
 import { MY_REQUESTS } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { uploadComplaintPhoto } from '../../apollo/upload';
+import { FilePreview } from '../../components/FilePreview';
 
 const CATEGORIES = ['garbage', 'roads', 'water_supply', 'streetlight', 'drainage', 'other'];
 
@@ -77,7 +78,12 @@ export function SubmitComplaintPage() {
         </label>
         <label>
           {t('citizen.photos')}
-          <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFileChange} />
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,application/pdf,video/mp4,video/webm,video/quicktime"
+            multiple
+            onChange={handleFileChange}
+          />
         </label>
         {uploading && <p>{t('common.loading')}</p>}
         {uploadError && <p className="form-error">{uploadError}</p>}
@@ -85,7 +91,7 @@ export function SubmitComplaintPage() {
           <ul className="photo-preview-list">
             {photoUrls.map((url) => (
               <li key={url}>
-                <img src={url} alt="" />
+                <FilePreview url={url} />
               </li>
             ))}
           </ul>

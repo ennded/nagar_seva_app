@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { MUNICIPALITY_REQUESTS } from '../../graphql/queries/monitor.queries';
 import type { RequestPage, RequestStatus, RequestType } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { PriorityBadge } from '../../components/PriorityBadge';
 
 const STATUSES: RequestStatus[] = [
   'REGISTERED',
@@ -88,6 +89,7 @@ export function MunicipalityRequestsPage() {
                 <th>Status</th>
                 <th>{t('admin.requests.citizen')}</th>
                 <th>{t('admin.requests.ward')}</th>
+                <th>Priority</th>
                 <th>{t('admin.requests.department')}</th>
                 <th></th>
               </tr>
@@ -101,9 +103,12 @@ export function MunicipalityRequestsPage() {
                   </td>
                   <td>{r.citizen.name}</td>
                   <td>{r.ward.name}</td>
+                  <td>
+                    <PriorityBadge priority={r.priority} />
+                  </td>
                   <td>{r.department?.name ?? '—'}</td>
                   <td>
-                    <Link to={`/${citySlug}/nagaradhyaksh/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
+                    <Link to={`/${citySlug}/nagaradhyaksh/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
                   </td>
                 </tr>
               ))}

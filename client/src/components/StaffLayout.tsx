@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { LogOut, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../features/auth/AuthContext';
@@ -16,17 +16,19 @@ export function StaffLayout({ navItems, roleLabel }: { navItems: StaffNavItem[];
   const { t } = useTranslation();
   const { session, logout } = useAuth();
   const navigate = useNavigate();
-  useParams<{ citySlug: string }>();
+  const { citySlug } = useParams<{ citySlug: string }>();
 
   function handleLogout() {
     logout();
-    navigate('/login');
+    navigate(`/${citySlug}`);
   }
 
   return (
     <StaffShellFrame>
       <aside className="admin-sidebar">
-        <div className="admin-sidebar-brand">{t('common.appName')}</div>
+        <Link to={`/${citySlug}`} className="admin-sidebar-brand">
+          {t('common.appName')}
+        </Link>
         <div className="admin-sidebar-role">{roleLabel}</div>
         <nav className="admin-nav" aria-label={roleLabel}>
           {navItems.map(({ to, end, icon: Icon, label }) => (

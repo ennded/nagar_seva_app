@@ -7,6 +7,7 @@ import { COMPLETE_COMPLAINT, SCHEDULE_APPOINTMENT, START_WORK } from '../../grap
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { FilePreview } from '../../components/FilePreview';
 import { uploadComplaintPhoto } from '../../apollo/upload';
 
 const TIME_SLOTS = ['9:00 AM - 11:00 AM', '11:00 AM - 1:00 PM', '2:00 PM - 4:00 PM', '4:00 PM - 6:00 PM'];
@@ -25,6 +26,7 @@ export function OfficerRequestDetailPage() {
 
   const [proofUrls, setProofUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [remarks, setRemarks] = useState('');
   const [confirmedDate, setConfirmedDate] = useState('');
   const [confirmedTimeSlot, setConfirmedTimeSlot] = useState('');
@@ -39,9 +41,12 @@ export function OfficerRequestDetailPage() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     setUploading(true);
+    setUploadError(null);
     try {
       const urls = await Promise.all(Array.from(files).map(uploadComplaintPhoto));
       setProofUrls((prev) => [...prev, ...urls]);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed');
     } finally {
       setUploading(false);
     }
@@ -97,7 +102,7 @@ export function OfficerRequestDetailPage() {
                 {r.photos.length > 0 && (
                   <div className="photo-preview-list">
                     {r.photos.map((p) => (
-                      <img key={p.url} src={p.url} alt="" />
+                      <FilePreview key={p.url} url={p.url} />
                     ))}
                   </div>
                 )}
@@ -142,13 +147,19 @@ export function OfficerRequestDetailPage() {
               <h2>{t('officer.complete')}</h2>
               <label>
                 {t('officer.resolutionProof')}
-                <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFileChange} />
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,application/pdf,video/mp4,video/webm,video/quicktime"
+                  multiple
+                  onChange={handleFileChange}
+                />
               </label>
               {uploading && <p>{t('common.loading')}</p>}
+              {uploadError && <p className="form-error">{uploadError}</p>}
               {proofUrls.length > 0 && (
                 <div className="photo-preview-list">
                   {proofUrls.map((url) => (
-                    <img key={url} src={url} alt="" />
+                    <FilePreview key={url} url={url} />
                   ))}
                 </div>
               )}

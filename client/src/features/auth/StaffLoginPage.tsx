@@ -1,10 +1,12 @@
 import { useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { Users, FileText, Bell, BarChart3, Trash2, type LucideIcon } from 'lucide-react';
 import { REQUEST_OTP, VERIFY_OTP } from '../../graphql/mutations/auth.mutations';
 import type { AuthPayload } from '../../graphql/types';
 import { useAuth } from './AuthContext';
+import { AuthCard } from '../../components/AuthCard';
 
 const ROLE_HOME: Record<string, string> = {
   ADMIN: 'admin',
@@ -14,13 +16,26 @@ const ROLE_HOME: Record<string, string> = {
   DRIVER: 'driver',
 };
 
+const ROLE_META: Record<string, { Icon: LucideIcon; color: string }> = {
+  admin: { Icon: Users, color: '#1E8A5F' },
+  officer: { Icon: FileText, color: '#6B46C1' },
+  nagarsevak: { Icon: Bell, color: '#D97706' },
+  nagaradhyaksh: { Icon: BarChart3, color: '#DC2626' },
+  driver: { Icon: Trash2, color: '#0891B2' },
+};
+
 export function StaffLoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { role } = useParams<{ role?: string }>();
   const [mobile, setMobile] = useState('');
   const [code, setCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+
+  const roleKey = role?.toLowerCase() ?? '';
+  const meta = ROLE_META[roleKey];
+  const title = role ? (t(`auth.roleLogin.${role.toUpperCase()}`, { defaultValue: t('auth.staffLogin') }) as string) : t('auth.staffLogin');
 
   const [requestOtp, { loading: requesting, error: requestError }] = useMutation<{ requestOtp: boolean }>(
     REQUEST_OTP,
@@ -46,8 +61,7 @@ export function StaffLoginPage() {
   }
 
   return (
-    <div className="auth-page">
-      <h1>{t('auth.staffLogin')}</h1>
+    <AuthCard icon={meta?.Icon ?? Users} iconColor={meta?.color} title={title} subtitle={t('auth.staffLoginSubtitle')}>
       {!otpSent ? (
         <form onSubmit={handleRequestOtp}>
           <label>
@@ -72,6 +86,6 @@ export function StaffLoginPage() {
           </button>
         </form>
       )}
-    </div>
+    </AuthCard>
   );
 }

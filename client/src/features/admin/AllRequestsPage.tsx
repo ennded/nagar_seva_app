@@ -108,7 +108,7 @@ export function AllRequestsPage() {
                     <StatusBadge status={r.status} />
                   </td>
                   <td>
-                    <Link to={`/${citySlug}/admin/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
+                    <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
                   </td>
                 </tr>
               ))}

@@ -4,15 +4,23 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { storageProvider } from '../storage/index.js';
 
-const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp']);
-const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+const ALLOWED_MIME = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'application/pdf',
+  'video/mp4',
+  'video/webm',
+  'video/quicktime',
+]);
+const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB — raised from 5MB to fit short complaint videos
 
 export const uploadMiddleware = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_SIZE_BYTES },
   fileFilter: (_req, file, cb) => {
     if (!ALLOWED_MIME.has(file.mimetype)) {
-      cb(new Error('Only JPEG, PNG, or WEBP images are allowed'));
+      cb(new Error('Only JPEG, PNG, WEBP, PDF, MP4, WEBM, or MOV files are allowed'));
       return;
     }
     cb(null, true);

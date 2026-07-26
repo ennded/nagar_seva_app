@@ -368,10 +368,15 @@ export const typeDefs = gql`
     verifyOtp(mobile: String!, code: String!): AuthPayload!
 
     createWard(name: String!, code: String!): Ward!
+    updateWard(id: ID!, name: String, code: String): Ward!
+    deleteWard(id: ID!): Boolean!
     createDepartment(name: String!, description: String): Department!
+    updateDepartment(id: ID!, name: String, description: String): Department!
+    deleteDepartment(id: ID!): Boolean!
     createStaffUser(input: CreateStaffUserInput!): User!
     updateStaffUser(id: ID!, input: UpdateStaffUserInput!): User!
     setStaffActive(id: ID!, isActive: Boolean!): User!
+    deleteStaffUser(id: ID!): Boolean!
 
     submitComplaint(input: SubmitComplaintInput!): Complaint!
     submitAppointment(input: SubmitAppointmentInput!): Appointment!

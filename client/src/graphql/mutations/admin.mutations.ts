@@ -11,6 +11,22 @@ export const CREATE_WARD = gql`
   }
 `;
 
+export const UPDATE_WARD = gql`
+  mutation UpdateWard($id: ID!, $name: String, $code: String) {
+    updateWard(id: $id, name: $name, code: $code) {
+      id
+      name
+      code
+    }
+  }
+`;
+
+export const DELETE_WARD = gql`
+  mutation DeleteWard($id: ID!) {
+    deleteWard(id: $id)
+  }
+`;
+
 export const CREATE_DEPARTMENT = gql`
   mutation CreateDepartment($name: String!, $description: String) {
     createDepartment(name: $name, description: $description) {
@@ -18,6 +34,22 @@ export const CREATE_DEPARTMENT = gql`
       name
       description
     }
+  }
+`;
+
+export const UPDATE_DEPARTMENT = gql`
+  mutation UpdateDepartment($id: ID!, $name: String, $description: String) {
+    updateDepartment(id: $id, name: $name, description: $description) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+export const DELETE_DEPARTMENT = gql`
+  mutation DeleteDepartment($id: ID!) {
+    deleteDepartment(id: $id)
   }
 `;
 
@@ -45,6 +77,12 @@ export const SET_STAFF_ACTIVE = gql`
       id
       isActive
     }
+  }
+`;
+
+export const DELETE_STAFF_USER = gql`
+  mutation DeleteStaffUser($id: ID!) {
+    deleteStaffUser(id: $id)
   }
 `;
 
@@ -118,6 +156,7 @@ export const CREATE_ANNOUNCEMENT = gql`
       id
       title
       status
+      isEmergency
     }
   }
 `;

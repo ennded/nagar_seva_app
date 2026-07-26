@@ -41,7 +41,7 @@ export function PendingRequestsPage() {
                   <td>{r.ward.name}</td>
                   <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                   <td>
-                    <Link to={`/${citySlug}/admin/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
+                    <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
                   </td>
                 </tr>
               ))}

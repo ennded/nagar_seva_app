@@ -20,6 +20,9 @@
     "mobile": "Mobile Number",
     "ward": "Ward",
     "selectWard": "Select your ward",
+    "aadharDoc": "Aadhar Card (upload)",
+    "voterIdDoc": "Voter ID (upload)",
+    "docUploaded": "Document uploaded.",
     "requestOtp": "Send OTP",
     "otpCode": "Enter OTP",
     "verifyOtp": "Verify OTP",
@@ -29,7 +32,17 @@
     "registerHere": "Register here",
     "loginHere": "Login here",
     "isStaff": "Are you a city staff member?",
-    "loginAsStaff": "Login with your mobile number instead"
+    "loginAsStaff": "Login with your mobile number instead",
+    "citizenLoginSubtitle": "Login with your registered email",
+    "staffLoginSubtitle": "Your Admin has registered your mobile number — login with an OTP.",
+    "registerSubtitle": "Register with your details to submit and track complaints.",
+    "roleLogin": {
+      "ADMIN": "Admin Login",
+      "OFFICER": "Officer Login",
+      "NAGARSEVAK": "Nagarsevak Login",
+      "NAGARADHYAKSH": "Nagaradhyaksh Login",
+      "DRIVER": "Driver Login"
+    }
   },
   "landing": {
     "announcements": "Announcements",
@@ -52,7 +65,7 @@
     "category": "Category",
     "description": "Description",
     "address": "Address",
-    "photos": "Photos",
+    "photos": "Photos / Videos",
     "purpose": "Purpose",
     "department": "Department",
     "selectDepartment": "Select a department",
@@ -110,7 +123,10 @@
       "nagarsevak": "Nagarsevak",
       "none": "Not assigned",
       "empty": "No wards added yet.",
-      "created": "Ward added successfully."
+      "created": "Ward added successfully.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this ward? This can't be undone."
     },
     "departments": {
       "title": "Departments",
@@ -118,7 +134,10 @@
       "name": "Department Name",
       "description": "Description (optional)",
       "empty": "No departments added yet.",
-      "created": "Department added successfully."
+      "created": "Department added successfully.",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirmDelete": "Delete this department? This can't be undone."
     },
     "staff": {
       "title": "Staff",
@@ -132,7 +151,9 @@
       "active": "Active",
       "inactive": "Inactive",
       "activate": "Activate",
-      "deactivate": "Deactivate"
+      "deactivate": "Deactivate",
+      "delete": "Delete",
+      "confirmDelete": "Permanently delete this staff member? This can't be undone."
     },
     "requests": {
       "pendingTitle": "Pending Verification",

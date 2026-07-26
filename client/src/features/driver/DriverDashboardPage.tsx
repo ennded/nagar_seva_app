@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { Truck, MapPin, Radio, Navigation2 } from 'lucide-react';
 import { MY_VEHICLE } from '../../graphql/queries/vehicle.queries';
 import { END_DUTY, START_DUTY, UPDATE_VEHICLE_LOCATION } from '../../graphql/mutations/vehicle.mutations';
 import type { Vehicle } from '../../graphql/types';
@@ -54,7 +55,9 @@ export function DriverDashboardPage() {
     return (
       <div>
         <h1>{t('role.DRIVER')}</h1>
-        <p>{t('garbage.noVehicleAssigned')}</p>
+        <div className="admin-panel">
+          <p>{t('garbage.noVehicleAssigned')}</p>
+        </div>
       </div>
     );
   }
@@ -68,18 +71,45 @@ export function DriverDashboardPage() {
     refetch();
   }
 
+  const tiles = [
+    { Icon: Truck, value: vehicle.registrationNumber, label: t('admin.vehicles.registrationNumber') },
+    { Icon: MapPin, value: vehicle.ward.name, label: t('auth.ward') },
+    {
+      Icon: Radio,
+      value: vehicle.onDuty ? t('admin.vehicles.onDuty') : t('admin.vehicles.offDuty'),
+      label: t('admin.vehicles.status'),
+    },
+  ];
+
   return (
     <div>
-      <h1>{vehicle.registrationNumber}</h1>
+      <h1>{t('role.DRIVER')}</h1>
+
+      <section className="stats-row">
+        {tiles.map((tile) => (
+          <div key={tile.label} className="stat-tile">
+            <div className="stat-tile-icon">
+              <tile.Icon size={20} color="#0B3D66" />
+            </div>
+            <strong>{tile.value}</strong>
+            <span>{tile.label}</span>
+          </div>
+        ))}
+      </section>
+
       <div className="admin-panel">
-        <p>
-          <strong>{t('auth.ward')}:</strong> {vehicle.ward.name}
-        </p>
-        <p>
-          <strong>{t('admin.vehicles.status')}:</strong>{' '}
-          {vehicle.onDuty ? t('admin.vehicles.onDuty') : t('admin.vehicles.offDuty')}
-        </p>
-        {vehicle.onDuty && !locationError && <p className="form-success">{t('garbage.sharingLocation')}</p>}
+        <h2>{t('garbage.title')}</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
+          <span className={`status-badge ${vehicle.onDuty ? 'status-completed' : 'status-registered'}`}>
+            {vehicle.onDuty ? t('admin.vehicles.onDuty') : t('admin.vehicles.offDuty')}
+          </span>
+          {vehicle.onDuty && !locationError && (
+            <span className="form-success" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Navigation2 size={14} />
+              {t('garbage.sharingLocation')}
+            </span>
+          )}
+        </div>
         {locationError && <p className="form-error">{locationError}</p>}
         <div className="action-row">
           <button type="button" onClick={handleToggleDuty} disabled={starting || ending}>

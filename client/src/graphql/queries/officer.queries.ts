@@ -8,7 +8,9 @@ export const MY_ASSIGNED_REQUESTS = gql`
         id
         type
         status
+        priority
         title
+        category
         createdAt
         citizen {
           name
@@ -21,6 +23,7 @@ export const MY_ASSIGNED_REQUESTS = gql`
         id
         type
         status
+        priority
         purpose
         createdAt
         citizen {

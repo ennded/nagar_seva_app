@@ -18,17 +18,25 @@ const authLink = setContext((_, { headers }) => {
 });
 
 // Any UNAUTHENTICATED error (expired/invalid JWT) means the stored session is dead —
-// clear it and bounce to that city's login so the app doesn't keep retrying with a bad token.
+// clear it and bounce to that city's home page so the app doesn't keep retrying with a bad token.
 const errorLink = onError(({ graphQLErrors }) => {
   const unauthenticated = graphQLErrors?.some((err) => err.extensions?.code === 'UNAUTHENTICATED');
   if (unauthenticated) {
     const citySlug = loadAuthSession()?.citySlug;
     clearAuthSession();
-    window.location.href = citySlug ? `/${citySlug}/login` : '/';
+    window.location.href = citySlug ? `/${citySlug}` : '/';
   }
 });
 
 export const apolloClient = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    // Without this, inline fragments on the RequestUnion union / RequestBase interface
+    // (`... on Complaint { ... }`) can't be matched during cache writes, so the cache
+    // silently keeps only __typename/id and drops every field inside the fragment.
+    possibleTypes: {
+      RequestUnion: ['Complaint', 'Appointment'],
+      RequestBase: ['Complaint', 'Appointment'],
+    },
+  }),
 });

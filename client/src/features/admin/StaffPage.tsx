@@ -3,7 +3,12 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { WARDS_BY_CITY, DEPARTMENTS_BY_CITY } from '../../graphql/queries/public.queries';
 import { STAFF_BY_CITY } from '../../graphql/queries/admin.queries';
-import { CREATE_STAFF_USER, SET_STAFF_ACTIVE, UPDATE_STAFF_USER } from '../../graphql/mutations/admin.mutations';
+import {
+  CREATE_STAFF_USER,
+  DELETE_STAFF_USER,
+  SET_STAFF_ACTIVE,
+  UPDATE_STAFF_USER,
+} from '../../graphql/mutations/admin.mutations';
 import type { DepartmentRef, Role, UserFields, WardRef } from '../../graphql/types';
 import { useAuth } from '../auth/AuthContext';
 
@@ -35,6 +40,15 @@ export function StaffPage() {
     refetchQueries: [{ query: STAFF_BY_CITY }],
   });
   const [setStaffActive] = useMutation(SET_STAFF_ACTIVE, { refetchQueries: [{ query: STAFF_BY_CITY }] });
+  const [deleteStaffUser, { error: deleteError }] = useMutation(DELETE_STAFF_USER, {
+    refetchQueries: [{ query: STAFF_BY_CITY }],
+  });
+
+  async function handleDelete(u: UserFields) {
+    if (window.confirm(t('admin.staff.confirmDelete'))) {
+      await deleteStaffUser({ variables: { id: u.id } });
+    }
+  }
 
   function resetForm() {
     setEditingId(null);
@@ -155,7 +169,9 @@ export function StaffPage() {
             )}
           </div>
         </form>
-        {(error || updateError) && <p className="form-error">{(error ?? updateError)!.message}</p>}
+        {(error || updateError || deleteError) && (
+          <p className="form-error">{(error ?? updateError ?? deleteError)!.message}</p>
+        )}
         {successMsg && <p className="form-success">{t('admin.staff.created')}</p>}
       </div>
 
@@ -196,6 +212,9 @@ export function StaffPage() {
                       onClick={() => setStaffActive({ variables: { id: u.id, isActive: !u.isActive } })}
                     >
                       {u.isActive ? t('admin.staff.deactivate') : t('admin.staff.activate')}
+                    </button>
+                    <button type="button" className="btn-danger" onClick={() => handleDelete(u)}>
+                      {t('admin.staff.delete')}
                     </button>
                   </td>
                 </tr>

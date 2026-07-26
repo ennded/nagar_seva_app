@@ -30,6 +30,7 @@ import { WardRequestsPage } from './features/nagarsevak/WardRequestsPage';
 import { NagaradhyakshLayout } from './features/nagaradhyaksh/NagaradhyakshLayout';
 import { NagaradhyakshOverviewPage } from './features/nagaradhyaksh/NagaradhyakshOverviewPage';
 import { MunicipalityRequestsPage } from './features/nagaradhyaksh/MunicipalityRequestsPage';
+import { CityAnnouncementsPage } from './features/nagaradhyaksh/CityAnnouncementsPage';
 import { MonitorRequestDetailPage } from './features/monitor/MonitorRequestDetailPage';
 import { VehiclesPage } from './features/admin/VehiclesPage';
 import { GarbageTrackingPage } from './features/citizen/GarbageTrackingPage';
@@ -49,6 +50,7 @@ export function App() {
         <Route path="/:citySlug/login" element={<LoginPage />} />
         <Route path="/:citySlug/register" element={<RegisterPage />} />
         <Route path="/:citySlug/staff-login" element={<StaffLoginPage />} />
+        <Route path="/:citySlug/staff-login/:role" element={<StaffLoginPage />} />
       </Route>
 
       <Route path="/:citySlug/citizen" element={<ProtectedRoute allowedRoles={['CITIZEN']} />}>
@@ -104,6 +106,7 @@ export function App() {
           <Route index element={<NagaradhyakshOverviewPage />} />
           <Route path="requests" element={<MunicipalityRequestsPage />} />
           <Route path="requests/:id" element={<MonitorRequestDetailPage />} />
+          <Route path="announcements" element={<CityAnnouncementsPage />} />
         </Route>
       </Route>
 

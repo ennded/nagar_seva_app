@@ -11,7 +11,7 @@ export function DashboardLayout() {
 
   function handleLogout() {
     logout();
-    navigate(`/${citySlug}/login`);
+    navigate(`/${citySlug}`);
   }
 
   return (

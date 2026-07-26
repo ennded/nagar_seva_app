@@ -25,7 +25,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout: () => {
         clearAuthSession();
         setSession(null);
-        apolloClient.clearStore();
+        // clearStore()/resetStore() cancel any in-flight query at the moment they run —
+        // including the page we're about to navigate to (e.g. the landing page's own
+        // CityBySlug query), which then reads as "not found" instead of just cancelled.
+        // cache.reset() clears the same data without that cancellation side effect.
+        apolloClient.cache.reset();
       },
     }),
     [session],

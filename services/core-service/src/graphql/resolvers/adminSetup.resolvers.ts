@@ -1,6 +1,7 @@
 import { WardModel } from '../../models/Ward.js';
 import { DepartmentModel } from '../../models/Department.js';
 import { UserModel } from '../../models/User.js';
+import { VehicleModel } from '../../models/Vehicle.js';
 import { requireRole, badInput } from '../../auth/authorize.js';
 import { mapWard, mapDepartment, mapUser, roleFromGQL } from '../serialize.js';
 import type { GraphQLContext } from '../../auth/context.js';
@@ -9,7 +10,11 @@ export const adminSetupResolvers = {
   Query: {
     staffByCity: async (_: unknown, { role }: { role?: string }, ctx: GraphQLContext) => {
       const { city } = requireRole(ctx, ['admin']);
-      const filter: Record<string, unknown> = role ? { city, role: roleFromGQL(role) } : { city, role: { $ne: 'citizen' } };
+      // Admin accounts aren't managed through this staff CRUD (not creatable here either) —
+      // exclude them so there's no self-deactivate/self-delete footgun sitting in the list.
+      const filter: Record<string, unknown> = role
+        ? { city, role: roleFromGQL(role) }
+        : { city, role: { $nin: ['citizen', 'admin'] } };
       const users = await UserModel.find(filter).sort({ role: 1, name: 1 }).populate('ward').populate('department');
       return users.map(mapUser);
     },
@@ -21,6 +26,32 @@ export const adminSetupResolvers = {
       return mapWard(ward);
     },
 
+    updateWard: async (
+      _: unknown,
+      { id, name, code }: { id: string; name?: string; code?: string },
+      ctx: GraphQLContext,
+    ) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const ward = await WardModel.findOne({ _id: id, city });
+      if (!ward) badInput('Ward not found');
+      if (name) ward!.name = name;
+      if (code) ward!.code = code;
+      await ward!.save();
+      return mapWard(ward);
+    },
+
+    deleteWard: async (_: unknown, { id }: { id: string }, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const ward = await WardModel.findOne({ _id: id, city });
+      if (!ward) badInput('Ward not found');
+      const usersInWard = await UserModel.countDocuments({ ward: id });
+      if (usersInWard > 0) badInput('Cannot delete a ward with staff or citizens still assigned to it');
+      const vehicleInWard = await VehicleModel.countDocuments({ ward: id });
+      if (vehicleInWard > 0) badInput('Cannot delete a ward with a garbage vehicle still assigned to it');
+      await WardModel.deleteOne({ _id: id });
+      return true;
+    },
+
     createDepartment: async (
       _: unknown,
       { name, description }: { name: string; description?: string },
@@ -29,6 +60,30 @@ export const adminSetupResolvers = {
       const { city } = requireRole(ctx, ['admin']);
       const department = await DepartmentModel.create({ city, name, description });
       return mapDepartment(department);
+    },
+
+    updateDepartment: async (
+      _: unknown,
+      { id, name, description }: { id: string; name?: string; description?: string },
+      ctx: GraphQLContext,
+    ) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const department = await DepartmentModel.findOne({ _id: id, city });
+      if (!department) badInput('Department not found');
+      if (name) department!.name = name;
+      if (description !== undefined) department!.description = description;
+      await department!.save();
+      return mapDepartment(department);
+    },
+
+    deleteDepartment: async (_: unknown, { id }: { id: string }, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const department = await DepartmentModel.findOne({ _id: id, city });
+      if (!department) badInput('Department not found');
+      const officersInDept = await UserModel.countDocuments({ department: id });
+      if (officersInDept > 0) badInput('Cannot delete a department with officers still assigned to it');
+      await DepartmentModel.deleteOne({ _id: id });
+      return true;
     },
 
     createStaffUser: async (_: unknown, { input }: { input: any }, ctx: GraphQLContext) => {
@@ -92,11 +147,30 @@ export const adminSetupResolvers = {
 
     setStaffActive: async (_: unknown, { id, isActive }: { id: string; isActive: boolean }, ctx: GraphQLContext) => {
       const { city } = requireRole(ctx, ['admin']);
+      const target = await UserModel.findOne({ _id: id, city });
+      if (!target) badInput('Staff member not found');
+      if (target!.role === 'admin') badInput('Admin accounts cannot be deactivated here');
       const user = await UserModel.findOneAndUpdate({ _id: id, city }, { isActive }, { new: true })
         .populate('ward')
         .populate('department');
       if (!user) badInput('Staff member not found');
       return mapUser(user);
+    },
+
+    deleteStaffUser: async (_: unknown, { id }: { id: string }, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const user = await UserModel.findOne({ _id: id, city });
+      if (!user) badInput('Staff member not found');
+      if (user!.role === 'citizen') badInput('Use citizen management for citizen accounts');
+      if (user!.role === 'admin') badInput('Admin accounts cannot be deleted here');
+
+      if (user!.role === 'nagarsevak' && user!.ward) {
+        await WardModel.findByIdAndUpdate(user!.ward, { $unset: { nagarsevak: 1 } });
+      }
+      await VehicleModel.updateMany({ driver: user!._id }, { $unset: { driver: 1 } });
+
+      await UserModel.deleteOne({ _id: id });
+      return true;
     },
   },
 };

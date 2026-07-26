@@ -68,7 +68,7 @@ export function AssignedRequestsPage() {
               </div>
               <PriorityBadge priority={r.priority} />
               <StatusBadge status={r.status} />
-              <Link to={`/${citySlug}/officer/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
+              <Link to={`/${citySlug}/officer/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
             </li>
           ))}
         </ul>

@@ -34,7 +34,7 @@ export function MyRequestsPage() {
               </span>
             </div>
             <StatusBadge status={r.status} />
-            <Link to={`/${citySlug}/citizen/requests/${r.id}`}>{t('citizen.viewDetails')}</Link>
+            <Link to={`/${citySlug}/citizen/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('citizen.viewDetails')}</Link>
           </li>
         ))}
       </ul>

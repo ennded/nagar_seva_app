@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { REQUEST_DETAIL } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { FilePreview } from '../../components/FilePreview';
 
 export function MonitorRequestDetailPage() {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ export function MonitorRequestDetailPage() {
             {r.photos.length > 0 && (
               <div className="photo-preview-list">
                 {r.photos.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
+                  <FilePreview key={p.url} url={p.url} />
                 ))}
               </div>
             )}
@@ -70,7 +71,7 @@ export function MonitorRequestDetailPage() {
             {r.resolutionProof.length > 0 && (
               <div className="photo-preview-list">
                 {r.resolutionProof.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
+                  <FilePreview key={p.url} url={p.url} />
                 ))}
               </div>
             )}

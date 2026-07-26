@@ -2,9 +2,11 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { User } from 'lucide-react';
 import { LOGIN } from '../../graphql/mutations/auth.mutations';
 import type { AuthPayload } from '../../graphql/types';
 import { useAuth } from './AuthContext';
+import { AuthCard } from '../../components/AuthCard';
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -26,8 +28,19 @@ export function LoginPage() {
   }
 
   return (
-    <div className="auth-page">
-      <h1>{t('auth.citizenLogin')}</h1>
+    <AuthCard
+      icon={User}
+      title={t('auth.citizenLogin')}
+      subtitle={t('auth.citizenLoginSubtitle')}
+      footer={
+        <>
+          <span>
+            {t('auth.noAccount')} <Link to={`/${citySlug}/register`}>{t('auth.registerHere')}</Link>
+          </span>
+          <Link to={`/${citySlug}/staff-login`}>{t('auth.loginAsStaff')}</Link>
+        </>
+      }
+    >
       <form onSubmit={handleSubmit}>
         <label>
           {t('auth.email')}
@@ -42,12 +55,6 @@ export function LoginPage() {
           {t('auth.login')}
         </button>
       </form>
-      <p>
-        {t('auth.noAccount')} <Link to={`/${citySlug}/register`}>{t('auth.registerHere')}</Link>
-      </p>
-      <p>
-        <Link to={`/${citySlug}/staff-login`}>{t('auth.loginAsStaff')}</Link>
-      </p>
-    </div>
+    </AuthCard>
   );
 }

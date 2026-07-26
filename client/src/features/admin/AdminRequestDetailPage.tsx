@@ -14,6 +14,7 @@ import {
 import type { DepartmentRef, RequestPriority, RequestUnion, UserFields } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { FilePreview } from '../../components/FilePreview';
 import { useAuth } from '../auth/AuthContext';
 
 const PRIORITIES: RequestPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
@@ -132,7 +133,7 @@ export function AdminRequestDetailPage() {
               <h2>{t('citizen.photos')}</h2>
               <div className="photo-preview-list">
                 {r.photos.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
+                  <FilePreview key={p.url} url={p.url} />
                 ))}
               </div>
             </div>
@@ -148,7 +149,7 @@ export function AdminRequestDetailPage() {
               {r.resolutionProof.length > 0 && (
                 <div className="photo-preview-list">
                   {r.resolutionProof.map((p) => (
-                    <img key={p.url} src={p.url} alt="" />
+                    <FilePreview key={p.url} url={p.url} />
                   ))}
                 </div>
               )}

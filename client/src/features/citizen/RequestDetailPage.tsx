@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { REQUEST_DETAIL } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { FilePreview } from '../../components/FilePreview';
 
 export function RequestDetailPage() {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export function RequestDetailPage() {
           {r.photos.length > 0 && (
             <div className="photo-preview-list">
               {r.photos.map((p) => (
-                <img key={p.url} src={p.url} alt="" />
+                <FilePreview key={p.url} url={p.url} />
               ))}
             </div>
           )}
@@ -53,7 +54,7 @@ export function RequestDetailPage() {
               <h3>{t('citizen.resolutionProof')}</h3>
               <div className="photo-preview-list">
                 {r.resolutionProof.map((p) => (
-                  <img key={p.url} src={p.url} alt="" />
+                  <FilePreview key={p.url} url={p.url} />
                 ))}
               </div>
             </>

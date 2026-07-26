@@ -29,11 +29,11 @@ import { ContactSection } from './sections/ContactSection';
 
 const ROLE_META = [
   { id: 'citizen', key: 'citizen', Icon: User, iconBg: NAVY_LIGHT, iconColor: NAVY, btn: NAVY, to: (city: string) => `/${city}/login` },
-  { id: 'admin', key: 'admin', Icon: Users, iconBg: GREEN_LIGHT, iconColor: GREEN, btn: GREEN, to: (city: string) => `/${city}/staff-login` },
-  { id: 'officer', key: 'officer', Icon: FileText, iconBg: '#EFE9FB', iconColor: '#6B46C1', btn: '#6B46C1', to: (city: string) => `/${city}/staff-login` },
-  { id: 'nagarsevak', key: 'nagarsevak', Icon: Bell, iconBg: '#FCEEE1', iconColor: '#D97706', btn: '#D97706', to: (city: string) => `/${city}/staff-login` },
-  { id: 'nagaradhyaksh', key: 'nagaradhyaksh', Icon: BarChart3, iconBg: '#FBEAEA', iconColor: '#DC2626', btn: '#DC2626', to: (city: string) => `/${city}/staff-login` },
-  { id: 'driver', key: 'driver', Icon: Trash2, iconBg: '#E3F4F7', iconColor: '#0891B2', btn: '#0891B2', to: (city: string) => `/${city}/staff-login` },
+  { id: 'admin', key: 'admin', Icon: Users, iconBg: GREEN_LIGHT, iconColor: GREEN, btn: GREEN, to: (city: string) => `/${city}/staff-login/admin` },
+  { id: 'officer', key: 'officer', Icon: FileText, iconBg: '#EFE9FB', iconColor: '#6B46C1', btn: '#6B46C1', to: (city: string) => `/${city}/staff-login/officer` },
+  { id: 'nagarsevak', key: 'nagarsevak', Icon: Bell, iconBg: '#FCEEE1', iconColor: '#D97706', btn: '#D97706', to: (city: string) => `/${city}/staff-login/nagarsevak` },
+  { id: 'nagaradhyaksh', key: 'nagaradhyaksh', Icon: BarChart3, iconBg: '#FBEAEA', iconColor: '#DC2626', btn: '#DC2626', to: (city: string) => `/${city}/staff-login/nagaradhyaksh` },
+  { id: 'driver', key: 'driver', Icon: Trash2, iconBg: '#E3F4F7', iconColor: '#0891B2', btn: '#0891B2', to: (city: string) => `/${city}/staff-login/driver` },
 ];
 
 export function LandingPage() {

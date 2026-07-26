@@ -142,6 +142,7 @@ export const ANNOUNCEMENTS_ADMIN = gql`
       body
       category
       status
+      isEmergency
       publishedAt
       createdAt
     }
