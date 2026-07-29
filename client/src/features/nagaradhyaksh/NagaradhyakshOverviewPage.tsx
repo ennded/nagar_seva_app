@@ -3,13 +3,26 @@ import { useTranslation } from 'react-i18next';
 import { FileText, Clock, Activity, CheckCircle2 } from 'lucide-react';
 import { DASHBOARD_STATS } from '../../graphql/queries/admin.queries';
 import type { DashboardStats, RequestStatus } from '../../graphql/types';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export function NagaradhyakshOverviewPage() {
   const { t } = useTranslation();
   const { data, loading } = useQuery<{ dashboardStats: DashboardStats }>(DASHBOARD_STATS);
   const stats = data?.dashboardStats;
 
-  if (loading) return <p>{t('common.loading')}</p>;
+  if (loading) {
+    return (
+      <div>
+        <h1>{t('monitor.cityTitle')}</h1>
+        <Skeleton variant="tiles" count={4} />
+        <Card>
+          <Skeleton variant="rows" count={4} />
+        </Card>
+      </div>
+    );
+  }
 
   const countFor = (statuses: RequestStatus[]) =>
     stats?.byStatus.filter((s) => statuses.includes(s.status)).reduce((sum, s) => sum + s.count, 0) ?? 0;
@@ -40,9 +53,8 @@ export function NagaradhyakshOverviewPage() {
         ))}
       </section>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-        <div className="admin-panel">
-          <h2>Complaints by Category</h2>
+      <div className="responsive-grid-2" style={{ gridTemplateColumns: '1fr 1fr' }}>
+        <Card title="Complaints by Category">
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.85rem', height: 150 }}>
             {(stats?.byCategory ?? []).map((c) => (
               <div key={c.category} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, height: '100%', justifyContent: 'flex-end' }}>
@@ -60,11 +72,10 @@ export function NagaradhyakshOverviewPage() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className="admin-panel">
-          <h2>{t('admin.dashboard.byWard')}</h2>
-          <table className="admin-table">
+        <Card title={t('admin.dashboard.byWard')}>
+          <Table>
             <tbody>
               {stats?.byWard.map((w) => (
                 <tr key={w.ward.id}>
@@ -73,13 +84,12 @@ export function NagaradhyakshOverviewPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+          </Table>
+        </Card>
       </div>
 
-      <div className="admin-panel">
-        <h2>{t('admin.dashboard.byDepartment')}</h2>
-        <table className="admin-table">
+      <Card title={t('admin.dashboard.byDepartment')}>
+        <Table>
           <tbody>
             {stats?.byDepartment.map((d) => (
               <tr key={d.department.id}>
@@ -88,8 +98,8 @@ export function NagaradhyakshOverviewPage() {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </Table>
+      </Card>
     </div>
   );
 }

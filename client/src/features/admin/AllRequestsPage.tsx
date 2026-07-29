@@ -2,10 +2,16 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { ClipboardList } from 'lucide-react';
 import { ALL_REQUESTS } from '../../graphql/queries/admin.queries';
 import type { RequestPage, RequestStatus, RequestType } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 const STATUS_PILLS: { label: string; value: RequestStatus | '' }[] = [
   { label: 'All', value: '' },
@@ -75,47 +81,53 @@ export function AllRequestsPage() {
         </label>
       </div>
 
-      {loading && <p>{t('common.loading')}</p>}
-      {error && <p className="form-error">{error.message}</p>}
+      {loading && (
+        <Card>
+          <Skeleton variant="rows" count={6} />
+        </Card>
+      )}
+      {error && <ErrorState message={error.message} />}
 
-      <div className="admin-panel">
-        {data?.allRequests.items.length === 0 ? (
-          <p>{t('admin.requests.noResults')}</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>{t('citizen.title')}</th>
-                <th>{t('admin.requests.citizen')}</th>
-                <th>{t('admin.requests.ward')}</th>
-                <th>Priority</th>
-                <th>{t('admin.requests.department')}</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.allRequests.items.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</td>
-                  <td>{r.citizen.name}</td>
-                  <td>{r.ward.name}</td>
-                  <td>
-                    <PriorityBadge priority={r.priority} />
-                  </td>
-                  <td>{r.department?.name ?? '—'}</td>
-                  <td>
-                    <StatusBadge status={r.status} />
-                  </td>
-                  <td>
-                    <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
-                  </td>
+      {!loading && !error && (
+        <Card>
+          {data?.allRequests.items.length === 0 ? (
+            <EmptyState icon={ClipboardList} message={t('admin.requests.noResults')} />
+          ) : (
+            <Table>
+              <thead>
+                <tr>
+                  <th>{t('citizen.title')}</th>
+                  <th>{t('admin.requests.citizen')}</th>
+                  <th>{t('admin.requests.ward')}</th>
+                  <th>Priority</th>
+                  <th>{t('admin.requests.department')}</th>
+                  <th>Status</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {data?.allRequests.items.map((r) => (
+                  <tr key={r.id}>
+                    <td>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</td>
+                    <td>{r.citizen.name}</td>
+                    <td>{r.ward.name}</td>
+                    <td>
+                      <PriorityBadge priority={r.priority} />
+                    </td>
+                    <td>{r.department?.name ?? '—'}</td>
+                    <td>
+                      <StatusBadge status={r.status} />
+                    </td>
+                    <td>
+                      <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Card>
+      )}
 
       {data && data.allRequests.total > limit && (
         <div className="action-row">

@@ -16,6 +16,9 @@ import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
 import { FilePreview } from '../../components/FilePreview';
 import { useAuth } from '../auth/AuthContext';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 const PRIORITIES: RequestPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
 
@@ -46,9 +49,9 @@ export function AdminRequestDetailPage() {
   const [reviewAndClose, { loading: closing }] = useMutation(REVIEW_AND_CLOSE);
   const [setRequestPriority] = useMutation(SET_REQUEST_PRIORITY);
 
-  if (loading) return <p>{t('common.loading')}</p>;
-  if (error) return <p className="form-error">{error.message}</p>;
-  if (!data?.request) return <p>Not found.</p>;
+  if (loading) return <Skeleton variant="rows" count={5} />;
+  if (error) return <ErrorState message={error.message} />;
+  if (!data?.request) return <EmptyState message="Not found." />;
 
   const r = data.request;
 
@@ -86,7 +89,7 @@ export function AdminRequestDetailPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="responsive-grid-2" style={{ gridTemplateColumns: '1.2fr 1fr' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div className="admin-panel">
             <p>

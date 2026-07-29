@@ -9,6 +9,9 @@ import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
 import { FilePreview } from '../../components/FilePreview';
 import { uploadComplaintPhoto } from '../../apollo/upload';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 const TIME_SLOTS = ['9:00 AM - 11:00 AM', '11:00 AM - 1:00 PM', '2:00 PM - 4:00 PM', '4:00 PM - 6:00 PM'];
 
@@ -31,9 +34,9 @@ export function OfficerRequestDetailPage() {
   const [confirmedDate, setConfirmedDate] = useState('');
   const [confirmedTimeSlot, setConfirmedTimeSlot] = useState('');
 
-  if (loading) return <p>{t('common.loading')}</p>;
-  if (error) return <p className="form-error">{error.message}</p>;
-  if (!data?.request) return <p>Not found.</p>;
+  if (loading) return <Skeleton variant="rows" count={5} />;
+  if (error) return <ErrorState message={error.message} />;
+  if (!data?.request) return <EmptyState message={t('officer.notFound', { defaultValue: 'Not found.' })} />;
 
   const r = data.request;
 
@@ -79,7 +82,7 @@ export function OfficerRequestDetailPage() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="responsive-grid-2" style={{ gridTemplateColumns: '1.2fr 1fr' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div className="admin-panel">
             <p>
@@ -167,6 +170,7 @@ export function OfficerRequestDetailPage() {
                 {t('citizen.resolutionRemarks')}
                 <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} />
               </label>
+              {proofUrls.length === 0 && !uploading && <p className="form-error">{t('officer.proofRequired')}</p>}
               <div className="action-row">
                 <button
                   type="button"

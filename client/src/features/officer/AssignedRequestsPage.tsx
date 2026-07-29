@@ -7,6 +7,9 @@ import { MY_ASSIGNED_REQUESTS } from '../../graphql/queries/officer.queries';
 import type { RequestSummary } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 const ACTIVE_STATUSES = new Set(['ASSIGNED', 'IN_PROGRESS']);
 
@@ -51,28 +54,32 @@ export function AssignedRequestsPage() {
         </button>
       </div>
 
-      {loading && <p>{t('common.loading')}</p>}
-      {error && <p className="form-error">{error.message}</p>}
+      {loading && <Skeleton variant="rows" count={4} />}
+      {error && <ErrorState message={error.message} />}
 
-      {items.length === 0 ? (
-        <p>{t('officer.empty')}</p>
-      ) : (
-        <ul className="request-list">
-          {items.map((r) => (
-            <li key={r.id} className="request-list-item">
-              <div>
-                <strong>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</strong>
-                <span className="request-meta">
-                  {r.citizen.name} · {r.ward.name}
-                </span>
-              </div>
-              <PriorityBadge priority={r.priority} />
-              <StatusBadge status={r.status} />
-              <Link to={`/${citySlug}/officer/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
+      {!loading &&
+        !error &&
+        (items.length === 0 ? (
+          <EmptyState icon={ClipboardList} message={t('officer.empty')} />
+        ) : (
+          <ul className="request-list">
+            {items.map((r) => (
+              <li key={r.id} className="request-list-item">
+                <div>
+                  <strong>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</strong>
+                  <span className="request-meta">
+                    {r.citizen.name} · {r.ward.name}
+                  </span>
+                </div>
+                <PriorityBadge priority={r.priority} />
+                <StatusBadge status={r.status} />
+                <Link to={`/${citySlug}/officer/requests/${r.id}`} target="_blank" rel="noopener noreferrer">
+                  {t('admin.requests.viewDetail')}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ))}
     </div>
   );
 }

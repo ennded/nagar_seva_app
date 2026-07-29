@@ -1,15 +1,12 @@
 import type { RequestPriority } from '../graphql/types';
+import { Badge, type BadgeTone } from './ui/Badge';
 
-const PRIORITY_COLOR: Record<RequestPriority, string> = {
-  HIGH: '#C0392B',
-  MEDIUM: '#B85B12',
-  LOW: '#1E8A5F',
+const PRIORITY_TONE: Record<RequestPriority, BadgeTone> = {
+  HIGH: 'danger',
+  MEDIUM: 'warning',
+  LOW: 'success',
 };
 
 export function PriorityBadge({ priority }: { priority: RequestPriority }) {
-  return (
-    <span style={{ fontSize: 12.5, fontWeight: 700, color: PRIORITY_COLOR[priority] }}>
-      {priority.charAt(0) + priority.slice(1).toLowerCase()}
-    </span>
-  );
+  return <Badge tone={PRIORITY_TONE[priority]}>{priority.charAt(0) + priority.slice(1).toLowerCase()}</Badge>;
 }

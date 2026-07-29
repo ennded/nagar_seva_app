@@ -3,8 +3,13 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { WARDS_BY_CITY } from '../../graphql/queries/public.queries';
 import { CREATE_WARD, DELETE_WARD, UPDATE_WARD } from '../../graphql/mutations/admin.mutations';
+import { MapPin } from 'lucide-react';
 import type { WardRef } from '../../graphql/types';
 import { useAuth } from '../auth/AuthContext';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export function WardsPage() {
   const { t } = useTranslation();
@@ -84,13 +89,13 @@ export function WardsPage() {
         {successMsg && <p className="form-success">{t('admin.wards.created')}</p>}
       </div>
 
-      <div className="admin-panel">
+      <Card>
         {loading ? (
-          <p>{t('common.loading')}</p>
+          <Skeleton variant="rows" count={4} />
         ) : data?.wardsByCity.length === 0 ? (
-          <p>{t('admin.wards.empty')}</p>
+          <EmptyState icon={MapPin} message={t('admin.wards.empty')} />
         ) : (
-          <table className="admin-table">
+          <Table>
             <thead>
               <tr>
                 <th>{t('admin.wards.name')}</th>
@@ -116,9 +121,9 @@ export function WardsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

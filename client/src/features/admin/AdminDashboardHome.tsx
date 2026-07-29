@@ -7,6 +7,10 @@ import { DASHBOARD_STATS, ALL_REQUESTS } from '../../graphql/queries/admin.queri
 import type { DashboardStats, RequestPage, RequestStatus } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 const STATUS_FILTERS: { label: string; statuses: RequestStatus[] | null }[] = [
   { label: 'All', statuses: null },
@@ -26,7 +30,17 @@ export function AdminDashboardHome() {
 
   const stats = data?.dashboardStats;
 
-  if (loading) return <p>{t('common.loading')}</p>;
+  if (loading) {
+    return (
+      <div>
+        <h1>{t('admin.dashboard.title')}</h1>
+        <Skeleton variant="tiles" count={4} />
+        <Card>
+          <Skeleton variant="rows" count={5} />
+        </Card>
+      </div>
+    );
+  }
 
   const countFor = (statuses: RequestStatus[]) =>
     stats?.byStatus.filter((s) => statuses.includes(s.status)).reduce((sum, s) => sum + s.count, 0) ?? 0;
@@ -61,8 +75,8 @@ export function AdminDashboardHome() {
         ))}
       </section>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', alignItems: 'start' }}>
-        <div className="admin-panel">
+      <div className="responsive-grid-2" style={{ gridTemplateColumns: '2fr 1fr' }}>
+        <Card>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
             <h2 style={{ margin: 0 }}>Recent Complaints</h2>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
@@ -79,9 +93,9 @@ export function AdminDashboardHome() {
             </div>
           </div>
           {recentRows.length === 0 ? (
-            <p>{t('admin.requests.noResults')}</p>
+            <EmptyState icon={FileText} message={t('admin.requests.noResults')} />
           ) : (
-            <table className="admin-table">
+            <Table>
               <thead>
                 <tr>
                   <th>{t('citizen.category')}</th>
@@ -105,16 +119,18 @@ export function AdminDashboardHome() {
                       <StatusBadge status={r.status} />
                     </td>
                     <td>
-                      <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
+                      <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">
+                        {t('admin.requests.viewDetail')}
+                      </Link>
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           )}
-        </div>
+        </Card>
 
-        <div className="admin-panel">
+        <Card>
           <h2>Complaints by Category</h2>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.85rem', height: 150 }}>
             {(stats?.byCategory ?? []).map((c) => (
@@ -138,7 +154,7 @@ export function AdminDashboardHome() {
               <p style={{ color: 'var(--color-muted)', fontSize: 14 }}>No complaints yet.</p>
             )}
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

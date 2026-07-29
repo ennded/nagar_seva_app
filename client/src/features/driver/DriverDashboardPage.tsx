@@ -5,6 +5,10 @@ import { Truck, MapPin, Radio, Navigation2 } from 'lucide-react';
 import { MY_VEHICLE } from '../../graphql/queries/vehicle.queries';
 import { END_DUTY, START_DUTY, UPDATE_VEHICLE_LOCATION } from '../../graphql/mutations/vehicle.mutations';
 import type { Vehicle } from '../../graphql/types';
+import { Card } from '../../components/ui/Card';
+import { Badge } from '../../components/ui/Badge';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 const LOCATION_UPDATE_INTERVAL_MS = 10_000;
 
@@ -49,15 +53,25 @@ export function DriverDashboardPage() {
     };
   }, [vehicle?.onDuty, updateLocation, t]);
 
-  if (loading) return <p>{t('common.loading')}</p>;
+  if (loading) {
+    return (
+      <div>
+        <h1>{t('role.DRIVER')}</h1>
+        <Skeleton variant="tiles" count={3} />
+        <Card>
+          <Skeleton variant="text" count={2} />
+        </Card>
+      </div>
+    );
+  }
 
   if (!vehicle) {
     return (
       <div>
         <h1>{t('role.DRIVER')}</h1>
-        <div className="admin-panel">
-          <p>{t('garbage.noVehicleAssigned')}</p>
-        </div>
+        <Card>
+          <EmptyState icon={Truck} message={t('garbage.noVehicleAssigned')} />
+        </Card>
       </div>
     );
   }
@@ -97,12 +111,11 @@ export function DriverDashboardPage() {
         ))}
       </section>
 
-      <div className="admin-panel">
-        <h2>{t('garbage.title')}</h2>
+      <Card title={t('garbage.title')}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '1rem' }}>
-          <span className={`status-badge ${vehicle.onDuty ? 'status-completed' : 'status-registered'}`}>
+          <Badge tone={vehicle.onDuty ? 'success' : 'neutral'}>
             {vehicle.onDuty ? t('admin.vehicles.onDuty') : t('admin.vehicles.offDuty')}
-          </span>
+          </Badge>
           {vehicle.onDuty && !locationError && (
             <span className="form-success" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Navigation2 size={14} />
@@ -116,7 +129,7 @@ export function DriverDashboardPage() {
             {vehicle.onDuty ? t('garbage.endDuty') : t('garbage.startDuty')}
           </button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -9,8 +9,14 @@ import {
   SET_STAFF_ACTIVE,
   UPDATE_STAFF_USER,
 } from '../../graphql/mutations/admin.mutations';
+import { Users } from 'lucide-react';
 import type { DepartmentRef, Role, UserFields, WardRef } from '../../graphql/types';
 import { useAuth } from '../auth/AuthContext';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { Badge } from '../../components/ui/Badge';
 
 const STAFF_ROLES: Role[] = ['NAGARSEVAK', 'NAGARADHYAKSH', 'OFFICER', 'DRIVER'];
 
@@ -175,13 +181,13 @@ export function StaffPage() {
         {successMsg && <p className="form-success">{t('admin.staff.created')}</p>}
       </div>
 
-      <div className="admin-panel">
+      <Card>
         {loading ? (
-          <p>{t('common.loading')}</p>
+          <Skeleton variant="rows" count={4} />
         ) : staffData?.staffByCity.length === 0 ? (
-          <p>{t('admin.staff.empty')}</p>
+          <EmptyState icon={Users} message={t('admin.staff.empty')} />
         ) : (
-          <table className="admin-table">
+          <Table>
             <thead>
               <tr>
                 <th>{t('auth.name')}</th>
@@ -201,7 +207,11 @@ export function StaffPage() {
                   <td>{u.mobile}</td>
                   <td>{u.ward?.name ?? '—'}</td>
                   <td>{u.department?.name ?? '—'}</td>
-                  <td>{u.isActive ? t('admin.staff.active') : t('admin.staff.inactive')}</td>
+                  <td>
+                    <Badge tone={u.isActive ? 'success' : 'neutral'}>
+                      {u.isActive ? t('admin.staff.active') : t('admin.staff.inactive')}
+                    </Badge>
+                  </td>
                   <td className="action-row">
                     <button type="button" className="btn-secondary" onClick={() => startEdit(u)}>
                       {t('admin.emergencyContacts.edit')}
@@ -220,9 +230,9 @@ export function StaffPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

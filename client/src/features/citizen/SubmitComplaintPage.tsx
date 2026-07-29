@@ -7,6 +7,7 @@ import { MY_REQUESTS } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { uploadComplaintPhoto } from '../../apollo/upload';
 import { FilePreview } from '../../components/FilePreview';
+import { Button } from '../../components/ui/Button';
 
 const CATEGORIES = ['garbage', 'roads', 'water_supply', 'streetlight', 'drainage', 'other'];
 
@@ -97,9 +98,9 @@ export function SubmitComplaintPage() {
           </ul>
         )}
         {error && <p className="form-error">{error.message}</p>}
-        <button type="submit" disabled={loading || uploading}>
+        <Button type="submit" loading={loading} disabled={uploading}>
           {t('common.submit')}
-        </button>
+        </Button>
       </form>
     </div>
   );

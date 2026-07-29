@@ -6,6 +6,11 @@ import { WARD_REQUESTS } from '../../graphql/queries/monitor.queries';
 import type { RequestSummary } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { PriorityBadge } from '../../components/PriorityBadge';
+import { Card } from '../../components/ui/Card';
+import { Table } from '../../components/ui/Table';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export function WardRequestsPage() {
   const { t } = useTranslation();
@@ -37,45 +42,53 @@ export function WardRequestsPage() {
         ))}
       </section>
 
-      {loading && <p>{t('common.loading')}</p>}
-      {error && <p className="form-error">{error.message}</p>}
+      {loading && (
+        <Card>
+          <Skeleton variant="rows" count={5} />
+        </Card>
+      )}
+      {error && <ErrorState message={error.message} />}
 
-      <div className="admin-panel">
-        {items.length === 0 ? (
-          <p>{t('monitor.empty')}</p>
-        ) : (
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>{t('citizen.title')}</th>
-                <th>{t('admin.requests.citizen')}</th>
-                <th>Priority</th>
-                <th>{t('admin.requests.department')}</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((r) => (
-                <tr key={r.id}>
-                  <td>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</td>
-                  <td>{r.citizen.name}</td>
-                  <td>
-                    <PriorityBadge priority={r.priority} />
-                  </td>
-                  <td>{r.department?.name ?? '—'}</td>
-                  <td>
-                    <StatusBadge status={r.status} />
-                  </td>
-                  <td>
-                    <Link to={`/${citySlug}/nagarsevak/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
-                  </td>
+      {!loading && !error && (
+        <Card>
+          {items.length === 0 ? (
+            <EmptyState icon={ClipboardList} message={t('monitor.empty')} />
+          ) : (
+            <Table>
+              <thead>
+                <tr>
+                  <th>{t('citizen.title')}</th>
+                  <th>{t('admin.requests.citizen')}</th>
+                  <th>Priority</th>
+                  <th>{t('admin.requests.department')}</th>
+                  <th>Status</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {items.map((r) => (
+                  <tr key={r.id}>
+                    <td>{r.__typename === 'Complaint' ? (r.category ?? r.title) : r.purpose}</td>
+                    <td>{r.citizen.name}</td>
+                    <td>
+                      <PriorityBadge priority={r.priority} />
+                    </td>
+                    <td>{r.department?.name ?? '—'}</td>
+                    <td>
+                      <StatusBadge status={r.status} />
+                    </td>
+                    <td>
+                      <Link to={`/${citySlug}/nagarsevak/requests/${r.id}`} target="_blank" rel="noopener noreferrer">
+                        {t('admin.requests.viewDetail')}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Card>
+      )}
     </div>
   );
 }

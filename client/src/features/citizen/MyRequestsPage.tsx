@@ -1,9 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
+import { ClipboardList } from 'lucide-react';
 import { MY_REQUESTS } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export function MyRequestsPage() {
   const { t } = useTranslation();
@@ -20,9 +24,11 @@ export function MyRequestsPage() {
         </div>
       </div>
 
-      {loading && <p>{t('common.loading')}</p>}
-      {error && <p className="form-error">{error.message}</p>}
-      {data?.myRequests.length === 0 && <p>{t('citizen.noRequests')}</p>}
+      {loading && <Skeleton variant="rows" count={3} />}
+      {error && <ErrorState message={error.message} />}
+      {!loading && !error && data?.myRequests.length === 0 && (
+        <EmptyState icon={ClipboardList} message={t('citizen.noRequests')} />
+      )}
 
       <ul className="request-list">
         {data?.myRequests.map((r) => (

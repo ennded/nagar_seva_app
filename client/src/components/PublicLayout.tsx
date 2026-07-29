@@ -8,8 +8,11 @@ export function PublicLayout() {
   const { citySlug } = useParams<{ citySlug: string }>();
   const { isAuthenticated, session } = useAuth();
   const location = useLocation();
-  // Staff accounts are provisioned by an Admin, not self-registered — no Register link for them.
+  // Already on a login/register page — showing a "Login" link back to citizen login is
+  // redundant at best and, on the staff-login pages, actively misleading (it silently
+  // swaps you out of the staff flow into citizen login/registration).
   const isStaffLogin = location.pathname.includes('/staff-login');
+  const isAuthPage = isStaffLogin || location.pathname.includes('/login') || location.pathname.includes('/register');
 
   return (
     <div className="app-shell">
@@ -21,10 +24,12 @@ export function PublicLayout() {
           {isAuthenticated && session ? (
             <Link to={`/${session.citySlug}/${session.user.role.toLowerCase()}`}>{t('citizen.dashboard')}</Link>
           ) : (
-            <>
-              <Link to={`/${citySlug}/login`}>{t('auth.login')}</Link>
-              {!isStaffLogin && <Link to={`/${citySlug}/register`}>{t('auth.register')}</Link>}
-            </>
+            !isAuthPage && (
+              <>
+                <Link to={`/${citySlug}/login`}>{t('auth.login')}</Link>
+                <Link to={`/${citySlug}/register`}>{t('auth.register')}</Link>
+              </>
+            )
           )}
         </nav>
         <LanguageSwitcher style={{ color: 'white', borderColor: 'white' }} />

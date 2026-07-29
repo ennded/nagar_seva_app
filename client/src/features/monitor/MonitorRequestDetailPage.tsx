@@ -5,6 +5,9 @@ import { REQUEST_DETAIL } from '../../graphql/queries/request.queries';
 import type { RequestUnion } from '../../graphql/types';
 import { StatusBadge } from '../../components/StatusBadge';
 import { FilePreview } from '../../components/FilePreview';
+import { Skeleton } from '../../components/ui/Skeleton';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
 
 export function MonitorRequestDetailPage() {
   const { t } = useTranslation();
@@ -13,9 +16,9 @@ export function MonitorRequestDetailPage() {
     variables: { id },
   });
 
-  if (loading) return <p>{t('common.loading')}</p>;
-  if (error) return <p className="form-error">{error.message}</p>;
-  if (!data?.request) return <p>Not found.</p>;
+  if (loading) return <Skeleton variant="rows" count={5} />;
+  if (error) return <ErrorState message={error.message} />;
+  if (!data?.request) return <EmptyState message="Not found." />;
 
   const r = data.request;
 
