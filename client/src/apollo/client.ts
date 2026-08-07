@@ -39,4 +39,12 @@ export const apolloClient = new ApolloClient({
       RequestBase: ['Complaint', 'Appointment'],
     },
   }),
+  defaultOptions: {
+    // Different roles (officer, admin, nagarsevak, nagaradhyaksh) are separate sessions with
+    // separate caches, so one user's change can't invalidate another's cache. Without this,
+    // Apollo's default 'cache-first' policy means a page only ever fetches once per mount and
+    // then serves stale data indefinitely (e.g. an officer's status change never appears on the
+    // admin/nagarsevak/nagaradhyaksh dashboards until a hard reload).
+    watchQuery: { fetchPolicy: 'cache-and-network' },
+  },
 });

@@ -16,6 +16,7 @@ export function CityPickerPage() {
 
   return (
     <div className="city-picker-page">
+      <img src="/logo.png" alt="" width={72} height={72} />
       <h1>{t('common.appName')}</h1>
       <form onSubmit={handleSubmit}>
         <label>

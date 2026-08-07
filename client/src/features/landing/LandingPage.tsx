@@ -151,9 +151,7 @@ export function LandingPage() {
       <div style={{ width: '100%', background: '#FFFFFF', borderBottom: `1px solid ${BORDER}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div style={{ width: '100%', maxWidth: 1360, padding: '14px 24px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            <div style={{ width: 52, height: 52, borderRadius: '50%', border: `2px solid ${NAVY}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ fontFamily: "'Source Serif 4', serif", fontWeight: 800, fontSize: 16, color: NAVY }}>नस</span>
-            </div>
+            <img src="/logo.png" alt="" width={50} height={50} style={{ flexShrink: 0 }} />
             <div>
               <div style={{ fontFamily: "'Source Serif 4', serif", fontSize: 22, fontWeight: 800, color: TEXT, lineHeight: 1.1 }}>नागर सेवा</div>
               <div style={{ fontSize: 11.5, color: MUTED, fontWeight: 600 }}>आपले शहर, आपली जबाबदारी</div>

@@ -7,10 +7,13 @@ import { LandingPage } from './features/landing/LandingPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { StaffLoginPage } from './features/auth/StaffLoginPage';
+import { CitizenDashboardHome } from './features/citizen/CitizenDashboardHome';
 import { MyRequestsPage } from './features/citizen/MyRequestsPage';
 import { SubmitComplaintPage } from './features/citizen/SubmitComplaintPage';
 import { SubmitAppointmentPage } from './features/citizen/SubmitAppointmentPage';
 import { RequestDetailPage } from './features/citizen/RequestDetailPage';
+import { NoticesPage } from './features/citizen/NoticesPage';
+import { CitizenEmergencyContactsPage } from './features/citizen/CitizenEmergencyContactsPage';
 import { AdminLayout } from './features/admin/AdminLayout';
 import { AdminDashboardHome } from './features/admin/AdminDashboardHome';
 import { WardsPage } from './features/admin/WardsPage';
@@ -55,11 +58,14 @@ export function App() {
 
       <Route path="/:citySlug/citizen" element={<ProtectedRoute allowedRoles={['CITIZEN']} />}>
         <Route element={<DashboardLayout />}>
-          <Route index element={<MyRequestsPage />} />
+          <Route index element={<CitizenDashboardHome />} />
           <Route path="new-complaint" element={<SubmitComplaintPage />} />
           <Route path="new-appointment" element={<SubmitAppointmentPage />} />
+          <Route path="requests" element={<MyRequestsPage />} />
           <Route path="requests/:id" element={<RequestDetailPage />} />
+          <Route path="notices" element={<NoticesPage />} />
           <Route path="garbage" element={<GarbageTrackingPage />} />
+          <Route path="emergency-contacts" element={<CitizenEmergencyContactsPage />} />
         </Route>
       </Route>
 

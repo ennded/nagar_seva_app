@@ -27,6 +27,7 @@ export function StaffLayout({ navItems, roleLabel }: { navItems: StaffNavItem[];
     <StaffShellFrame>
       <aside className="admin-sidebar">
         <Link to={`/${citySlug}`} className="admin-sidebar-brand">
+          <img src="/logo.png" alt="" width={28} height={28} />
           {t('common.appName')}
         </Link>
         <div className="admin-sidebar-role">{roleLabel}</div>

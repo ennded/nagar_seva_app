@@ -7,7 +7,8 @@
     "save": "Save",
     "back": "Back",
     "logout": "Logout",
-    "close": "Close"
+    "close": "Close",
+    "portalSubtitle": "Municipal Corporation Portal"
   },
   "auth": {
     "login": "Login",
@@ -76,7 +77,74 @@
     "viewDetails": "View Details",
     "statusHistory": "Status History",
     "resolutionRemarks": "Resolution Remarks",
-    "resolutionProof": "Resolution Proof"
+    "resolutionProof": "Resolution Proof",
+    "notices": "Notices",
+    "noNotices": "No notices have been published yet.",
+    "home": "Home",
+    "trackComplaint": "Track Complaint",
+    "myProfile": "My Profile",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications yet."
+  },
+  "citizenHome": {
+    "greeting": {
+      "morning": "Good Morning, {{name}}!",
+      "afternoon": "Good Afternoon, {{name}}!",
+      "evening": "Good Evening, {{name}}!"
+    },
+    "tagline": "We are here to serve you.",
+    "subtitle": "Report issues, track requests, and access all municipal services in one place.",
+    "searchPlaceholder": "Search services, complaints, or notices...",
+    "search": "Search",
+    "stats": {
+      "inProgress": "Complaints In Progress",
+      "resolved": "Complaints Resolved",
+      "upcoming": "Appointments Upcoming",
+      "totalRequests": "Total Requests Filed"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "registerComplaint": { "title": "Register Complaint", "desc": "Report a civic issue" },
+      "trackComplaint": { "title": "Track Complaint", "desc": "Check status of your request" },
+      "bookAppointment": { "title": "Book Appointment", "desc": "Schedule a visit to a department" },
+      "garbageTracking": { "title": "Garbage Tracking", "desc": "See today's collection & live vehicle tracking" },
+      "notices": { "title": "Notices", "desc": "Important updates from your municipality" },
+      "emergencyContacts": { "title": "Emergency Contacts", "desc": "Fire, police, ambulance & helplines" }
+    },
+    "emergencyHelpline": {
+      "title": "Emergency Helpline",
+      "viewAll": "View All Contacts"
+    },
+    "recentComplaints": {
+      "title": "Recent Complaints",
+      "viewAll": "View All",
+      "empty": "No complaints yet."
+    },
+    "announcements": {
+      "title": "Important Announcements",
+      "viewAll": "View All",
+      "empty": "No announcements yet."
+    },
+    "trust": {
+      "secure": { "title": "100% Secure", "desc": "Your data is safe with us" },
+      "transparent": { "title": "Transparent Process", "desc": "Track every step of your request" },
+      "citizenFirst": { "title": "Citizen First", "desc": "We are here for you" },
+      "accessible": { "title": "Easy & Accessible", "desc": "Simple to use for everyone" }
+    }
+  },
+  "citizenEmergency": {
+    "title": "Emergency Contacts",
+    "subtitle": "Police, fire, ambulance, and utility helplines for your city — always one tap away.",
+    "empty": "No emergency contacts have been added for this city yet.",
+    "call": "Call",
+    "categories": {
+      "POLICE": "Police",
+      "FIRE": "Fire Brigade",
+      "AMBULANCE": "Ambulance",
+      "MUNICIPALITY": "Municipality",
+      "WATER": "Water Supply",
+      "ELECTRICITY": "Electricity"
+    }
   },
   "status": {
     "REGISTERED": "Registered",

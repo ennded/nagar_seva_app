@@ -197,3 +197,13 @@ export interface AuthPayload {
   citySlug: string;
   user: UserFields;
 }
+
+export interface Notification {
+  id: string;
+  type: string;
+  message: string;
+  isRead: boolean;
+  requestId: string | null;
+  announcementId: string | null;
+  createdAt: string;
+}

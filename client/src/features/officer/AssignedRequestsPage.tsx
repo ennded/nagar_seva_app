@@ -11,7 +11,7 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { Skeleton } from '../../components/ui/Skeleton';
 
-const ACTIVE_STATUSES = new Set(['ASSIGNED', 'IN_PROGRESS']);
+const ACTIVE_STATUSES = new Set(['ASSIGNED', 'IN_PROGRESS', 'SCHEDULED']);
 
 export function AssignedRequestsPage() {
   const { t } = useTranslation();
