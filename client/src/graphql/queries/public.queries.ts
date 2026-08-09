@@ -1,5 +1,15 @@
 import { gql } from '@apollo/client';
 
+export const CITIES = gql`
+  query Cities {
+    cities {
+      id
+      name
+      slug
+    }
+  }
+`;
+
 export const CITY_BY_SLUG = gql`
   query CityBySlug($slug: String!) {
     cityBySlug(slug: $slug) {

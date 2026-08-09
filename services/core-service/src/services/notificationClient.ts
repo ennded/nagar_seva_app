@@ -2,7 +2,16 @@ import { env } from '../config/env.js';
 
 export interface NotifyPayload {
   recipientIds: string[];
-  type: 'new_request' | 'request_completed' | 'appointment_scheduled' | 'announcement_published';
+  type:
+    | 'new_request'
+    | 'request_verified'
+    | 'request_rejected'
+    | 'request_assigned'
+    | 'request_in_progress'
+    | 'request_completed'
+    | 'request_closed'
+    | 'appointment_scheduled'
+    | 'announcement_published';
   message: string;
   requestId?: string;
   announcementId?: string;

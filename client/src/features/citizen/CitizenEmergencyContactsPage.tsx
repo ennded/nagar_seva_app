@@ -1,21 +1,12 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { Building2, Droplet, Flame, HeartPulse, Phone, Shield, Zap, type LucideIcon } from 'lucide-react';
+import { CirclePlus, Phone } from 'lucide-react';
 import { EMERGENCY_CONTACTS } from '../../graphql/queries/public.queries';
 import type { EmergencyContact } from '../../graphql/types';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { Skeleton } from '../../components/ui/Skeleton';
-import { NAVY_LIGHT, NAVY, TEXT, MUTED, BORDER } from '../landing/palette';
-
-const CATEGORY_ICON: Record<string, LucideIcon> = {
-  POLICE: Shield,
-  FIRE: Flame,
-  AMBULANCE: HeartPulse,
-  MUNICIPALITY: Building2,
-  WATER: Droplet,
-  ELECTRICITY: Zap,
-};
+import { ORANGE, GREEN, TEXT, MUTED, BORDER } from '../landing/palette';
 
 export function CitizenEmergencyContactsPage() {
   const { t } = useTranslation();
@@ -36,35 +27,36 @@ export function CitizenEmergencyContactsPage() {
       {loading && <Skeleton variant="rows" count={4} />}
       {!loading && contacts.length === 0 && <EmptyState icon={Phone} message={t('citizenEmergency.empty')} />}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
+      <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
         {contacts.map((c) => {
-          const Icon = CATEGORY_ICON[c.category] ?? Phone;
           return (
-            <a
+            <div
               key={c.id}
-              href={`tel:${c.phoneNumber}`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 14,
+                gap: 16,
                 background: '#FFFFFF',
                 border: `1px solid ${BORDER}`,
                 borderRadius: 14,
                 padding: 18,
-                textDecoration: 'none',
               }}
             >
-              <div style={{ width: 46, height: 46, borderRadius: '50%', background: NAVY_LIGHT, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon size={22} color={NAVY} />
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#FBE9D8', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <CirclePlus size={20} color={ORANGE} />
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: TEXT }}>{c.name}</div>
-                <div style={{ fontSize: 12.5, color: MUTED, marginTop: 2 }}>
-                  {t(`citizenEmergency.categories.${c.category}`, c.category)}
-                </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15.5, fontWeight: 800, color: TEXT }}>{c.name}</div>
+                <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>{c.phoneNumber}</div>
               </div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: NAVY }}>{c.phoneNumber}</div>
-            </a>
+              <a
+                href={`tel:${c.phoneNumber}`}
+                aria-label={`${t('citizenEmergency.call')} ${c.name}`}
+                style={{ width: 40, height: 40, borderRadius: '50%', background: GREEN, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, textDecoration: 'none' }}
+              >
+                <Phone size={17} color="#FFFFFF" />
+              </a>
+            </div>
           );
         })}
       </div>

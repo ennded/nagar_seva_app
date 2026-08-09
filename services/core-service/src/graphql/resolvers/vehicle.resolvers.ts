@@ -10,7 +10,7 @@ function populate(query: any) {
 export const vehicleResolvers = {
   Query: {
     vehiclesByCity: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
-      const { city } = requireRole(ctx, ['admin']);
+      const { city } = requireRole(ctx, ['admin', 'nagaradhyaksh']);
       const vehicles = await populate(VehicleModel.find({ city }).sort({ createdAt: -1 }));
       return vehicles.map(mapVehicle);
     },

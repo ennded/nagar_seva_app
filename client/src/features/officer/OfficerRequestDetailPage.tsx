@@ -23,9 +23,9 @@ export function OfficerRequestDetailPage() {
     variables: { id },
   });
 
-  const [startWork, { loading: starting }] = useMutation(START_WORK);
-  const [completeComplaint, { loading: completing }] = useMutation(COMPLETE_COMPLAINT);
-  const [scheduleAppointment, { loading: scheduling }] = useMutation(SCHEDULE_APPOINTMENT);
+  const [startWork, { loading: starting, error: startError }] = useMutation(START_WORK);
+  const [completeComplaint, { loading: completing, error: completeError }] = useMutation(COMPLETE_COMPLAINT);
+  const [scheduleAppointment, { loading: scheduling, error: scheduleError }] = useMutation(SCHEDULE_APPOINTMENT);
 
   const [proofUrls, setProofUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -56,20 +56,32 @@ export function OfficerRequestDetailPage() {
   }
 
   async function handleStartWork() {
-    await startWork({ variables: { id } });
-    refetch();
+    try {
+      await startWork({ variables: { id } });
+      refetch();
+    } catch {
+      // surfaced via startError below
+    }
   }
 
   async function handleComplete() {
-    await completeComplaint({ variables: { id, resolutionProofUrls: proofUrls, remarks: remarks || undefined } });
-    setProofUrls([]);
-    setRemarks('');
-    refetch();
+    try {
+      await completeComplaint({ variables: { id, resolutionProofUrls: proofUrls, remarks: remarks || undefined } });
+      setProofUrls([]);
+      setRemarks('');
+      refetch();
+    } catch {
+      // surfaced via completeError below
+    }
   }
 
   async function handleSchedule() {
-    await scheduleAppointment({ variables: { id, confirmedDate, confirmedTimeSlot } });
-    refetch();
+    try {
+      await scheduleAppointment({ variables: { id, confirmedDate, confirmedTimeSlot } });
+      refetch();
+    } catch {
+      // surfaced via scheduleError below
+    }
   }
 
   return (
@@ -137,6 +149,7 @@ export function OfficerRequestDetailPage() {
           {r.__typename === 'Complaint' && r.status === 'ASSIGNED' && (
             <div className="admin-panel">
               <h2>{t('officer.startWork')}</h2>
+              {startError && <p className="form-error">{startError.message}</p>}
               <div className="action-row">
                 <button type="button" onClick={handleStartWork} disabled={starting}>
                   {t('officer.startWork')}
@@ -171,6 +184,7 @@ export function OfficerRequestDetailPage() {
                 <textarea value={remarks} onChange={(e) => setRemarks(e.target.value)} />
               </label>
               {proofUrls.length === 0 && !uploading && <p className="form-error">{t('officer.proofRequired')}</p>}
+              {completeError && <p className="form-error">{completeError.message}</p>}
               <div className="action-row">
                 <button
                   type="button"
@@ -204,6 +218,7 @@ export function OfficerRequestDetailPage() {
                   ))}
                 </select>
               </label>
+              {scheduleError && <p className="form-error">{scheduleError.message}</p>}
               <div className="action-row">
                 <button
                   type="button"

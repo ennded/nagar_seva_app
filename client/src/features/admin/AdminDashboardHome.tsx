@@ -25,7 +25,7 @@ export function AdminDashboardHome() {
   const { data, loading } = useQuery<{ dashboardStats: DashboardStats }>(DASHBOARD_STATS);
   const [filterIndex, setFilterIndex] = useState(0);
   const { data: recentData } = useQuery<{ allRequests: RequestPage }>(ALL_REQUESTS, {
-    variables: { filter: { type: 'COMPLAINT' }, page: 1, limit: 8 },
+    variables: { page: 1, limit: 8 },
   });
 
   const stats = data?.dashboardStats;
@@ -78,7 +78,7 @@ export function AdminDashboardHome() {
       <div className="responsive-grid-2" style={{ gridTemplateColumns: '2fr 1fr' }}>
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
-            <h2 style={{ margin: 0 }}>Recent Complaints</h2>
+            <h2 style={{ margin: 0 }}>{t('admin.dashboard.recentRequests')}</h2>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
               {STATUS_FILTERS.map((f, i) => (
                 <button
@@ -109,7 +109,7 @@ export function AdminDashboardHome() {
               <tbody>
                 {recentRows.map((r) => (
                   <tr key={r.id}>
-                    <td>{r.category ?? r.title}</td>
+                    <td>{r.category ?? r.title ?? r.purpose}</td>
                     <td>{r.citizen.name}</td>
                     <td>{r.ward.name}</td>
                     <td>
@@ -119,7 +119,7 @@ export function AdminDashboardHome() {
                       <StatusBadge status={r.status} />
                     </td>
                     <td>
-                      <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">
+                      <Link to={`/${citySlug}/admin/requests/${r.id}`}>
                         {t('admin.requests.viewDetail')}
                       </Link>
                     </td>

@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { Bell, ChevronDown, FileText, LogOut, Megaphone, MapPin, Phone, PlusCircle, Trash2, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthContext';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { MY_NOTIFICATIONS } from '../graphql/queries/notification.queries';
+import { GovTopBar } from './GovTopBar';
+import { Footer } from './Footer';
+import { MARK_NOTIFICATION_READ, MY_NOTIFICATIONS } from '../graphql/queries/notification.queries';
 import type { Notification } from '../graphql/types';
-import { NAVY, ORANGE, GREEN, TEXT, MUTED, BORDER, NAVY_LIGHT } from '../features/landing/palette';
+import { NAVY, TEXT, MUTED, BORDER, NAVY_LIGHT } from '../features/landing/palette';
 
 export function DashboardLayout() {
   const { t } = useTranslation();
@@ -20,15 +21,28 @@ export function DashboardLayout() {
   const { data: notifData } = useQuery<{ myNotifications: Notification[] }>(MY_NOTIFICATIONS);
   const notifications = notifData?.myNotifications ?? [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const [markNotificationRead] = useMutation<{ markNotificationRead: Notification }>(MARK_NOTIFICATION_READ);
 
   function handleLogout() {
     logout();
     navigate(`/${citySlug}`);
   }
 
+  function handleNotificationClick(n: Notification) {
+    if (!n.isRead) {
+      markNotificationRead({ variables: { id: n.id } }).catch(() => {});
+    }
+    setNotifOpen(false);
+    if (n.requestId) {
+      navigate(`/${citySlug}/citizen/requests/${n.requestId}`);
+    } else if (n.announcementId) {
+      navigate(`/${citySlug}/citizen/notices`);
+    }
+  }
+
   const navItems = [
     { to: `/${citySlug}/citizen`, end: true, icon: FileText, label: t('citizen.home') },
-    { to: `/${citySlug}/citizen/new-complaint`, end: false, icon: PlusCircle, label: t('citizen.newComplaint') },
+    { to: `/${citySlug}/citizen/new-complaint`, end: false, icon: PlusCircle, label: t('citizenHome.quickActions.registerComplaint.title') },
     { to: `/${citySlug}/citizen/requests`, end: false, icon: FileText, label: t('citizen.trackComplaint') },
     { to: `/${citySlug}/citizen/garbage`, end: false, icon: Trash2, label: t('garbage.nav') },
     { to: `/${citySlug}/citizen/notices`, end: false, icon: Megaphone, label: t('citizen.notices') },
@@ -37,30 +51,7 @@ export function DashboardLayout() {
 
   return (
     <div className="app-shell" style={{ background: '#EEF2F6' }}>
-      <div style={{ width: '100%', background: NAVY, display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 1360,
-            padding: '9px 24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 20,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <div style={{ fontSize: 12.5, color: '#D8E2EC', fontWeight: 600 }}>{t('marketing.topBar')}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 18, fontSize: 12.5 }}>
-            <LanguageSwitcher style={{ color: '#D8E2EC', borderColor: '#3E5A78', padding: '4px 12px', fontSize: 12.5 }} />
-          </div>
-        </div>
-      </div>
-      <div style={{ width: '100%', display: 'flex' }}>
-        <div style={{ flex: 1, height: 4, background: ORANGE }} />
-        <div style={{ flex: 1, height: 4, background: '#FFFFFF', borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }} />
-        <div style={{ flex: 1, height: 4, background: GREEN }} />
-      </div>
+      <GovTopBar />
 
       <div style={{ width: '100%', background: '#FFFFFF', borderBottom: `1px solid ${BORDER}`, display: 'flex', justifyContent: 'center' }}>
         <div style={{ width: '100%', maxWidth: 1360, padding: '12px 24px', display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
@@ -110,12 +101,12 @@ export function DashboardLayout() {
                   setProfileOpen(false);
                 }}
                 aria-label={t('citizen.notifications')}
-                style={{ position: 'relative', width: 40, height: 40, borderRadius: '50%', border: `1px solid ${BORDER}`, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', minHeight: 'unset', boxShadow: 'none' }}
+                style={{ position: 'relative', width: 40, height: 40, padding: 0, borderRadius: '50%', border: `1px solid ${BORDER}`, background: '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', minHeight: 'unset', boxShadow: 'none' }}
               >
                 <Bell size={18} color={TEXT} />
                 {unreadCount > 0 && (
                   <span style={{ position: 'absolute', top: -2, right: -2, minWidth: 16, height: 16, padding: '0 3px', borderRadius: 100, background: '#DC2626', color: '#FFFFFF', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                    {unreadCount}
                   </span>
                 )}
               </button>
@@ -125,11 +116,16 @@ export function DashboardLayout() {
                   {notifications.length === 0 && (
                     <div style={{ padding: 16, fontSize: 13, color: MUTED }}>{t('citizen.noNotifications')}</div>
                   )}
-                  {notifications.slice(0, 6).map((n) => (
-                    <div key={n.id} style={{ padding: '10px 16px', borderBottom: `1px solid ${BORDER}`, fontSize: 13, color: TEXT, background: n.isRead ? 'transparent' : NAVY_LIGHT }}>
+                  {notifications.map((n) => (
+                    <button
+                      key={n.id}
+                      type="button"
+                      onClick={() => handleNotificationClick(n)}
+                      style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', borderBottom: `1px solid ${BORDER}`, borderLeft: 'none', borderRight: 'none', borderTop: 'none', borderRadius: 0, fontSize: 13, color: TEXT, background: n.isRead ? 'transparent' : NAVY_LIGHT, cursor: 'pointer', minHeight: 'unset', boxShadow: 'none' }}
+                    >
                       <div>{n.message}</div>
                       <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>{new Date(n.createdAt).toLocaleString()}</div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -173,6 +169,8 @@ export function DashboardLayout() {
       <main className="app-main" style={{ maxWidth: 1360, padding: '1.5rem' }}>
         <Outlet />
       </main>
+
+      <Footer citySlug={citySlug ?? ''} />
     </div>
   );
 }

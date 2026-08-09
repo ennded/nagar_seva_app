@@ -4,8 +4,10 @@
     "loading": "लोड होत आहे...",
     "submit": "सबमिट करा",
     "cancel": "रद्द करा",
+    "delete": "हटवा",
     "save": "जतन करा",
     "back": "मागे",
+    "next": "पुढे",
     "logout": "लॉगआउट",
     "close": "बंद करा",
     "portalSubtitle": "नगरपालिका पोर्टल"
@@ -33,8 +35,11 @@
     "registerHere": "येथे नोंदणी करा",
     "loginHere": "येथे लॉगिन करा",
     "isStaff": "तुम्ही शहर कर्मचारी आहात का?",
-    "loginAsStaff": "त्याऐवजी तुमच्या मोबाईल क्रमांकाने लॉगिन करा",
+    "loginWithOtp": "त्याऐवजी OTP ने लॉगिन करा",
+    "loginWithPassword": "त्याऐवजी ईमेल आणि पासवर्डने लॉगिन करा",
+    "otpNotCitizen": "हा मोबाईल क्रमांक कर्मचारी म्हणून नोंदणीकृत आहे. कृपया \"कर्मचारी म्हणून लॉगिन करा\" वापरा.",
     "citizenLoginSubtitle": "तुमच्या नोंदणीकृत ईमेलने लॉगिन करा",
+    "citizenOtpLoginSubtitle": "तुमच्या नोंदणीकृत मोबाईल क्रमांकाने आणि OTP ने लॉगिन करा.",
     "staffLoginSubtitle": "तुमच्या अ‍ॅडमिनने तुमचा मोबाईल क्रमांक नोंदवला आहे — OTP ने लॉगिन करा.",
     "registerSubtitle": "तक्रारी नोंदवण्यासाठी आणि त्यांचा मागोवा घेण्यासाठी तुमचे तपशील भरून नोंदणी करा.",
     "roleLogin": {
@@ -52,16 +57,22 @@
     "totalCitizens": "नोंदणीकृत नागरिक",
     "totalResolved": "सोडवलेल्या तक्रारी",
     "totalWards": "वॉर्ड",
-    "getStarted": "सुरुवात करा",
-    "cityCode": "शहर कोड",
-    "cityCodePlaceholder": "उदा. pune"
+    "searchCity": "शहर शोधा...",
+    "popularCities": "लोकप्रिय शहरे",
+    "noCities": "अद्याप कोणतेही शहर नोंदणीकृत नाही.",
+    "noSearchResults": "कोणतेही शहर सापडले नाही."
   },
   "citizen": {
     "dashboard": "माझा डॅशबोर्ड",
+    "myComplaints": "माझ्या तक्रारी",
     "myRequests": "माझ्या विनंत्या",
+    "tabComplaints": "तक्रारी",
+    "tabAppointments": "भेटीच्या वेळा",
     "newComplaint": "तक्रार नोंदवा",
     "newAppointment": "भेटीची वेळ बुक करा",
     "noRequests": "तुम्ही अद्याप कोणतीही विनंती सादर केलेली नाही.",
+    "noComplaints": "तुम्ही अद्याप कोणतीही तक्रार सादर केलेली नाही.",
+    "noAppointments": "तुम्ही अद्याप कोणतीही भेटीची वेळ बुक केलेली नाही.",
     "title": "शीर्षक",
     "category": "श्रेणी",
     "description": "वर्णन",
@@ -79,36 +90,81 @@
     "resolutionRemarks": "निराकरण शेरा",
     "resolutionProof": "निराकरण पुरावा",
     "notices": "सूचना",
+    "noticesTitle": "सूचना आणि घोषणा",
     "noNotices": "अद्याप कोणत्याही सूचना प्रकाशित झालेल्या नाहीत.",
+    "emergencyNotice": "आपत्कालीन",
     "home": "मुख्यपृष्ठ",
     "trackComplaint": "तक्रारीचा मागोवा घ्या",
     "myProfile": "माझी प्रोफाइल",
     "notifications": "सूचना",
-    "noNotifications": "अद्याप कोणत्याही सूचना नाहीत."
+    "noNotifications": "अद्याप कोणत्याही सूचना नाहीत.",
+    "requestNotFound": "विनंती सापडली नाही.",
+    "evidence": "फोटो आणि व्हिडिओ",
+    "confirmedDate": "भेटीची तारीख",
+    "confirmedTimeSlot": "वेळ",
+    "categories": {
+      "garbage": "कचरा",
+      "roads": "रस्ता खराब",
+      "water_supply": "पाणी गळती",
+      "streetlight": "पथदिवा",
+      "drainage": "गटार",
+      "other": "इतर"
+    },
+    "newComplaintWizard": {
+      "steps": {
+        "category": "श्रेणी",
+        "remarks": "शेरा",
+        "upload": "अपलोड",
+        "location": "स्थान",
+        "review": "पुनरावलोकन"
+      },
+      "step1Title": "तक्रारीची श्रेणी निवडा",
+      "step2Title": "समस्येचे वर्णन करा",
+      "descriptionPlaceholder": "काय चुकीचे आहे ते सांगा...",
+      "speakInstead": "बोलून सांगा",
+      "listening": "ऐकत आहे...",
+      "step3Title": "फोटो किंवा व्हिडिओ पुरावा जोडा",
+      "photoLabel": "फोटो",
+      "photoHint": "समस्येचा फोटो जोडण्यासाठी क्लिक करा",
+      "browseFiles": "फाइल्स ब्राउझ करा",
+      "videoLabel": "व्हिडिओ (ऐच्छिक)",
+      "videoHint": "लहान व्हिडिओ जोडण्यासाठी क्लिक करा",
+      "maxFileSize": "कमाल फाइल आकार: ५०MB",
+      "step4Title": "समस्या कुठे आहे?",
+      "landmarkLabel": "खूण (ऐच्छिक)",
+      "landmarkPlaceholder": "उदा. गणेश मंदिराजवळ",
+      "step5Title": "तुमच्या तक्रारीचे पुनरावलोकन करा",
+      "edit": "संपादित करा",
+      "noLandmark": "नमूद केलेले नाही",
+      "noPhotos": "कोणतेही फोटो किंवा व्हिडिओ जोडलेले नाहीत",
+      "filesAdded": "{{count}} फाइल्स जोडल्या",
+      "submit": "तक्रार सबमिट करा",
+      "registeredTitle": "तक्रार नोंदवली गेली",
+      "registeredSubtitle": "आम्हाला तुमची तक्रार मिळाली असून संबंधित विभागाला कळवले आहे.",
+      "complaintId": "तक्रार आयडी",
+      "trackThis": "या तक्रारीचा मागोवा घ्या",
+      "backToHome": "मुख्यपृष्ठावर परत जा"
+    }
   },
   "citizenHome": {
     "greeting": {
-      "morning": "शुभ सकाळ, {{name}}!",
-      "afternoon": "शुभ दुपार, {{name}}!",
-      "evening": "शुभ संध्याकाळ, {{name}}!"
+
+      "morning": "शुभ सकाळ, {{name}}",
+      "afternoon": "शुभ दुपार, {{name}}",
+      "evening": "शुभ संध्याकाळ, {{name}}"
     },
-    "tagline": "आम्ही तुमच्या सेवेसाठी येथे आहोत.",
-    "subtitle": "समस्या नोंदवा, विनंत्यांचा मागोवा घ्या आणि सर्व नागरी सेवा एकाच ठिकाणी मिळवा.",
+    "subtitle": "आज तुमच्या प्रभागात काय सुरू आहे ते पहा. काही सेकंदात समस्या नोंदवा किंवा विनंतीचा मागोवा घ्या.",
     "searchPlaceholder": "सेवा, तक्रारी किंवा सूचना शोधा...",
     "search": "शोधा",
-    "stats": {
-      "inProgress": "प्रगतीपथावरील तक्रारी",
-      "resolved": "सोडवलेल्या तक्रारी",
-      "upcoming": "आगामी भेटी",
-      "totalRequests": "एकूण दाखल विनंत्या"
-    },
+    "open": "उघडा",
     "quickActions": {
       "title": "जलद कृती",
-      "registerComplaint": { "title": "तक्रार नोंदवा", "desc": "नागरी समस्या नोंदवा" },
-      "trackComplaint": { "title": "तक्रारीचा मागोवा घ्या", "desc": "तुमच्या विनंतीची स्थिती तपासा" },
+      "subtitle": "सर्वाधिक वापरल्या जाणाऱ्या सेवा, एका क्लिकवर",
+      "registerComplaint": { "title": "तक्रार नोंदवा", "desc": "तुमच्या जवळील नागरी समस्या नोंदवा" },
+      "trackComplaint": { "title": "तक्रारीचा मागोवा घ्या", "desc": "विनंतीची स्थिती तपासा" },
       "bookAppointment": { "title": "भेट बुक करा", "desc": "विभागाला भेट देण्याचे नियोजन करा" },
-      "garbageTracking": { "title": "कचरा ट्रॅकिंग", "desc": "आजचे संकलन आणि थेट वाहन ट्रॅकिंग पहा" },
-      "notices": { "title": "सूचना", "desc": "तुमच्या नगरपालिकेकडून महत्त्वाचे अद्यतने" },
+      "garbageTracking": { "title": "कचरा ट्रॅकिंग", "desc": "आजचे संकलन वेळापत्रक पहा" },
+      "notices": { "title": "सूचना", "desc": "तुमच्या नगरपालिकेकडून घोषणा" },
       "emergencyContacts": { "title": "आपत्कालीन संपर्क", "desc": "अग्निशमन, पोलीस, रुग्णवाहिका आणि हेल्पलाइन" }
     },
     "emergencyHelpline": {
@@ -121,15 +177,9 @@
       "empty": "अद्याप कोणत्याही तक्रारी नाहीत."
     },
     "announcements": {
-      "title": "महत्त्वाच्या सूचना",
+      "title": "सूचना",
       "viewAll": "सर्व पहा",
       "empty": "अद्याप कोणत्याही सूचना नाहीत."
-    },
-    "trust": {
-      "secure": { "title": "100% सुरक्षित", "desc": "तुमचा डेटा आमच्याकडे सुरक्षित आहे" },
-      "transparent": { "title": "पारदर्शक प्रक्रिया", "desc": "तुमच्या विनंतीचा प्रत्येक टप्पा पहा" },
-      "citizenFirst": { "title": "नागरिक प्रथम", "desc": "आम्ही तुमच्यासाठी येथे आहोत" },
-      "accessible": { "title": "सोपे आणि सुलभ", "desc": "सर्वांसाठी वापरण्यास सोपे" }
     }
   },
   "citizenEmergency": {
@@ -168,11 +218,15 @@
     "nav": {
       "dashboard": "डॅशबोर्ड",
       "requests": "विनंत्या",
+      "appointments": "भेटीच्या वेळा",
       "wards": "वॉर्ड",
       "departments": "विभाग",
       "staff": "कर्मचारी",
       "announcements": "सूचना",
-      "emergencyContacts": "आपत्कालीन संपर्क"
+      "emergencyContacts": "आपत्कालीन संपर्क",
+      "users": "वापरकर्ते",
+      "reports": "अहवाल",
+      "analytics": "विश्लेषण"
     },
     "dashboard": {
       "title": "डॅशबोर्ड",
@@ -181,7 +235,8 @@
       "byStatus": "स्थितीनुसार विनंत्या",
       "byDepartment": "विभागानुसार विनंत्या",
       "byWard": "वॉर्डनुसार विनंत्या",
-      "viewPending": "प्रलंबित विनंत्यांचे पुनरावलोकन करा"
+      "viewPending": "प्रलंबित विनंत्यांचे पुनरावलोकन करा",
+      "recentRequests": "अलीकडील विनंत्या"
     },
     "wards": {
       "title": "वॉर्ड",
@@ -282,6 +337,51 @@
       "onDuty": "कर्तव्यावर",
       "offDuty": "कर्तव्याबाहेर",
       "empty": "अद्याप कोणतीही वाहने जोडलेली नाहीत."
+    },
+    "users": {
+      "title": "वापरकर्ता व्यवस्थापन",
+      "subtitle": "नागरिक, अधिकारी, नगरसेवक आणि चालक व्यवस्थापित करा",
+      "tabs": {
+        "CITIZEN": "नागरिक",
+        "OFFICER": "अधिकारी",
+        "NAGARSEVAK": "नगरसेवक",
+        "DRIVER": "चालक"
+      },
+      "name": "नाव",
+      "status": "स्थिती",
+      "actions": "क्रिया",
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "activate": "सक्रिय करा",
+      "deactivate": "निष्क्रिय करा",
+      "edit": "संपादित करा",
+      "editUser": "वापरकर्ता संपादित करा",
+      "empty": "या श्रेणीत कोणतेही वापरकर्ते आढळले नाहीत.",
+      "confirmDeactivate": "हे खाते निष्क्रिय करायचे? पुन्हा सक्रिय होईपर्यंत ते लॉगिन करू शकणार नाहीत.",
+      "confirmActivate": "हे खाते पुन्हा सक्रिय करायचे?",
+      "saved": "वापरकर्त्याचे तपशील अद्ययावत केले."
+    },
+    "reports": {
+      "title": "अहवाल",
+      "subtitle": "कार्यान्वयन अहवाल डाउनलोड करा",
+      "pdf": "पीडीएफ",
+      "excel": "एक्सेल",
+      "generating": "तयार करत आहे…",
+      "downloadFailed": "हा अहवाल तयार करता आला नाही. कृपया पुन्हा प्रयत्न करा.",
+      "monthlyComplaints": { "title": "मासिक तक्रार अहवाल", "desc": "महिन्यासाठी तक्रारींचे प्रमाण आणि निराकरण कल" },
+      "departmentPerformance": { "title": "विभाग कामगिरी अहवाल", "desc": "विभागानुसार निराकरण दर आणि कालावधी" },
+      "wardPerformance": { "title": "वॉर्ड कामगिरी अहवाल", "desc": "वॉर्डनुसार तक्रार घनता आणि प्रतिसाद वेळ" },
+      "resolutionTime": { "title": "निराकरण वेळ अहवाल", "desc": "श्रेणीनुसार सरासरी निराकरण वेळ" },
+      "appointmentStatistics": { "title": "भेट सांख्यिकी अहवाल", "desc": "भेटींचे प्रमाण, मान्यता आणि पूर्णता दर" },
+      "officerPerformance": { "title": "अधिकारी कामगिरी अहवाल", "desc": "प्रत्येक अधिकाऱ्याचे काम आणि निराकरण दर" }
+    },
+    "analytics": {
+      "title": "विश्लेषण",
+      "subtitle": "शहरभरातील कामगिरीची माहिती",
+      "wardWiseComplaints": "वॉर्डनिहाय तक्रारी",
+      "departmentPerformance": "विभाग कामगिरी",
+      "noWardData": "अद्याप कोणत्याही तक्रारी नोंदवलेल्या नाहीत.",
+      "noDepartmentData": "अद्याप कोणतीही विभाग क्रियाकलाप नोंदवलेली नाही."
     }
   },
   "garbage": {
@@ -290,6 +390,10 @@
     "vehicleFor": "सेवा देणारे वाहन",
     "noVehicle": "या वॉर्डसाठी अद्याप कोणतेही संकलन वाहन नियुक्त केलेले नाही.",
     "driver": "चालक",
+    "driverOnRoute": "चालक मार्गावर आहे",
+    "onDuty": "कर्तव्यावर",
+    "offDuty": "कर्तव्यावर नाही",
+    "liveLocation": "थेट स्थान",
     "startDuty": "कर्तव्य सुरू करा",
     "endDuty": "कर्तव्य समाप्त करा",
     "sharingLocation": "थेट स्थान सामायिक करत आहे...",
@@ -297,10 +401,56 @@
     "noVehicleAssigned": "तुम्हाला अद्याप कोणतेही वाहन नियुक्त केलेले नाही. तुमच्या प्रशासकाशी संपर्क साधा."
   },
   "officer": {
+    "portalTitle": "विभाग अधिकारी पोर्टल",
     "nav": {
-      "myWork": "माझे नियुक्त काम",
+      "dashboard": "डॅशबोर्ड",
+      "myComplaints": "माझ्या तक्रारी",
+      "appointments": "भेटीच्या वेळा",
+      "notifications": "सूचना",
+      "performance": "कामगिरी",
+      "profile": "प्रोफाइल",
       "availability": "माझी उपलब्धता"
     },
+    "dashboard": {
+      "title": "माझा डॅशबोर्ड",
+      "subtitle": "तुम्हाला नियुक्त केलेल्या विनंत्या",
+      "subtitleWithDept": "{{department}} विभागाला नियुक्त केलेल्या तक्रारी",
+      "assignedToMe": "मला नियुक्त",
+      "highPriorityCount": "{{count}} उच्च प्राधान्य",
+      "noHighPriority": "उच्च प्राधान्य नाही",
+      "pendingAction": "प्रलंबित कृती",
+      "actWithin48h": "४८ तासांत कृती करा",
+      "resolvedThisWeek": "या आठवड्यात सोडवलेल्या",
+      "onTimeRate": "{{rate}}% वेळेवर",
+      "overdue": "मुदत उलटलेल्या",
+      "needAttention": "{{count}} लक्ष देणे आवश्यक",
+      "allOnSchedule": "सर्व वेळापत्रकानुसार",
+      "needsAction": "तुमच्या कृतीची आवश्यकता",
+      "viewAll": "सर्व पहा",
+      "empty": "सध्या तुमच्या लक्षाची गरज असलेले काही नाही."
+    },
+    "performance": {
+      "title": "कामगिरी",
+      "subtitle": "तुमच्या निराकरण कामाचा आढावा",
+      "totalAssigned": "एकूण नियुक्त",
+      "totalResolved": "एकूण सोडवलेल्या",
+      "resolutionRate": "निराकरण दर",
+      "onTimeRate": "वेळेवर दर",
+      "byCategory": "श्रेणीनुसार"
+    },
+    "profile": {
+      "title": "प्रोफाइल",
+      "mobile": "मोबाईल",
+      "email": "ईमेल",
+      "department": "विभाग",
+      "ward": "वॉर्ड"
+    },
+    "notStarted": "सुरू न झालेले",
+    "inProgress": "प्रगतीपथावर",
+    "completed": "पूर्ण झालेले",
+    "awaitingSchedule": "वेळ निश्चितीच्या प्रतीक्षेत",
+    "scheduled": "निश्चित केलेल्या",
+    "emptyAppointments": "तुम्हाला कोणतीही भेट नियुक्त केलेली नाही.",
     "availabilityIntro": "तुम्ही सामान्यतः उपलब्ध असलेले दिवस आणि वेळा सेट करा. नागरिक तुमच्या विभागाकडे भेटीची विनंती करताना हे पाहतात — यामुळे आपोआप वेळ बुक होत नाही, अचूक तारीख आणि वेळ तुम्हीच निश्चित कराल.",
     "saveAvailability": "उपलब्धता जतन करा",
     "availabilitySaved": "उपलब्धता अद्ययावत केली.",
@@ -319,12 +469,152 @@
   "monitor": {
     "nav": {
       "requests": "विनंत्या",
-      "overview": "आढावा"
+      "overview": "आढावा",
+      "dashboard": "डॅशबोर्ड",
+      "complaints": "वॉर्ड तक्रारी",
+      "appointments": "वॉर्ड भेटीच्या वेळा",
+      "reports": "वॉर्ड अहवाल",
+      "profile": "प्रोफाइल"
     },
-    "wardTitle": "वॉर्ड विनंत्या",
     "cityTitle": "नगरपालिका आढावा",
     "readOnlyNotice": "तुम्ही येथे विनंत्यांचे निरीक्षण करू शकता. फक्त प्रशासकच त्यावर कारवाई करू शकतो.",
-    "empty": "कोणत्याही विनंत्या आढळल्या नाहीत."
+    "empty": "कोणत्याही विनंत्या आढळल्या नाहीत.",
+    "emptyAppointments": "कोणत्याही भेटीच्या वेळा आढळल्या नाहीत.",
+    "wardComplaintsSubtitle": "तुमच्या वॉर्डमध्ये नोंदवलेल्या सर्व तक्रारी",
+    "wardAppointmentsSubtitle": "तुमच्या वॉर्डमधील नागरिकांकडून भेटीच्या विनंत्या",
+    "garbageSubtitle": "तुमच्या वॉर्डसाठी थेट वाहन स्थान",
+    "reportsSubtitle": "तुमच्या वॉर्डसाठी विश्लेषण आणि कामगिरी",
+    "table": {
+      "id": "आयडी",
+      "priority": "प्राधान्य",
+      "officer": "अधिकारी",
+      "status": "स्थिती",
+      "date": "तारीख",
+      "unassigned": "नियुक्त नाही"
+    },
+    "dashboard": {
+      "title": "वॉर्ड डॅशबोर्ड",
+      "subtitle": "आज {{ward}} मध्ये काय घडत आहे",
+      "totalComplaints": "एकूण तक्रारी",
+      "inProgressCount": "{{count}} प्रगतीपथावर",
+      "openComplaints": "प्रलंबित तक्रारी",
+      "awaitingAssignment": "नियुक्तीच्या प्रतीक्षेत",
+      "resolvedToday": "आज सोडवलेल्या",
+      "onSchedule": "वेळापत्रकानुसार",
+      "appointmentsToday": "आजच्या भेटीच्या वेळा",
+      "upcomingThisWeek": "{{count}} या आठवड्यात येणाऱ्या",
+      "latestComplaints": "अलीकडील तक्रारी"
+    },
+    "announcements": {
+      "title": "वॉर्ड सूचना",
+      "subtitle": "{{ward}} साठी सूचना प्रकाशित करा आणि व्यवस्थापित करा",
+      "titlePlaceholder": "सूचनेचे शीर्षक",
+      "bodyPlaceholder": "सूचनेचे तपशील",
+      "publish": "{{ward}} मध्ये प्रकाशित करा"
+    },
+    "reports": {
+      "byCategory": "श्रेणीनुसार तक्रारी",
+      "exportPdf": "PDF निर्यात करा",
+      "exportExcel": "Excel निर्यात करा"
+    },
+    "profile": {
+      "title": "माझी प्रोफाइल",
+      "subtitle": "तुमची वैयक्तिक आणि वॉर्ड माहिती",
+      "designation": "पदनाम",
+      "phone": "फोन",
+      "email": "ईमेल"
+    }
+  },
+  "nagaradhyaksh": {
+    "nav": {
+      "dashboard": "डॅशबोर्ड",
+      "wardPerformance": "वॉर्ड कामगिरी",
+      "departmentPerformance": "विभाग कामगिरी",
+      "complaintAnalytics": "तक्रार विश्लेषण",
+      "garbageMonitoring": "कचरा देखरेख",
+      "notifications": "सूचना",
+      "profile": "प्रोफाइल",
+      "settings": "सेटिंग्ज"
+    },
+    "dashboard": {
+      "title": "कार्यकारी डॅशबोर्ड",
+      "subtitle": "आज नगरपालिका कशी कामगिरी करत आहे",
+      "totalComplaints": "एकूण तक्रारी",
+      "openComplaints": "प्रलंबित तक्रारी",
+      "resolvedToday": "आज निकाली",
+      "resolutionRate": "निराकरण दर",
+      "pendingAppointments": "प्रलंबित अपॉइंटमेंट्स",
+      "completedAppointments": "पूर्ण अपॉइंटमेंट्स",
+      "activeGarbageVehicles": "सक्रिय कचरा वाहने"
+    },
+    "wardPerformance": {
+      "title": "वॉर्ड कामगिरी",
+      "subtitle": "सर्व वॉर्डमधील तक्रारींचा भार आणि निराकरणाची तुलना करा",
+      "totalComplaints": "एकूण तक्रारी",
+      "pending": "प्रलंबित",
+      "resolutionRate": "निराकरण दर",
+      "avgResolutionTime": "सरासरी निराकरण वेळ",
+      "days": "{{count}} दिवस",
+      "noData": "अद्याप वॉर्ड कामगिरीचा डेटा नाही."
+    },
+    "departmentPerformance": {
+      "title": "विभाग कामगिरी",
+      "subtitle": "प्रत्येक विभागातील कार्यक्षमता आणि कामाचा भार",
+      "assigned": "नियुक्त",
+      "resolved": "निराकरण",
+      "pending": "प्रलंबित",
+      "avgResolutionTime": "सरासरी निराकरण वेळ",
+      "noData": "अद्याप विभागाची कोणतीही क्रियाकलाप नोंदवलेली नाही."
+    },
+    "complaintAnalytics": {
+      "title": "तक्रार विश्लेषण",
+      "subtitle": "शहरव्यापी तक्रारींचा कल आणि वितरण",
+      "byCategory": "श्रेणीनुसार तक्रारी",
+      "byWard": "वॉर्डनुसार तक्रारी",
+      "byPriority": "प्राधान्य वितरण",
+      "noData": "अद्याप डेटा नोंदवलेला नाही."
+    },
+    "garbageMonitoring": {
+      "title": "कचरा देखरेख",
+      "subtitle": "संपूर्ण ताफ्याची संकलन कामगिरी",
+      "vehicle": "वाहन",
+      "driver": "चालक",
+      "ward": "वॉर्ड",
+      "status": "स्थिती",
+      "onDuty": "कर्तव्यावर",
+      "offDuty": "कर्तव्याबाहेर",
+      "noDriver": "अनियुक्त",
+      "lastUpdate": "शेवटचे अद्यतन",
+      "never": "कधीही नाही",
+      "noData": "अद्याप कोणतीही कचरा वाहने नोंदणीकृत नाहीत."
+    },
+    "announcements": {
+      "title": "सूचना",
+      "subtitle": "शहरव्यापी सूचना आणि आपत्कालीन प्रसारणे",
+      "new": "नवीन सूचना",
+      "markEmergency": "आपत्कालीन प्रसारण म्हणून चिन्हांकित करा",
+      "emergency": "आपत्कालीन",
+      "confirmDelete": "ही सूचना हटवायची का?"
+    },
+    "notifications": {
+      "title": "सूचना",
+      "subtitle": "नगरपालिकेतील अलीकडील अलर्ट",
+      "empty": "अद्याप कोणत्याही सूचना नाहीत."
+    },
+    "profile": {
+      "title": "माझी प्रोफाइल",
+      "subtitle": "तुमची वैयक्तिक आणि नगरपालिका माहिती",
+      "municipality": "नगरपालिका",
+      "designation": "पदनाम",
+      "phone": "फोन",
+      "email": "ईमेल",
+      "notProvided": "दिलेले नाही"
+    },
+    "settings": {
+      "title": "सेटिंग्ज",
+      "subtitle": "तुमच्या खात्यासाठी प्राधान्ये",
+      "language": "भाषा"
+    }
   },
   "marketing": {
     "topBar": "नागर सेवा — नगरपालिका सेवा पोर्टल",

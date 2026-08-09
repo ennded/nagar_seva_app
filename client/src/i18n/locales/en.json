@@ -4,8 +4,10 @@
     "loading": "Loading...",
     "submit": "Submit",
     "cancel": "Cancel",
+    "delete": "Delete",
     "save": "Save",
     "back": "Back",
+    "next": "Next",
     "logout": "Logout",
     "close": "Close",
     "portalSubtitle": "Municipal Corporation Portal"
@@ -33,8 +35,11 @@
     "registerHere": "Register here",
     "loginHere": "Login here",
     "isStaff": "Are you a city staff member?",
-    "loginAsStaff": "Login with your mobile number instead",
+    "loginWithOtp": "Login with OTP instead",
+    "loginWithPassword": "Login with email and password instead",
+    "otpNotCitizen": "This mobile number is registered as staff. Use \"Login as staff\" instead.",
     "citizenLoginSubtitle": "Login with your registered email",
+    "citizenOtpLoginSubtitle": "Login with your registered mobile number and an OTP.",
     "staffLoginSubtitle": "Your Admin has registered your mobile number — login with an OTP.",
     "registerSubtitle": "Register with your details to submit and track complaints.",
     "roleLogin": {
@@ -52,16 +57,22 @@
     "totalCitizens": "Registered Citizens",
     "totalResolved": "Complaints Resolved",
     "totalWards": "Wards",
-    "getStarted": "Get Started",
-    "cityCode": "City code",
-    "cityCodePlaceholder": "e.g. pune"
+    "searchCity": "Search city...",
+    "popularCities": "Popular Cities",
+    "noCities": "No cities are onboarded yet.",
+    "noSearchResults": "No cities found."
   },
   "citizen": {
     "dashboard": "My Dashboard",
+    "myComplaints": "My Complaints",
     "myRequests": "My Requests",
+    "tabComplaints": "Complaints",
+    "tabAppointments": "Appointments",
     "newComplaint": "Report a Complaint",
     "newAppointment": "Book an Appointment",
     "noRequests": "You haven't submitted any requests yet.",
+    "noComplaints": "You haven't submitted any complaints yet.",
+    "noAppointments": "You haven't booked any appointments yet.",
     "title": "Title",
     "category": "Category",
     "description": "Description",
@@ -79,36 +90,80 @@
     "resolutionRemarks": "Resolution Remarks",
     "resolutionProof": "Resolution Proof",
     "notices": "Notices",
+    "noticesTitle": "Notices & Announcements",
     "noNotices": "No notices have been published yet.",
+    "emergencyNotice": "Emergency",
     "home": "Home",
     "trackComplaint": "Track Complaint",
     "myProfile": "My Profile",
     "notifications": "Notifications",
-    "noNotifications": "No notifications yet."
+    "noNotifications": "No notifications yet.",
+    "requestNotFound": "Request not found.",
+    "evidence": "Photos & Video",
+    "confirmedDate": "Appointment Date",
+    "confirmedTimeSlot": "Time Slot",
+    "categories": {
+      "garbage": "Garbage",
+      "roads": "Road Damage",
+      "water_supply": "Water Leakage",
+      "streetlight": "Streetlight",
+      "drainage": "Drainage",
+      "other": "Other"
+    },
+    "newComplaintWizard": {
+      "steps": {
+        "category": "Category",
+        "remarks": "Remarks",
+        "upload": "Upload",
+        "location": "Location",
+        "review": "Review"
+      },
+      "step1Title": "Select the complaint category",
+      "step2Title": "Describe the problem",
+      "descriptionPlaceholder": "Tell us what's wrong...",
+      "speakInstead": "Speak Instead",
+      "listening": "Listening...",
+      "step3Title": "Add photo or video evidence",
+      "photoLabel": "Photo",
+      "photoHint": "Click to add a photo of the problem",
+      "browseFiles": "browse files",
+      "videoLabel": "Video (optional)",
+      "videoHint": "Click to add a short video",
+      "maxFileSize": "Max file size: 50MB",
+      "step4Title": "Where is the problem?",
+      "landmarkLabel": "Landmark (optional)",
+      "landmarkPlaceholder": "e.g. Near Ganesh Temple",
+      "step5Title": "Review your complaint",
+      "edit": "Edit",
+      "noLandmark": "Not specified",
+      "noPhotos": "No photos or videos added",
+      "filesAdded": "{{count}} file(s) added",
+      "submit": "Submit Complaint",
+      "registeredTitle": "Complaint Registered",
+      "registeredSubtitle": "We've received your complaint and notified the concerned department.",
+      "complaintId": "Complaint ID",
+      "trackThis": "Track This Complaint",
+      "backToHome": "Back to Home"
+    }
   },
   "citizenHome": {
     "greeting": {
-      "morning": "Good Morning, {{name}}!",
-      "afternoon": "Good Afternoon, {{name}}!",
-      "evening": "Good Evening, {{name}}!"
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}"
     },
-    "tagline": "We are here to serve you.",
-    "subtitle": "Report issues, track requests, and access all municipal services in one place.",
+    "subtitle": "Here's what's happening in your ward today. Report an issue or track a request in seconds.",
     "searchPlaceholder": "Search services, complaints, or notices...",
     "search": "Search",
-    "stats": {
-      "inProgress": "Complaints In Progress",
-      "resolved": "Complaints Resolved",
-      "upcoming": "Appointments Upcoming",
-      "totalRequests": "Total Requests Filed"
-    },
+    "open": "Open",
     "quickActions": {
       "title": "Quick Actions",
-      "registerComplaint": { "title": "Register Complaint", "desc": "Report a civic issue" },
-      "trackComplaint": { "title": "Track Complaint", "desc": "Check status of your request" },
+      "subtitle": "Most-used services, one tap away",
+      "registerComplaint": { "title": "Register Complaint", "desc": "Report a civic problem near you" },
+      "trackComplaint": { "title": "Track Complaint", "desc": "Check the status of a request" },
       "bookAppointment": { "title": "Book Appointment", "desc": "Schedule a visit to a department" },
-      "garbageTracking": { "title": "Garbage Tracking", "desc": "See today's collection & live vehicle tracking" },
-      "notices": { "title": "Notices", "desc": "Important updates from your municipality" },
+      "garbageTracking": { "title": "Garbage Tracking", "desc": "See today's pickup schedule" },
+      "notices": { "title": "Notices", "desc": "Announcements from your municipality" },
       "emergencyContacts": { "title": "Emergency Contacts", "desc": "Fire, police, ambulance & helplines" }
     },
     "emergencyHelpline": {
@@ -117,19 +172,13 @@
     },
     "recentComplaints": {
       "title": "Recent Complaints",
-      "viewAll": "View All",
+      "viewAll": "View all",
       "empty": "No complaints yet."
     },
     "announcements": {
-      "title": "Important Announcements",
-      "viewAll": "View All",
+      "title": "Announcements",
+      "viewAll": "View all",
       "empty": "No announcements yet."
-    },
-    "trust": {
-      "secure": { "title": "100% Secure", "desc": "Your data is safe with us" },
-      "transparent": { "title": "Transparent Process", "desc": "Track every step of your request" },
-      "citizenFirst": { "title": "Citizen First", "desc": "We are here for you" },
-      "accessible": { "title": "Easy & Accessible", "desc": "Simple to use for everyone" }
     }
   },
   "citizenEmergency": {
@@ -168,11 +217,15 @@
     "nav": {
       "dashboard": "Dashboard",
       "requests": "Requests",
+      "appointments": "Appointments",
       "wards": "Wards",
       "departments": "Departments",
       "staff": "Staff",
       "announcements": "Notices",
-      "emergencyContacts": "Emergency Contacts"
+      "emergencyContacts": "Emergency Contacts",
+      "users": "Users",
+      "reports": "Reports",
+      "analytics": "Analytics"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -181,7 +234,8 @@
       "byStatus": "Requests by Status",
       "byDepartment": "Requests by Department",
       "byWard": "Requests by Ward",
-      "viewPending": "Review Pending Requests"
+      "viewPending": "Review Pending Requests",
+      "recentRequests": "Recent Requests"
     },
     "wards": {
       "title": "Wards",
@@ -282,6 +336,51 @@
       "onDuty": "On Duty",
       "offDuty": "Off Duty",
       "empty": "No vehicles added yet."
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage citizens, officers, nagarsevaks and drivers",
+      "tabs": {
+        "CITIZEN": "Citizens",
+        "OFFICER": "Officers",
+        "NAGARSEVAK": "Nagarsevak",
+        "DRIVER": "Drivers"
+      },
+      "name": "Name",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "inactive": "Inactive",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "edit": "Edit",
+      "editUser": "Edit User",
+      "empty": "No users found in this category.",
+      "confirmDeactivate": "Deactivate this account? They won't be able to log in until reactivated.",
+      "confirmActivate": "Reactivate this account?",
+      "saved": "User details updated."
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Download operational reports",
+      "pdf": "PDF",
+      "excel": "Excel",
+      "generating": "Generating…",
+      "downloadFailed": "Could not generate this report. Please try again.",
+      "monthlyComplaints": { "title": "Monthly Complaints Report", "desc": "Complaint volume and resolution trends for the month" },
+      "departmentPerformance": { "title": "Department Performance Report", "desc": "Resolution rate and turnaround by department" },
+      "wardPerformance": { "title": "Ward Performance Report", "desc": "Complaint density and response time by ward" },
+      "resolutionTime": { "title": "Resolution Time Report", "desc": "Average time to resolve by category" },
+      "appointmentStatistics": { "title": "Appointment Statistics Report", "desc": "Appointment volume, approval and completion rates" },
+      "officerPerformance": { "title": "Officer Performance Report", "desc": "Workload and resolution rate per officer" }
+    },
+    "analytics": {
+      "title": "Analytics",
+      "subtitle": "City-wide performance insights",
+      "wardWiseComplaints": "Ward-wise Complaints",
+      "departmentPerformance": "Department Performance",
+      "noWardData": "No complaints recorded yet.",
+      "noDepartmentData": "No department activity recorded yet."
     }
   },
   "garbage": {
@@ -290,6 +389,10 @@
     "vehicleFor": "Vehicle serving",
     "noVehicle": "No collection vehicle has been assigned to this ward yet.",
     "driver": "Driver",
+    "driverOnRoute": "Driver on route",
+    "onDuty": "On Duty",
+    "offDuty": "Off Duty",
+    "liveLocation": "Live Location",
     "startDuty": "Start Duty",
     "endDuty": "End Duty",
     "sharingLocation": "Sharing live location...",
@@ -297,10 +400,56 @@
     "noVehicleAssigned": "No vehicle is assigned to you yet. Contact your Admin."
   },
   "officer": {
+    "portalTitle": "Department Officer Portal",
     "nav": {
-      "myWork": "My Assigned Work",
+      "dashboard": "Dashboard",
+      "myComplaints": "My Complaints",
+      "appointments": "Appointments",
+      "notifications": "Notifications",
+      "performance": "Performance",
+      "profile": "Profile",
       "availability": "My Availability"
     },
+    "dashboard": {
+      "title": "My Dashboard",
+      "subtitle": "Requests assigned to you",
+      "subtitleWithDept": "Complaints assigned to the {{department}} Department",
+      "assignedToMe": "Assigned to Me",
+      "highPriorityCount": "{{count}} high priority",
+      "noHighPriority": "None high priority",
+      "pendingAction": "Pending Action",
+      "actWithin48h": "Act within 48 hrs",
+      "resolvedThisWeek": "Resolved This Week",
+      "onTimeRate": "{{rate}}% on time",
+      "overdue": "Overdue",
+      "needAttention": "{{count}} need attention",
+      "allOnSchedule": "All on schedule",
+      "needsAction": "Needs Your Action",
+      "viewAll": "View All",
+      "empty": "Nothing needs your attention right now."
+    },
+    "performance": {
+      "title": "Performance",
+      "subtitle": "Your resolution activity at a glance",
+      "totalAssigned": "Total Assigned",
+      "totalResolved": "Total Resolved",
+      "resolutionRate": "Resolution Rate",
+      "onTimeRate": "On-Time Rate",
+      "byCategory": "By Category"
+    },
+    "profile": {
+      "title": "Profile",
+      "mobile": "Mobile",
+      "email": "Email",
+      "department": "Department",
+      "ward": "Ward"
+    },
+    "notStarted": "Not Started",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "awaitingSchedule": "Awaiting Schedule",
+    "scheduled": "Scheduled",
+    "emptyAppointments": "No appointments assigned to you.",
     "availabilityIntro": "Set the days and hours you're generally available. Citizens see this when requesting an appointment with your department — it doesn't book a slot automatically, you'll still confirm the exact date and time yourself.",
     "saveAvailability": "Save Availability",
     "availabilitySaved": "Availability updated.",
@@ -319,12 +468,152 @@
   "monitor": {
     "nav": {
       "requests": "Requests",
-      "overview": "Overview"
+      "overview": "Overview",
+      "dashboard": "Dashboard",
+      "complaints": "Ward Complaints",
+      "appointments": "Ward Appointments",
+      "reports": "Ward Reports",
+      "profile": "Profile"
     },
-    "wardTitle": "Ward Requests",
     "cityTitle": "Municipality Overview",
     "readOnlyNotice": "You can monitor requests here. Only the Admin can take action on them.",
-    "empty": "No requests found."
+    "empty": "No requests found.",
+    "emptyAppointments": "No appointments found.",
+    "wardComplaintsSubtitle": "All complaints reported in your ward",
+    "wardAppointmentsSubtitle": "Appointment requests from citizens in your ward",
+    "garbageSubtitle": "Live vehicle location for your ward",
+    "reportsSubtitle": "Analytics and performance for your ward",
+    "table": {
+      "id": "ID",
+      "priority": "Priority",
+      "officer": "Officer",
+      "status": "Status",
+      "date": "Date",
+      "unassigned": "Unassigned"
+    },
+    "dashboard": {
+      "title": "Ward Dashboard",
+      "subtitle": "What's happening in {{ward}} today",
+      "totalComplaints": "Total Complaints",
+      "inProgressCount": "{{count}} in progress",
+      "openComplaints": "Open Complaints",
+      "awaitingAssignment": "Awaiting assignment",
+      "resolvedToday": "Resolved Today",
+      "onSchedule": "On schedule",
+      "appointmentsToday": "Appointments Today",
+      "upcomingThisWeek": "{{count}} upcoming this week",
+      "latestComplaints": "Latest Complaints"
+    },
+    "announcements": {
+      "title": "Ward Announcements",
+      "subtitle": "Publish and manage announcements for {{ward}}",
+      "titlePlaceholder": "Announcement title",
+      "bodyPlaceholder": "Announcement details",
+      "publish": "Publish to {{ward}}"
+    },
+    "reports": {
+      "byCategory": "Complaints by Category",
+      "exportPdf": "Export PDF",
+      "exportExcel": "Export Excel"
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Your personal and ward information",
+      "designation": "Designation",
+      "phone": "Phone",
+      "email": "Email"
+    }
+  },
+  "nagaradhyaksh": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "wardPerformance": "Ward Performance",
+      "departmentPerformance": "Department Performance",
+      "complaintAnalytics": "Complaint Analytics",
+      "garbageMonitoring": "Garbage Monitoring",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "dashboard": {
+      "title": "Executive Dashboard",
+      "subtitle": "How is the municipality performing today",
+      "totalComplaints": "Total Complaints",
+      "openComplaints": "Open Complaints",
+      "resolvedToday": "Resolved Today",
+      "resolutionRate": "Resolution Rate",
+      "pendingAppointments": "Pending Appointments",
+      "completedAppointments": "Completed Appointments",
+      "activeGarbageVehicles": "Active Garbage Vehicles"
+    },
+    "wardPerformance": {
+      "title": "Ward Performance",
+      "subtitle": "Compare complaint load and resolution across all wards",
+      "totalComplaints": "Total Complaints",
+      "pending": "Pending",
+      "resolutionRate": "Resolution Rate",
+      "avgResolutionTime": "Avg Resolution Time",
+      "days": "{{count}} days",
+      "noData": "No ward performance data yet."
+    },
+    "departmentPerformance": {
+      "title": "Department Performance",
+      "subtitle": "Efficiency and workload across every department",
+      "assigned": "Assigned",
+      "resolved": "Resolved",
+      "pending": "Pending",
+      "avgResolutionTime": "Avg Resolution Time",
+      "noData": "No department activity recorded yet."
+    },
+    "complaintAnalytics": {
+      "title": "Complaint Analytics",
+      "subtitle": "City-wide complaint trends and distribution",
+      "byCategory": "Complaints by Category",
+      "byWard": "Complaints by Ward",
+      "byPriority": "Priority Distribution",
+      "noData": "No data recorded yet."
+    },
+    "garbageMonitoring": {
+      "title": "Garbage Monitoring",
+      "subtitle": "Fleet-wide collection performance",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "ward": "Ward",
+      "status": "Status",
+      "onDuty": "On Duty",
+      "offDuty": "Off Duty",
+      "noDriver": "Unassigned",
+      "lastUpdate": "Last Update",
+      "never": "Never",
+      "noData": "No garbage vehicles registered yet."
+    },
+    "announcements": {
+      "title": "Announcements",
+      "subtitle": "City-wide notices and emergency broadcasts",
+      "new": "New Announcement",
+      "markEmergency": "Mark as Emergency Broadcast",
+      "emergency": "EMERGENCY",
+      "confirmDelete": "Delete this announcement?"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Recent alerts across the municipality",
+      "empty": "No notifications yet."
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Your personal and municipality information",
+      "municipality": "Municipality",
+      "designation": "Designation",
+      "phone": "Phone",
+      "email": "Email",
+      "notProvided": "Not provided"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Preferences for your account",
+      "language": "Language"
+    }
   },
   "marketing": {
     "topBar": "Nagar Seva — Municipal Services Portal",

@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { PublicLayout } from './components/PublicLayout';
 import { DashboardLayout } from './components/DashboardLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { CityPickerPage } from './features/landing/CityPickerPage';
 import { LandingPage } from './features/landing/LandingPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
@@ -20,20 +19,41 @@ import { WardsPage } from './features/admin/WardsPage';
 import { DepartmentsPage } from './features/admin/DepartmentsPage';
 import { StaffPage } from './features/admin/StaffPage';
 import { PendingRequestsPage } from './features/admin/PendingRequestsPage';
+import { AppointmentsPage } from './features/admin/AppointmentsPage';
 import { AllRequestsPage } from './features/admin/AllRequestsPage';
 import { AdminRequestDetailPage } from './features/admin/AdminRequestDetailPage';
 import { AnnouncementsPage } from './features/admin/AnnouncementsPage';
 import { EmergencyContactsPage } from './features/admin/EmergencyContactsPage';
+import { UsersPage } from './features/admin/UsersPage';
+import { ReportsPage } from './features/admin/ReportsPage';
+import { AnalyticsPage } from './features/admin/AnalyticsPage';
 import { OfficerLayout } from './features/officer/OfficerLayout';
-import { AssignedRequestsPage } from './features/officer/AssignedRequestsPage';
+import { OfficerDashboardPage } from './features/officer/OfficerDashboardPage';
+import { MyComplaintsPage } from './features/officer/MyComplaintsPage';
+import { OfficerAppointmentsPage } from './features/officer/OfficerAppointmentsPage';
+import { OfficerNotificationsPage } from './features/officer/OfficerNotificationsPage';
+import { OfficerPerformancePage } from './features/officer/OfficerPerformancePage';
+import { OfficerProfilePage } from './features/officer/OfficerProfilePage';
 import { OfficerRequestDetailPage } from './features/officer/OfficerRequestDetailPage';
-import { AvailabilityPage } from './features/officer/AvailabilityPage';
 import { NagarsevakLayout } from './features/nagarsevak/NagarsevakLayout';
-import { WardRequestsPage } from './features/nagarsevak/WardRequestsPage';
+import { NagarsevakDashboardPage } from './features/nagarsevak/NagarsevakDashboardPage';
+import { WardComplaintsPage } from './features/nagarsevak/WardComplaintsPage';
+import { WardAppointmentsPage } from './features/nagarsevak/WardAppointmentsPage';
+import { WardReportsPage } from './features/nagarsevak/WardReportsPage';
+import { WardNotificationsPage } from './features/nagarsevak/WardNotificationsPage';
+import { NagarsevakProfilePage } from './features/nagarsevak/NagarsevakProfilePage';
 import { NagaradhyakshLayout } from './features/nagaradhyaksh/NagaradhyakshLayout';
 import { NagaradhyakshOverviewPage } from './features/nagaradhyaksh/NagaradhyakshOverviewPage';
 import { MunicipalityRequestsPage } from './features/nagaradhyaksh/MunicipalityRequestsPage';
 import { CityAnnouncementsPage } from './features/nagaradhyaksh/CityAnnouncementsPage';
+import { WardPerformancePage } from './features/nagaradhyaksh/WardPerformancePage';
+import { DepartmentPerformancePage } from './features/nagaradhyaksh/DepartmentPerformancePage';
+import { ComplaintAnalyticsPage } from './features/nagaradhyaksh/ComplaintAnalyticsPage';
+import { GarbageMonitoringPage } from './features/nagaradhyaksh/GarbageMonitoringPage';
+import { NagaradhyakshNotificationsPage } from './features/nagaradhyaksh/NagaradhyakshNotificationsPage';
+import { NagaradhyakshProfilePage } from './features/nagaradhyaksh/NagaradhyakshProfilePage';
+import { NagaradhyakshSettingsPage } from './features/nagaradhyaksh/NagaradhyakshSettingsPage';
+import { ReportsPage as NagaradhyakshReportsPage } from './features/admin/ReportsPage';
 import { MonitorRequestDetailPage } from './features/monitor/MonitorRequestDetailPage';
 import { VehiclesPage } from './features/admin/VehiclesPage';
 import { GarbageTrackingPage } from './features/citizen/GarbageTrackingPage';
@@ -45,7 +65,7 @@ import { DriverDashboardPage } from './features/driver/DriverDashboardPage';
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<CityPickerPage />} />
+      <Route path="/" element={<LandingPage />} />
 
       <Route path="/:citySlug" element={<LandingPage />} />
 
@@ -74,6 +94,7 @@ export function App() {
           <Route index element={<AdminDashboardHome />} />
           <Route path="requests" element={<PendingRequestsPage />} />
           <Route path="requests/all" element={<AllRequestsPage />} />
+          <Route path="appointments" element={<AppointmentsPage />} />
           <Route path="requests/:id" element={<AdminRequestDetailPage />} />
           <Route path="wards" element={<WardsPage />} />
           <Route path="departments" element={<DepartmentsPage />} />
@@ -81,23 +102,35 @@ export function App() {
           <Route path="vehicles" element={<VehiclesPage />} />
           <Route path="announcements" element={<AnnouncementsPage />} />
           <Route path="emergency-contacts" element={<EmergencyContactsPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="reports" element={<ReportsPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
 
       <Route path="/:citySlug/officer" element={<ProtectedRoute allowedRoles={['OFFICER']} />}>
         <Route element={<OfficerLayout />}>
-          <Route index element={<AssignedRequestsPage />} />
+          <Route index element={<OfficerDashboardPage />} />
+          <Route path="complaints" element={<MyComplaintsPage />} />
+          <Route path="appointments" element={<OfficerAppointmentsPage />} />
+          <Route path="notifications" element={<OfficerNotificationsPage />} />
+          <Route path="performance" element={<OfficerPerformancePage />} />
+          <Route path="profile" element={<OfficerProfilePage />} />
           <Route path="requests/:id" element={<OfficerRequestDetailPage />} />
-          <Route path="availability" element={<AvailabilityPage />} />
         </Route>
       </Route>
 
       <Route path="/:citySlug/nagarsevak" element={<ProtectedRoute allowedRoles={['NAGARSEVAK']} />}>
         <Route element={<NagarsevakLayout />}>
-          <Route index element={<WardRequestsPage />} />
-          <Route path="requests/:id" element={<MonitorRequestDetailPage />} />
-          <Route path="announcements" element={<WardAnnouncementsPage />} />
+          <Route index element={<NagarsevakDashboardPage />} />
+          <Route path="complaints" element={<WardComplaintsPage />} />
+          <Route path="appointments" element={<WardAppointmentsPage />} />
           <Route path="garbage" element={<WardGarbagePage />} />
+          <Route path="announcements" element={<WardAnnouncementsPage />} />
+          <Route path="reports" element={<WardReportsPage />} />
+          <Route path="notifications" element={<WardNotificationsPage />} />
+          <Route path="profile" element={<NagarsevakProfilePage />} />
+          <Route path="requests/:id" element={<MonitorRequestDetailPage />} />
         </Route>
       </Route>
 
@@ -112,7 +145,15 @@ export function App() {
           <Route index element={<NagaradhyakshOverviewPage />} />
           <Route path="requests" element={<MunicipalityRequestsPage />} />
           <Route path="requests/:id" element={<MonitorRequestDetailPage />} />
+          <Route path="ward-performance" element={<WardPerformancePage />} />
+          <Route path="department-performance" element={<DepartmentPerformancePage />} />
+          <Route path="complaint-analytics" element={<ComplaintAnalyticsPage />} />
+          <Route path="garbage-monitoring" element={<GarbageMonitoringPage />} />
           <Route path="announcements" element={<CityAnnouncementsPage />} />
+          <Route path="reports" element={<NagaradhyakshReportsPage />} />
+          <Route path="notifications" element={<NagaradhyakshNotificationsPage />} />
+          <Route path="profile" element={<NagaradhyakshProfilePage />} />
+          <Route path="settings" element={<NagaradhyakshSettingsPage />} />
         </Route>
       </Route>
 

@@ -119,7 +119,7 @@ export function MunicipalityRequestsPage() {
                     </td>
                     <td>{r.department?.name ?? '—'}</td>
                     <td>
-                      <Link to={`/${citySlug}/nagaradhyaksh/requests/${r.id}`} target="_blank" rel="noopener noreferrer">
+                      <Link to={`/${citySlug}/nagaradhyaksh/requests/${r.id}`}>
                         {t('admin.requests.viewDetail')}
                       </Link>
                     </td>

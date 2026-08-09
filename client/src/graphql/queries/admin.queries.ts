@@ -5,6 +5,12 @@ export const DASHBOARD_STATS = gql`
   query DashboardStats {
     dashboardStats {
       totalRequests
+      totalComplaints
+      openComplaints
+      resolvedToday
+      resolutionRate
+      pendingAppointments
+      completedAppointments
       byStatus {
         status
         count
@@ -27,6 +33,25 @@ export const DASHBOARD_STATS = gql`
         category
         count
       }
+      byPriority {
+        priority
+        count
+      }
+    }
+  }
+`;
+
+export const WARD_PERFORMANCE = gql`
+  query WardPerformance {
+    wardPerformance {
+      ward {
+        id
+        name
+      }
+      totalComplaints
+      pending
+      resolutionRate
+      avgResolutionDays
     }
   }
 `;
@@ -38,6 +63,30 @@ export const STAFF_BY_CITY = gql`
     }
   }
   ${USER_FIELDS}
+`;
+
+export const USERS_BY_CITY = gql`
+  query UsersByCity($role: Role) {
+    usersByCity(role: $role) {
+      ...UserFields
+    }
+  }
+  ${USER_FIELDS}
+`;
+
+export const DEPARTMENT_PERFORMANCE = gql`
+  query DepartmentPerformance {
+    departmentPerformance {
+      department {
+        id
+        name
+      }
+      totalRequests
+      resolvedRequests
+      resolutionRate
+      avgResolutionDays
+    }
+  }
 `;
 
 export const OFFICERS_BY_DEPARTMENT = gql`

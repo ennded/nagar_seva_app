@@ -48,13 +48,33 @@ export const announcementResolvers = {
         return mapAnnouncement(await AnnouncementModel.findById(doc._id).populate('ward'));
       }
 
+      if (user.role === 'nagaradhyaksh') {
+        const doc = await AnnouncementModel.create({
+          city,
+          title: input.title,
+          body: input.body,
+          category,
+          isEmergency: Boolean(input.isEmergency),
+          createdBy: user._id,
+          status: 'published',
+          publishedAt: new Date(),
+        });
+        const citizens = await UserModel.find({ city, role: 'citizen', isActive: true }).select('_id');
+        await notify({
+          recipientIds: citizens.map((c) => String(c._id)),
+          type: 'announcement_published',
+          message: `New notice: ${doc.title}`,
+          announcementId: String(doc._id),
+        });
+        return mapAnnouncement(doc);
+      }
+
       const doc = await AnnouncementModel.create({
         city,
         title: input.title,
         body: input.body,
         category,
-        // Only meaningful coming from the Nagaradhyaksh; Admin's own notices ignore it.
-        isEmergency: user.role === 'nagaradhyaksh' ? Boolean(input.isEmergency) : false,
+        isEmergency: false,
         createdBy: user._id,
       });
       return mapAnnouncement(doc);

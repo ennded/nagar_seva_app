@@ -12,6 +12,7 @@ import { Table } from '../../components/ui/Table';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { Skeleton } from '../../components/ui/Skeleton';
+import { useRefetchOnFocus } from '../../hooks/useRefetchOnFocus';
 
 const STATUS_PILLS: { label: string; value: RequestStatus | '' }[] = [
   { label: 'All', value: '' },
@@ -34,13 +35,14 @@ export function AllRequestsPage() {
   const [page, setPage] = useState(1);
   const limit = 20;
 
-  const { data, loading, error } = useQuery<{ allRequests: RequestPage }>(ALL_REQUESTS, {
+  const { data, loading, error, refetch } = useQuery<{ allRequests: RequestPage }>(ALL_REQUESTS, {
     variables: {
       filter: { status: status || undefined, type: type || undefined },
       page,
       limit,
     },
   });
+  useRefetchOnFocus(refetch);
 
   const totalPages = data ? Math.max(1, Math.ceil(data.allRequests.total / limit)) : 1;
 
@@ -119,7 +121,7 @@ export function AllRequestsPage() {
                       <StatusBadge status={r.status} />
                     </td>
                     <td>
-                      <Link to={`/${citySlug}/admin/requests/${r.id}`} target="_blank" rel="noopener noreferrer">{t('admin.requests.viewDetail')}</Link>
+                      <Link to={`/${citySlug}/admin/requests/${r.id}`}>{t('admin.requests.viewDetail')}</Link>
                     </td>
                   </tr>
                 ))}

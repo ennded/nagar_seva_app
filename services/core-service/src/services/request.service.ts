@@ -124,9 +124,22 @@ async function loadCityScopedRequest(requestId: string, cityId: Types.ObjectId) 
   return request as unknown as RequestDoc & { save: () => Promise<any> };
 }
 
+function requestLabel(request: any): string {
+  return request.title ?? request.purpose ?? 'your request';
+}
+
 export async function verifyRequest(admin: ActorUser, requestId: string, approve: boolean, note?: string) {
   const request = await loadCityScopedRequest(requestId, admin.city as Types.ObjectId);
-  return transitionStatus(request, approve ? 'VERIFIED' : 'REJECTED', admin, note);
+  const updated = await transitionStatus(request, approve ? 'VERIFIED' : 'REJECTED', admin, note);
+  await notify({
+    recipientIds: [String(request.citizen)],
+    type: approve ? 'request_verified' : 'request_rejected',
+    message: approve
+      ? `Your request has been verified: ${requestLabel(request)}`
+      : `Your request was rejected: ${requestLabel(request)}${note ? ` — ${note}` : ''}`,
+    requestId: String(request._id),
+  });
+  return updated;
 }
 
 export async function assignRequest(
@@ -140,13 +153,27 @@ export async function assignRequest(
   if (!officer) badInput('Officer not found in that department for this city');
   request.department = new Types.ObjectId(departmentId) as any;
   request.assignedOfficer = officer._id as any;
-  return transitionStatus(request, 'ASSIGNED', admin);
+  const updated = await transitionStatus(request, 'ASSIGNED', admin);
+  await notify({
+    recipientIds: [String(request.citizen)],
+    type: 'request_assigned',
+    message: `Your request has been assigned to an officer: ${requestLabel(request)}`,
+    requestId: String(request._id),
+  });
+  return updated;
 }
 
 export async function startWork(officer: ActorUser, requestId: string) {
   const request = await loadCityScopedRequest(requestId, officer.city as Types.ObjectId);
   if (String(request.assignedOfficer) !== String(officer._id)) forbidden('Not assigned to you');
-  return transitionStatus(request, 'IN_PROGRESS', officer);
+  const updated = await transitionStatus(request, 'IN_PROGRESS', officer);
+  await notify({
+    recipientIds: [String(request.citizen)],
+    type: 'request_in_progress',
+    message: `Work has started on your request: ${requestLabel(request)}`,
+    requestId: String(request._id),
+  });
+  return updated;
 }
 
 export async function completeComplaint(
@@ -197,5 +224,12 @@ export async function scheduleAppointment(
 export async function reviewAndClose(admin: ActorUser, requestId: string, note?: string) {
   const request = await loadCityScopedRequest(requestId, admin.city as Types.ObjectId);
   request.adminReviewNote = note;
-  return transitionStatus(request, 'CLOSED', admin, note);
+  const updated = await transitionStatus(request, 'CLOSED', admin, note);
+  await notify({
+    recipientIds: [String(request.citizen)],
+    type: 'request_closed',
+    message: `Your request has been closed: ${requestLabel(request)}`,
+    requestId: String(request._id),
+  });
+  return updated;
 }

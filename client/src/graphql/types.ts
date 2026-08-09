@@ -151,12 +151,40 @@ export interface CategoryCount {
   count: number;
 }
 
+export interface PriorityCount {
+  priority: RequestPriority;
+  count: number;
+}
+
 export interface DashboardStats {
   totalRequests: number;
+  totalComplaints: number;
+  openComplaints: number;
+  resolvedToday: number;
+  resolutionRate: number;
+  pendingAppointments: number;
+  completedAppointments: number;
   byStatus: StatusCount[];
   byDepartment: DepartmentCount[];
   byWard: WardCount[];
   byCategory: CategoryCount[];
+  byPriority: PriorityCount[];
+}
+
+export interface DepartmentPerformance {
+  department: DepartmentRef;
+  totalRequests: number;
+  resolvedRequests: number;
+  resolutionRate: number;
+  avgResolutionDays: number | null;
+}
+
+export interface WardPerformance {
+  ward: WardRef;
+  totalComplaints: number;
+  pending: number;
+  resolutionRate: number;
+  avgResolutionDays: number | null;
 }
 
 export interface RequestSummary {
@@ -167,11 +195,16 @@ export interface RequestSummary {
   priority: RequestPriority;
   title?: string;
   category?: string;
+  address?: string;
   purpose?: string;
   createdAt: string;
+  closedAt?: string | null;
+  confirmedDate?: string | null;
+  confirmedTimeSlot?: string | null;
   citizen: { name: string };
   ward: { name: string };
   department?: { name: string } | null;
+  assignedOfficer?: { name: string } | null;
 }
 
 export interface RequestPage {

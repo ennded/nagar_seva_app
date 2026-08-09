@@ -16,6 +16,10 @@ async function cityIdFromSlug(slug: string) {
 
 export const publicResolvers = {
   Query: {
+    cities: async () => {
+      const cities = await CityModel.find({ isActive: true }).sort({ name: 1 });
+      return cities.map(mapCity);
+    },
     cityBySlug: async (_: unknown, { slug }: { slug: string }) => {
       const city = await CityModel.findOne({ slug, isActive: true });
       return city ? mapCity(city) : null;

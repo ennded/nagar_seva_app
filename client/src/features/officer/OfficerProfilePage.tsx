@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ME } from '../../graphql/queries/auth.queries';
 import { UPDATE_MY_AVAILABILITY } from '../../graphql/mutations/officer.mutations';
 import type { UserFields } from '../../graphql/types';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -17,7 +18,7 @@ function defaultSlots(): DaySlot[] {
   return DAYS.map(() => ({ enabled: false, startTime: '10:00', endTime: '16:00' }));
 }
 
-export function AvailabilityPage() {
+export function OfficerProfilePage() {
   const { t } = useTranslation();
   const { data, loading } = useQuery<{ me: UserFields | null }>(ME);
   const [updateAvailability, { loading: saving, error }] = useMutation(UPDATE_MY_AVAILABILITY);
@@ -47,14 +48,43 @@ export function AvailabilityPage() {
     setTimeout(() => setSaved(false), 3000);
   }
 
-  if (loading) return <p>{t('common.loading')}</p>;
+  if (loading) return <Skeleton variant="rows" count={5} />;
+
+  const me = data?.me;
 
   return (
     <div>
-      <h1>{t('officer.nav.availability')}</h1>
-      <p>{t('officer.availabilityIntro')}</p>
+      <h1>{t('officer.profile.title')}</h1>
+
+      {me && (
+        <div className="admin-panel">
+          <p>
+            <strong>{t('auth.name')}:</strong> {me.name}
+          </p>
+          <p>
+            <strong>{t('officer.profile.mobile')}:</strong> {me.mobile}
+          </p>
+          {me.email && (
+            <p>
+              <strong>{t('officer.profile.email')}:</strong> {me.email}
+            </p>
+          )}
+          {me.department && (
+            <p>
+              <strong>{t('officer.profile.department')}:</strong> {me.department.name}
+            </p>
+          )}
+          {me.ward && (
+            <p>
+              <strong>{t('officer.profile.ward')}:</strong> {me.ward.name}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="admin-panel">
+        <h2>{t('officer.nav.availability')}</h2>
+        <p>{t('officer.availabilityIntro')}</p>
         <table className="admin-table">
           <thead>
             <tr>

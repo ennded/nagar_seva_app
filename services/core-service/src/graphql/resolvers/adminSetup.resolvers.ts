@@ -18,6 +18,15 @@ export const adminSetupResolvers = {
       const users = await UserModel.find(filter).sort({ role: 1, name: 1 }).populate('ward').populate('department');
       return users.map(mapUser);
     },
+
+    // Like staffByCity, but includes citizens — backs the admin "Users" page, which manages
+    // every account in the city (staff and citizens alike), not just staff.
+    usersByCity: async (_: unknown, { role }: { role?: string }, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['admin']);
+      const filter: Record<string, unknown> = role ? { city, role: roleFromGQL(role) } : { city, role: { $ne: 'admin' } };
+      const users = await UserModel.find(filter).sort({ role: 1, name: 1 }).populate('ward').populate('department');
+      return users.map(mapUser);
+    },
   },
   Mutation: {
     createWard: async (_: unknown, { name, code }: { name: string; code: string }, ctx: GraphQLContext) => {
@@ -120,7 +129,7 @@ export const adminSetupResolvers = {
       const { city } = requireRole(ctx, ['admin']);
       const user = await UserModel.findOne({ _id: id, city });
       if (!user) badInput('Staff member not found');
-      if (user!.role === 'citizen') badInput('Use citizen management for citizen accounts');
+      if (user!.role === 'admin') badInput('Admin accounts cannot be edited here');
 
       if (input.mobile && input.mobile !== user!.mobile) {
         const existing = await UserModel.findOne({ mobile: input.mobile });

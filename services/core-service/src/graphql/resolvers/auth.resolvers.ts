@@ -52,7 +52,7 @@ export const authResolvers = {
     },
 
     requestOtp: async (_: unknown, { mobile }: { mobile: string }) => {
-      const user = await UserModel.findOne({ mobile, role: { $ne: 'citizen' } });
+      const user = await UserModel.findOne({ mobile });
       if (user && user.isActive) {
         await sendOtp(mobile);
       }
@@ -66,8 +66,8 @@ export const authResolvers = {
       if (result !== 'ok') {
         badInput(`OTP verification failed: ${result}`);
       }
-      const user = await UserModel.findOne({ mobile, role: { $ne: 'citizen' } });
-      if (!user || !user.isActive) badInput('No active staff account for this mobile number');
+      const user = await UserModel.findOne({ mobile });
+      if (!user || !user.isActive) badInput('No active account for this mobile number');
       return issueAuthPayload(user);
     },
   },

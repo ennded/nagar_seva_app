@@ -21,6 +21,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login: (newSession) => {
         saveAuthSession(newSession);
         setSession(newSession);
+        // Without this, switching accounts in the same tab (e.g. logging in as a different
+        // role without logging out first) leaves the previous account's cached query results
+        // (like `me`) on screen until a fresh network response happens to overwrite them —
+        // showing the old user's name/data under the new session's token.
+        apolloClient.cache.reset();
       },
       logout: () => {
         clearAuthSession();

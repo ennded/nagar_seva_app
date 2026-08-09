@@ -10,3 +10,4 @@ services/media-service/uploads/kyc/*
 *.tsbuildinfo
 .DS_Store
 infra/k8s/01-secrets.yaml
+Guide.doc

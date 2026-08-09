@@ -210,12 +210,40 @@ export const typeDefs = gql`
     count: Int!
   }
 
+  type PriorityCount {
+    priority: RequestPriority!
+    count: Int!
+  }
+
   type DashboardStats {
     totalRequests: Int!
+    totalComplaints: Int!
+    openComplaints: Int!
+    resolvedToday: Int!
+    resolutionRate: Int!
+    pendingAppointments: Int!
+    completedAppointments: Int!
     byStatus: [StatusCount!]!
     byDepartment: [DepartmentCount!]!
     byWard: [WardCount!]!
     byCategory: [CategoryCount!]!
+    byPriority: [PriorityCount!]!
+  }
+
+  type DepartmentPerformance {
+    department: Department!
+    totalRequests: Int!
+    resolvedRequests: Int!
+    resolutionRate: Int!
+    avgResolutionDays: Float
+  }
+
+  type WardPerformance {
+    ward: Ward!
+    totalComplaints: Int!
+    pending: Int!
+    resolutionRate: Int!
+    avgResolutionDays: Float
   }
 
   type PublicDashboardStats {
@@ -329,6 +357,7 @@ export const typeDefs = gql`
   }
 
   type Query {
+    cities: [City!]!
     cityBySlug(slug: String!): City
     wardsByCity(citySlug: String!): [Ward!]!
     departmentsByCity(citySlug: String!): [Department!]!
@@ -342,6 +371,7 @@ export const typeDefs = gql`
 
     officersByDepartment(departmentId: ID!): [User!]!
     staffByCity(role: Role): [User!]!
+    usersByCity(role: Role): [User!]!
 
     myRequests(status: RequestStatus): [RequestUnion!]!
     request(id: ID!): RequestUnion
@@ -355,6 +385,8 @@ export const typeDefs = gql`
 
     municipalityRequests(filter: RequestFilter, page: Int, limit: Int): RequestPage!
     dashboardStats: DashboardStats!
+    departmentPerformance: [DepartmentPerformance!]!
+    wardPerformance: [WardPerformance!]!
 
     vehiclesByCity: [Vehicle!]!
     myVehicle: Vehicle

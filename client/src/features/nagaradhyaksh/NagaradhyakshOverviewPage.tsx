@@ -1,105 +1,54 @@
 import { useQuery } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import { FileText, Clock, Activity, CheckCircle2 } from 'lucide-react';
+import { FileText, Clock, CheckCircle2, Percent, Calendar, CalendarCheck, Truck } from 'lucide-react';
 import { DASHBOARD_STATS } from '../../graphql/queries/admin.queries';
-import type { DashboardStats, RequestStatus } from '../../graphql/types';
-import { Card } from '../../components/ui/Card';
-import { Table } from '../../components/ui/Table';
+import { VEHICLES_BY_CITY } from '../../graphql/queries/vehicle.queries';
+import type { DashboardStats, Vehicle } from '../../graphql/types';
 import { Skeleton } from '../../components/ui/Skeleton';
 
 export function NagaradhyakshOverviewPage() {
   const { t } = useTranslation();
   const { data, loading } = useQuery<{ dashboardStats: DashboardStats }>(DASHBOARD_STATS);
+  const { data: vehicleData } = useQuery<{ vehiclesByCity: Vehicle[] }>(VEHICLES_BY_CITY);
   const stats = data?.dashboardStats;
-
-  if (loading) {
-    return (
-      <div>
-        <h1>{t('monitor.cityTitle')}</h1>
-        <Skeleton variant="tiles" count={4} />
-        <Card>
-          <Skeleton variant="rows" count={4} />
-        </Card>
-      </div>
-    );
-  }
-
-  const countFor = (statuses: RequestStatus[]) =>
-    stats?.byStatus.filter((s) => statuses.includes(s.status)).reduce((sum, s) => sum + s.count, 0) ?? 0;
-
-  const tiles = [
-    { Icon: FileText, value: stats?.totalRequests ?? 0, label: t('admin.dashboard.totalRequests') },
-    { Icon: Clock, value: countFor(['REGISTERED']), label: t('admin.dashboard.pendingRequests') },
-    { Icon: Activity, value: countFor(['ASSIGNED', 'IN_PROGRESS']), label: 'In Progress' },
-    { Icon: CheckCircle2, value: countFor(['CLOSED']), label: 'Closed' },
-  ];
-
-  const maxCategoryCount = Math.max(1, ...(stats?.byCategory.map((c) => c.count) ?? [1]));
+  const activeVehicles = (vehicleData?.vehiclesByCity ?? []).filter((v) => v.onDuty).length;
 
   return (
     <div>
-      <h1>{t('monitor.cityTitle')}</h1>
+      <h1>{t('nagaradhyaksh.dashboard.title')}</h1>
+      <p style={{ color: 'var(--color-muted)', marginTop: '-0.5rem' }}>{t('nagaradhyaksh.dashboard.subtitle')}</p>
       <div className="info-banner">{t('monitor.readOnlyNotice')}</div>
 
-      <section className="stats-row">
-        {tiles.map((tile) => (
-          <div key={tile.label} className="stat-tile">
-            <div className="stat-tile-icon">
-              <tile.Icon size={20} color="#0B3D66" />
-            </div>
-            <strong>{tile.value}</strong>
-            <span>{tile.label}</span>
-          </div>
-        ))}
-      </section>
-
-      <div className="responsive-grid-2" style={{ gridTemplateColumns: '1fr 1fr' }}>
-        <Card title="Complaints by Category">
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.85rem', height: 150 }}>
-            {(stats?.byCategory ?? []).map((c) => (
-              <div key={c.category} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, height: '100%', justifyContent: 'flex-end' }}>
-                <span style={{ fontSize: 12, fontWeight: 700 }}>{c.count}</span>
-                <div
-                  style={{
-                    width: '100%',
-                    maxWidth: 32,
-                    borderRadius: '6px 6px 0 0',
-                    background: 'var(--color-danger)',
-                    height: `${Math.max(6, (c.count / maxCategoryCount) * 100)}%`,
-                  }}
-                />
-                <span style={{ fontSize: 11, color: 'var(--color-muted)', fontWeight: 600, textAlign: 'center' }}>{c.category}</span>
+      {loading ? (
+        <Skeleton variant="tiles" count={7} />
+      ) : (
+        <section
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '1rem',
+            margin: '1.5rem 0',
+          }}
+        >
+          {[
+            { Icon: FileText, value: stats?.totalComplaints ?? 0, label: t('nagaradhyaksh.dashboard.totalComplaints') },
+            { Icon: Clock, value: stats?.openComplaints ?? 0, label: t('nagaradhyaksh.dashboard.openComplaints') },
+            { Icon: CheckCircle2, value: stats?.resolvedToday ?? 0, label: t('nagaradhyaksh.dashboard.resolvedToday') },
+            { Icon: Percent, value: `${stats?.resolutionRate ?? 0}%`, label: t('nagaradhyaksh.dashboard.resolutionRate') },
+            { Icon: Calendar, value: stats?.pendingAppointments ?? 0, label: t('nagaradhyaksh.dashboard.pendingAppointments') },
+            { Icon: CalendarCheck, value: stats?.completedAppointments ?? 0, label: t('nagaradhyaksh.dashboard.completedAppointments') },
+            { Icon: Truck, value: activeVehicles, label: t('nagaradhyaksh.dashboard.activeGarbageVehicles') },
+          ].map((tile) => (
+            <div key={tile.label} className="stat-tile" style={{ minWidth: 0 }}>
+              <div className="stat-tile-icon">
+                <tile.Icon size={20} color="#0B3D66" />
               </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card title={t('admin.dashboard.byWard')}>
-          <Table>
-            <tbody>
-              {stats?.byWard.map((w) => (
-                <tr key={w.ward.id}>
-                  <td>{w.ward.name}</td>
-                  <td>{w.count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Card>
-      </div>
-
-      <Card title={t('admin.dashboard.byDepartment')}>
-        <Table>
-          <tbody>
-            {stats?.byDepartment.map((d) => (
-              <tr key={d.department.id}>
-                <td>{d.department.name}</td>
-                <td>{d.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Card>
+              <strong>{tile.value}</strong>
+              <span>{tile.label}</span>
+            </div>
+          ))}
+        </section>
+      )}
     </div>
   );
 }

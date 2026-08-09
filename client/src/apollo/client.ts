@@ -19,13 +19,27 @@ const authLink = setContext((_, { headers }) => {
 
 // Any UNAUTHENTICATED error (expired/invalid JWT) means the stored session is dead —
 // clear it and bounce to that city's home page so the app doesn't keep retrying with a bad token.
-const errorLink = onError(({ graphQLErrors }) => {
+//
+// A page mounts several queries at once (dashboard stats, staff list, notifications, ...), so a
+// single stray UNAUTHENTICATED from one of them must not be trusted blindly: it may have been sent
+// with a token that's no longer the active session's (a login/logout race), or it may arrive after
+// we've already started logging out. Only act when the failing request actually used the session
+// that's still current, and only act once per dead session.
+let loggingOut = false;
+
+const errorLink = onError(({ graphQLErrors, operation }) => {
   const unauthenticated = graphQLErrors?.some((err) => err.extensions?.code === 'UNAUTHENTICATED');
-  if (unauthenticated) {
-    const citySlug = loadAuthSession()?.citySlug;
-    clearAuthSession();
-    window.location.href = citySlug ? `/${citySlug}` : '/';
-  }
+  if (!unauthenticated || loggingOut) return;
+
+  const session = loadAuthSession();
+  if (!session) return;
+
+  const sentAuthHeader = (operation.getContext().headers as Record<string, string> | undefined)?.authorization;
+  if (sentAuthHeader !== `Bearer ${session.token}`) return;
+
+  loggingOut = true;
+  clearAuthSession();
+  window.location.href = session.citySlug ? `/${session.citySlug}` : '/';
 });
 
 export const apolloClient = new ApolloClient({

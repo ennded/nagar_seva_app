@@ -11,11 +11,16 @@ export const WARD_REQUESTS = gql`
         priority
         title
         category
+        address
         createdAt
+        closedAt
         citizen {
           name
         }
         department {
+          name
+        }
+        assignedOfficer {
           name
         }
       }
@@ -26,10 +31,16 @@ export const WARD_REQUESTS = gql`
         priority
         purpose
         createdAt
+        closedAt
+        confirmedDate
+        confirmedTimeSlot
         citizen {
           name
         }
         department {
+          name
+        }
+        assignedOfficer {
           name
         }
       }

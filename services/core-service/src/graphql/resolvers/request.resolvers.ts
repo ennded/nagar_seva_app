@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { RequestModel, ComplaintModel, AppointmentModel } from '../../models/Request.js';
 import { UserModel } from '../../models/User.js';
 import { DepartmentModel } from '../../models/Department.js';
@@ -86,8 +87,29 @@ export const requestResolvers = {
 
     dashboardStats: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
       const { city } = requireRole(ctx, ['nagaradhyaksh', 'admin']);
-      const [totalRequests, byStatusRaw, byDepartmentRaw, byWardRaw, byCategoryRaw] = await Promise.all([
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      const [
+        totalRequests,
+        totalComplaints,
+        openComplaints,
+        resolvedToday,
+        closedCount,
+        pendingAppointments,
+        completedAppointments,
+        byStatusRaw,
+        byDepartmentRaw,
+        byWardRaw,
+        byCategoryRaw,
+        byPriorityRaw,
+      ] = await Promise.all([
         RequestModel.countDocuments({ city }),
+        RequestModel.countDocuments({ city, type: 'complaint' }),
+        RequestModel.countDocuments({ city, type: 'complaint', status: { $nin: ['CLOSED', 'REJECTED'] } }),
+        RequestModel.countDocuments({ city, status: 'CLOSED', closedAt: { $gte: startOfToday } }),
+        RequestModel.countDocuments({ city, status: 'CLOSED' }),
+        RequestModel.countDocuments({ city, type: 'appointment', status: { $nin: ['SCHEDULED', 'CLOSED', 'REJECTED'] } }),
+        RequestModel.countDocuments({ city, type: 'appointment', status: 'CLOSED' }),
         RequestModel.aggregate([{ $match: { city } }, { $group: { _id: '$status', count: { $sum: 1 } } }]),
         RequestModel.aggregate([
           { $match: { city, department: { $ne: null } } },
@@ -98,6 +120,7 @@ export const requestResolvers = {
           { $match: { city, type: 'complaint' } },
           { $group: { _id: '$category', count: { $sum: 1 } } },
         ]),
+        RequestModel.aggregate([{ $match: { city } }, { $group: { _id: '$priority', count: { $sum: 1 } } }]),
       ]);
       const [departments, wards] = await Promise.all([
         DepartmentModel.find({ _id: { $in: byDepartmentRaw.map((d) => d._id) } }),
@@ -105,6 +128,12 @@ export const requestResolvers = {
       ]);
       return {
         totalRequests,
+        totalComplaints,
+        openComplaints,
+        resolvedToday,
+        resolutionRate: totalRequests > 0 ? Math.round((closedCount / totalRequests) * 100) : 0,
+        pendingAppointments,
+        completedAppointments,
         byStatus: byStatusRaw.map((s) => ({ status: s._id, count: s.count })),
         byDepartment: byDepartmentRaw.map((d) => ({
           department: departments.find((dep) => String(dep._id) === String(d._id)),
@@ -115,7 +144,80 @@ export const requestResolvers = {
           count: w.count,
         })),
         byCategory: byCategoryRaw.map((c) => ({ category: c._id, count: c.count })),
+        byPriority: byPriorityRaw.map((p) => ({ priority: String(p._id ?? 'medium').toUpperCase(), count: p.count })),
       };
+    },
+
+    departmentPerformance: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
+      const { city, user } = requireRole(ctx, ['nagaradhyaksh', 'admin', 'nagarsevak']);
+      const matchFilter: Record<string, unknown> = { city, department: { $ne: null } };
+      // aggregate() bypasses Mongoose's query-casting, and ctx.user.ward is a populated
+      // Ward document (not a raw ObjectId) — must unwrap ._id or the $match compares a
+      // whole document against the stored ObjectId and silently matches nothing.
+      if (user.role === 'nagarsevak') matchFilter.ward = new Types.ObjectId(idOf(user.ward));
+      const raw = await RequestModel.aggregate([
+        { $match: matchFilter },
+        {
+          $group: {
+            _id: '$department',
+            totalRequests: { $sum: 1 },
+            resolvedRequests: { $sum: { $cond: [{ $eq: ['$status', 'CLOSED'] }, 1, 0] } },
+            avgResolutionDays: {
+              $avg: {
+                $cond: [
+                  { $eq: ['$status', 'CLOSED'] },
+                  { $divide: [{ $subtract: ['$closedAt', '$createdAt'] }, 1000 * 60 * 60 * 24] },
+                  null,
+                ],
+              },
+            },
+          },
+        },
+      ]);
+      const departments = await DepartmentModel.find({ _id: { $in: raw.map((d) => d._id) } });
+      return raw
+        .map((d) => ({
+          department: departments.find((dep) => String(dep._id) === String(d._id)),
+          totalRequests: d.totalRequests,
+          resolvedRequests: d.resolvedRequests,
+          resolutionRate: d.totalRequests > 0 ? Math.round((d.resolvedRequests / d.totalRequests) * 100) : 0,
+          avgResolutionDays: d.avgResolutionDays != null ? Math.round(d.avgResolutionDays * 10) / 10 : null,
+        }))
+        .sort((a, b) => (a.department?.name ?? '').localeCompare(b.department?.name ?? ''));
+    },
+
+    wardPerformance: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
+      const { city } = requireRole(ctx, ['nagaradhyaksh', 'admin']);
+      const raw = await RequestModel.aggregate([
+        { $match: { city, type: 'complaint' } },
+        {
+          $group: {
+            _id: '$ward',
+            totalComplaints: { $sum: 1 },
+            resolved: { $sum: { $cond: [{ $eq: ['$status', 'CLOSED'] }, 1, 0] } },
+            pending: { $sum: { $cond: [{ $in: ['$status', ['CLOSED', 'REJECTED']] }, 0, 1] } },
+            avgResolutionDays: {
+              $avg: {
+                $cond: [
+                  { $eq: ['$status', 'CLOSED'] },
+                  { $divide: [{ $subtract: ['$closedAt', '$createdAt'] }, 1000 * 60 * 60 * 24] },
+                  null,
+                ],
+              },
+            },
+          },
+        },
+      ]);
+      const wards = await WardModel.find({ _id: { $in: raw.map((w) => w._id) } });
+      return raw
+        .map((w) => ({
+          ward: wards.find((wd) => String(wd._id) === String(w._id)),
+          totalComplaints: w.totalComplaints,
+          pending: w.pending,
+          resolutionRate: w.totalComplaints > 0 ? Math.round((w.resolved / w.totalComplaints) * 100) : 0,
+          avgResolutionDays: w.avgResolutionDays != null ? Math.round(w.avgResolutionDays * 10) / 10 : null,
+        }))
+        .sort((a, b) => (a.ward?.name ?? '').localeCompare(b.ward?.name ?? ''));
     },
   },
 

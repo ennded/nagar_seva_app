@@ -8,6 +8,7 @@ import { connectDb } from './config/db.js';
 import { typeDefs } from './graphql/typeDefs.js';
 import { resolvers } from './graphql/resolvers/index.js';
 import { buildContext } from './auth/context.js';
+import { reportsRouter } from './rest/reports.js';
 
 async function main() {
   await connectDb();
@@ -23,6 +24,7 @@ async function main() {
   app.use('/graphql', json(), expressMiddleware(apollo, { context: buildContext as any }));
 
   app.get('/healthz', (_req, res) => res.json({ ok: true }));
+  app.use('/reports', reportsRouter);
 
   app.listen(env.port, () => {
     console.log(`core-service listening on :${env.port}`);

@@ -19,6 +19,7 @@ import { useAuth } from '../auth/AuthContext';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { ErrorState } from '../../components/ui/ErrorState';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { useRefetchOnFocus } from '../../hooks/useRefetchOnFocus';
 
 const PRIORITIES: RequestPriority[] = ['LOW', 'MEDIUM', 'HIGH'];
 
@@ -31,6 +32,7 @@ export function AdminRequestDetailPage() {
   const { data, loading, error, refetch } = useQuery<{ request: RequestUnion | null }>(REQUEST_DETAIL, {
     variables: { id },
   });
+  useRefetchOnFocus(refetch);
 
   const [note, setNote] = useState('');
   const [assignPanel, setAssignPanel] = useState<'department' | 'officer' | null>(null);

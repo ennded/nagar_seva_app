@@ -2,7 +2,12 @@ import { Schema, model, type InferSchemaType, Types } from 'mongoose';
 
 const NOTIFICATION_TYPES = [
   'new_request',
+  'request_verified',
+  'request_rejected',
+  'request_assigned',
+  'request_in_progress',
   'request_completed',
+  'request_closed',
   'appointment_scheduled',
   'announcement_published',
 ] as const;
