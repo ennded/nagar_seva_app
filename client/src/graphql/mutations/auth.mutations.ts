@@ -33,6 +33,13 @@ export const REQUEST_OTP = gql`
   }
 `;
 
+// Testing-only: returns the plaintext OTP when the backend has EXPOSE_OTP_FOR_TESTING=true.
+export const REQUEST_OTP_DEBUG = gql`
+  mutation RequestOtpDebug($mobile: String!) {
+    requestOtpDebug(mobile: $mobile)
+  }
+`;
+
 export const VERIFY_OTP = gql`
   mutation VerifyOtp($mobile: String!, $code: String!) {
     verifyOtp(mobile: $mobile, code: $code) {

@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { User } from 'lucide-react';
-import { LOGIN, REQUEST_OTP, VERIFY_OTP } from '../../graphql/mutations/auth.mutations';
+import { LOGIN, REQUEST_OTP_DEBUG, VERIFY_OTP } from '../../graphql/mutations/auth.mutations';
 import type { AuthPayload } from '../../graphql/types';
 import { useAuth } from './AuthContext';
 import { AuthCard } from '../../components/AuthCard';
@@ -23,8 +23,9 @@ export function LoginPage() {
   const [code, setCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
-  const [requestOtp, { loading: requesting, error: requestError }] = useMutation<{ requestOtp: boolean }>(
-    REQUEST_OTP,
+  const [testOtp, setTestOtp] = useState<string | null>(null);
+  const [requestOtp, { loading: requesting, error: requestError }] = useMutation<{ requestOtpDebug: string | null }>(
+    REQUEST_OTP_DEBUG,
   );
   const [verifyOtp, { loading: verifying, error: verifyError }] = useMutation<{ verifyOtp: AuthPayload }>(
     VERIFY_OTP,
@@ -41,7 +42,8 @@ export function LoginPage() {
 
   async function handleRequestOtp(e: FormEvent) {
     e.preventDefault();
-    await requestOtp({ variables: { mobile } });
+    const { data } = await requestOtp({ variables: { mobile } });
+    setTestOtp(data?.requestOtpDebug ?? null);
     setOtpSent(true);
   }
 
@@ -118,6 +120,11 @@ export function LoginPage() {
       ) : (
         <form onSubmit={handleVerifyOtp}>
           <p>{t('auth.otpSent')}</p>
+          {testOtp && (
+            <p className="form-note">
+              {t('auth.testOtpLabel')}: <strong>{testOtp}</strong>
+            </p>
+          )}
           <label>
             {t('auth.otpCode')}
             <input value={code} onChange={(e) => setCode(e.target.value)} required />

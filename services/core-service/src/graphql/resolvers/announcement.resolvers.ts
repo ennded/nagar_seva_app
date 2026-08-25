@@ -3,7 +3,7 @@ import { EmergencyContactModel } from '../../models/EmergencyContact.js';
 import { UserModel } from '../../models/User.js';
 import { requireRole, notFound, forbidden } from '../../auth/authorize.js';
 import { mapAnnouncement, mapEmergencyContact, categoryFromGQL } from '../serialize.js';
-import { notify } from '../../services/notificationClient.js';
+import { notifyRecipients } from '../../services/notificationClient.js';
 import type { GraphQLContext } from '../../auth/context.js';
 
 export const announcementResolvers = {
@@ -39,12 +39,12 @@ export const announcementResolvers = {
           publishedAt: new Date(),
         });
         const wardCitizens = await UserModel.find({ city, ward: user.ward, role: 'citizen', isActive: true }).select('_id');
-        await notify({
-          recipientIds: wardCitizens.map((c) => String(c._id)),
-          type: 'announcement_published',
-          message: `New notice for your ward: ${doc.title}`,
-          announcementId: String(doc._id),
-        });
+        await notifyRecipients(
+          wardCitizens.map((c) => String(c._id)),
+          'announcement_published',
+          { title: doc.title, scope: 'ward' },
+          { announcementId: String(doc._id) },
+        );
         return mapAnnouncement(await AnnouncementModel.findById(doc._id).populate('ward'));
       }
 
@@ -60,12 +60,12 @@ export const announcementResolvers = {
           publishedAt: new Date(),
         });
         const citizens = await UserModel.find({ city, role: 'citizen', isActive: true }).select('_id');
-        await notify({
-          recipientIds: citizens.map((c) => String(c._id)),
-          type: 'announcement_published',
-          message: `New notice: ${doc.title}`,
-          announcementId: String(doc._id),
-        });
+        await notifyRecipients(
+          citizens.map((c) => String(c._id)),
+          'announcement_published',
+          { title: doc.title, scope: 'city' },
+          { announcementId: String(doc._id) },
+        );
         return mapAnnouncement(doc);
       }
 
@@ -99,12 +99,12 @@ export const announcementResolvers = {
       if (!doc) notFound('Announcement not found');
 
       const citizens = await UserModel.find({ city, role: 'citizen', isActive: true }).select('_id');
-      await notify({
-        recipientIds: citizens.map((c) => String(c._id)),
-        type: 'announcement_published',
-        message: `New notice: ${doc!.title}`,
-        announcementId: String(doc!._id),
-      });
+      await notifyRecipients(
+        citizens.map((c) => String(c._id)),
+        'announcement_published',
+        { title: doc!.title, scope: 'city' },
+        { announcementId: String(doc!._id) },
+      );
       return mapAnnouncement(doc);
     },
 

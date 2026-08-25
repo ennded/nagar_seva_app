@@ -9,7 +9,7 @@ function generateCode(): string {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-export async function requestOtp(mobile: string): Promise<void> {
+export async function requestOtp(mobile: string): Promise<string> {
   const code = generateCode();
   const codeHash = await bcrypt.hash(code, 8);
   await OtpRequestModel.deleteMany({ mobile });
@@ -19,6 +19,7 @@ export async function requestOtp(mobile: string): Promise<void> {
     expiresAt: new Date(Date.now() + OTP_TTL_MS),
   });
   await smsProvider.sendOtp(mobile, code);
+  return code;
 }
 
 export type VerifyOtpResult = 'ok' | 'not_found' | 'expired' | 'too_many_attempts' | 'wrong_code';

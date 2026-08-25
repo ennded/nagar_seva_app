@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { ComplaintModel, AppointmentModel, RequestModel, type RequestDoc } from '../models/Request.js';
 import { UserModel, type User } from '../models/User.js';
 import { WardModel } from '../models/Ward.js';
-import { notify } from './notificationClient.js';
+import { notifyRecipients } from './notificationClient.js';
 import { badInput, forbidden, notFound } from '../auth/authorize.js';
 import {
   COMPLAINT_TRANSITIONS,
@@ -81,12 +81,7 @@ export async function submitComplaint(citizen: ActorUser, input: SubmitComplaint
     statusHistory: [{ status: 'REGISTERED', changedBy: citizen._id, changedAt: new Date() }],
   });
   const recipientIds = await recipientsForNewRequest(citizen.city as Types.ObjectId, citizen.ward as unknown as Types.ObjectId);
-  await notify({
-    recipientIds,
-    type: 'new_request',
-    message: `New complaint registered: ${input.title}`,
-    requestId: String(complaint._id),
-  });
+  await notifyRecipients(recipientIds, 'new_request', { title: input.title }, { requestId: String(complaint._id) });
   return complaint;
 }
 
@@ -109,12 +104,7 @@ export async function submitAppointment(citizen: ActorUser, input: SubmitAppoint
     statusHistory: [{ status: 'REGISTERED', changedBy: citizen._id, changedAt: new Date() }],
   });
   const recipientIds = await recipientsForNewRequest(citizen.city as Types.ObjectId, citizen.ward as unknown as Types.ObjectId);
-  await notify({
-    recipientIds,
-    type: 'new_request',
-    message: `New appointment requested: ${input.purpose}`,
-    requestId: String(appointment._id),
-  });
+  await notifyRecipients(recipientIds, 'new_request', { purpose: input.purpose }, { requestId: String(appointment._id) });
   return appointment;
 }
 
@@ -131,14 +121,12 @@ function requestLabel(request: any): string {
 export async function verifyRequest(admin: ActorUser, requestId: string, approve: boolean, note?: string) {
   const request = await loadCityScopedRequest(requestId, admin.city as Types.ObjectId);
   const updated = await transitionStatus(request, approve ? 'VERIFIED' : 'REJECTED', admin, note);
-  await notify({
-    recipientIds: [String(request.citizen)],
-    type: approve ? 'request_verified' : 'request_rejected',
-    message: approve
-      ? `Your request has been verified: ${requestLabel(request)}`
-      : `Your request was rejected: ${requestLabel(request)}${note ? ` — ${note}` : ''}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(
+    [String(request.citizen)],
+    approve ? 'request_verified' : 'request_rejected',
+    { label: requestLabel(request), note },
+    { requestId: String(request._id) },
+  );
   return updated;
 }
 
@@ -154,12 +142,12 @@ export async function assignRequest(
   request.department = new Types.ObjectId(departmentId) as any;
   request.assignedOfficer = officer._id as any;
   const updated = await transitionStatus(request, 'ASSIGNED', admin);
-  await notify({
-    recipientIds: [String(request.citizen)],
-    type: 'request_assigned',
-    message: `Your request has been assigned to an officer: ${requestLabel(request)}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(
+    [String(request.citizen)],
+    'request_assigned',
+    { label: requestLabel(request) },
+    { requestId: String(request._id) },
+  );
   return updated;
 }
 
@@ -167,12 +155,12 @@ export async function startWork(officer: ActorUser, requestId: string) {
   const request = await loadCityScopedRequest(requestId, officer.city as Types.ObjectId);
   if (String(request.assignedOfficer) !== String(officer._id)) forbidden('Not assigned to you');
   const updated = await transitionStatus(request, 'IN_PROGRESS', officer);
-  await notify({
-    recipientIds: [String(request.citizen)],
-    type: 'request_in_progress',
-    message: `Work has started on your request: ${requestLabel(request)}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(
+    [String(request.citizen)],
+    'request_in_progress',
+    { label: requestLabel(request) },
+    { requestId: String(request._id) },
+  );
   return updated;
 }
 
@@ -192,12 +180,7 @@ export async function completeComplaint(
     request.ward as Types.ObjectId,
     request.citizen as Types.ObjectId,
   );
-  await notify({
-    recipientIds,
-    type: 'request_completed',
-    message: `Complaint completed: ${request.title}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(recipientIds, 'request_completed', { title: request.title }, { requestId: String(request._id) });
   return updated;
 }
 
@@ -212,12 +195,12 @@ export async function scheduleAppointment(
   request.confirmedDate = new Date(confirmedDate);
   request.confirmedTimeSlot = confirmedTimeSlot;
   const updated = await transitionStatus(request, 'SCHEDULED', officer);
-  await notify({
-    recipientIds: [String(request.citizen)],
-    type: 'appointment_scheduled',
-    message: `Your appointment is scheduled for ${confirmedDate} ${confirmedTimeSlot}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(
+    [String(request.citizen)],
+    'appointment_scheduled',
+    { date: confirmedDate, slot: confirmedTimeSlot },
+    { requestId: String(request._id) },
+  );
   return updated;
 }
 
@@ -225,11 +208,11 @@ export async function reviewAndClose(admin: ActorUser, requestId: string, note?:
   const request = await loadCityScopedRequest(requestId, admin.city as Types.ObjectId);
   request.adminReviewNote = note;
   const updated = await transitionStatus(request, 'CLOSED', admin, note);
-  await notify({
-    recipientIds: [String(request.citizen)],
-    type: 'request_closed',
-    message: `Your request has been closed: ${requestLabel(request)}`,
-    requestId: String(request._id),
-  });
+  await notifyRecipients(
+    [String(request.citizen)],
+    'request_closed',
+    { label: requestLabel(request) },
+    { requestId: String(request._id) },
+  );
   return updated;
 }

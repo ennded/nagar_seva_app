@@ -32,6 +32,7 @@ export function mapUser(doc: any): Record<string, any> | null {
         : null,
     kycStatus: doc.kycStatus ? doc.kycStatus.toUpperCase() : null,
     isActive: doc.isActive,
+    language: (doc.language ?? 'en').toUpperCase(),
     availability: (doc.availability ?? []).map((a: any) => ({
       dayOfWeek: a.dayOfWeek,
       startTime: a.startTime,

@@ -15,6 +15,11 @@ export const typeDefs = gql`
     APPOINTMENT
   }
 
+  enum Language {
+    EN
+    MR
+  }
+
   enum RequestStatus {
     REGISTERED
     VERIFIED
@@ -92,6 +97,7 @@ export const typeDefs = gql`
     department: Department
     kycStatus: KycStatus
     isActive: Boolean!
+    language: Language!
     availability: [AvailabilitySlot!]!
   }
 
@@ -397,7 +403,11 @@ export const typeDefs = gql`
     registerCitizen(input: RegisterCitizenInput!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
     requestOtp(mobile: String!): Boolean!
+    # Testing-only: returns the plaintext OTP so a QA team can log in without real SMS.
+    # Only returns a non-null value when EXPOSE_OTP_FOR_TESTING=true on the server.
+    requestOtpDebug(mobile: String!): String
     verifyOtp(mobile: String!, code: String!): AuthPayload!
+    setLanguage(language: Language!): Boolean!
 
     createWard(name: String!, code: String!): Ward!
     updateWard(id: ID!, name: String, code: String): Ward!

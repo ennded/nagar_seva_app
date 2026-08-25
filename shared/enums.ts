@@ -1,6 +1,9 @@
 export const ROLES = ['admin', 'nagarsevak', 'nagaradhyaksh', 'officer', 'citizen', 'driver'] as const;
 export type Role = (typeof ROLES)[number];
 
+export const LANGUAGES = ['en', 'mr'] as const;
+export type Language = (typeof LANGUAGES)[number];
+
 export const REQUEST_TYPES = ['complaint', 'appointment'] as const;
 export type RequestType = (typeof REQUEST_TYPES)[number];
 

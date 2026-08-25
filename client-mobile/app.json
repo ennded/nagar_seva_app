@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Nagar Seva",
+    "slug": "nagar-seva-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "nagarseva",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Nagar Seva uses your location to update your vehicle's position on the ward garbage-tracking map while you are on duty."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Nagar Seva needs access to your photos so you can attach evidence to a complaint.",
+          "cameraPermission": "Nagar Seva needs access to your camera so you can photograph a complaint on the spot."
+        }
+      ],
+      "expo-font"
+    ],
+    "extra": {
+      "graphqlUrl": "http://10.149.145.176:4000/graphql",
+      "mediaUrl": "http://10.149.145.176:4003"
+    }
+  }
+}

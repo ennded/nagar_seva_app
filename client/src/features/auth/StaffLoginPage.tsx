@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { Users, FileText, Bell, BarChart3, Trash2, type LucideIcon } from 'lucide-react';
-import { REQUEST_OTP, VERIFY_OTP } from '../../graphql/mutations/auth.mutations';
+import { REQUEST_OTP_DEBUG, VERIFY_OTP } from '../../graphql/mutations/auth.mutations';
 import type { AuthPayload } from '../../graphql/types';
 import { useAuth } from './AuthContext';
 import { AuthCard } from '../../components/AuthCard';
@@ -32,13 +32,14 @@ export function StaffLoginPage() {
   const [mobile, setMobile] = useState('');
   const [code, setCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
+  const [testOtp, setTestOtp] = useState<string | null>(null);
 
   const roleKey = role?.toLowerCase() ?? '';
   const meta = ROLE_META[roleKey];
   const title = role ? (t(`auth.roleLogin.${role.toUpperCase()}`, { defaultValue: t('auth.staffLogin') }) as string) : t('auth.staffLogin');
 
-  const [requestOtp, { loading: requesting, error: requestError }] = useMutation<{ requestOtp: boolean }>(
-    REQUEST_OTP,
+  const [requestOtp, { loading: requesting, error: requestError }] = useMutation<{ requestOtpDebug: string | null }>(
+    REQUEST_OTP_DEBUG,
   );
   const [verifyOtp, { loading: verifying, error: verifyError }] = useMutation<{ verifyOtp: AuthPayload }>(
     VERIFY_OTP,
@@ -46,7 +47,8 @@ export function StaffLoginPage() {
 
   async function handleRequestOtp(e: FormEvent) {
     e.preventDefault();
-    await requestOtp({ variables: { mobile } });
+    const { data } = await requestOtp({ variables: { mobile } });
+    setTestOtp(data?.requestOtpDebug ?? null);
     setOtpSent(true);
   }
 
@@ -76,6 +78,11 @@ export function StaffLoginPage() {
       ) : (
         <form onSubmit={handleVerifyOtp}>
           <p>{t('auth.otpSent')}</p>
+          {testOtp && (
+            <p className="form-note">
+              {t('auth.testOtpLabel')}: <strong>{testOtp}</strong>
+            </p>
+          )}
           <label>
             {t('auth.otpCode')}
             <input value={code} onChange={(e) => setCode(e.target.value)} required />

@@ -15,4 +15,5 @@ export const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   notificationInternalUrl: required('NOTIFICATION_INTERNAL_URL', 'http://localhost:4002/internal'),
   smsProvider: process.env.SMS_PROVIDER ?? 'console',
+  exposeOtpForTesting: process.env.EXPOSE_OTP_FOR_TESTING === 'true',
 };

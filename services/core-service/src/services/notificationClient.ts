@@ -1,18 +1,10 @@
 import { env } from '../config/env.js';
+import { UserModel } from '../models/User.js';
+import { buildNotificationMessage, type NotifyParams, type NotifyType } from './notificationMessages.js';
 
 export interface NotifyPayload {
-  recipientIds: string[];
-  type:
-    | 'new_request'
-    | 'request_verified'
-    | 'request_rejected'
-    | 'request_assigned'
-    | 'request_in_progress'
-    | 'request_completed'
-    | 'request_closed'
-    | 'appointment_scheduled'
-    | 'announcement_published';
-  message: string;
+  recipients: { id: string; message: string }[];
+  type: NotifyType;
   requestId?: string;
   announcementId?: string;
 }
@@ -35,4 +27,24 @@ export async function notify(payload: NotifyPayload): Promise<void> {
     // Notification delivery failure must never break the citizen-facing mutation that triggered it.
     console.error('Failed to reach notification-service', err);
   }
+}
+
+/**
+ * Looks up each recipient's stored language preference and renders the message text for them
+ * individually before fanning out — the single place request.service.ts / announcement
+ * resolvers need to call instead of building an English string themselves.
+ */
+export async function notifyRecipients(
+  recipientIds: string[],
+  type: NotifyType,
+  params: NotifyParams,
+  extra?: { requestId?: string; announcementId?: string },
+): Promise<void> {
+  if (recipientIds.length === 0) return;
+  const users = await UserModel.find({ _id: { $in: recipientIds } }).select('language');
+  const recipients = users.map((u) => ({
+    id: String(u._id),
+    message: buildNotificationMessage(type, (u.language as any) ?? 'en', params),
+  }));
+  await notify({ recipients, type, ...extra });
 }

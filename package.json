@@ -8,7 +8,8 @@
     "services/notification-service",
     "services/media-service",
     "services/api-gateway",
-    "client"
+    "client",
+    "client-mobile"
   ],
   "scripts": {
     "dev": "npm run build -w shared && concurrently -n core,notif,media,gateway,client -c blue,cyan,yellow,magenta,green \"npm run dev -w services/core-service\" \"npm run dev -w services/notification-service\" \"npm run dev -w services/media-service\" \"npm run dev -w services/api-gateway\" \"npm run dev -w client\"",

@@ -239,6 +239,14 @@ button:active:not(:disabled) {
   border-radius: 10px;
 }
 
+.form-note {
+  color: var(--color-success);
+  font-size: 0.9rem;
+  background: var(--color-success-light);
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+}
+
 .page-header {
   display: flex;
   align-items: center;

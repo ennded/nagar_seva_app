@@ -1,6 +1,6 @@
 import { Schema, model, Model, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { ROLES, KYC_STATUSES, type Role, type KycStatus } from 'shared';
+import { ROLES, KYC_STATUSES, LANGUAGES, type Role, type KycStatus, type Language } from 'shared';
 
 export interface AvailabilitySlot {
   dayOfWeek: number;
@@ -21,6 +21,7 @@ export interface UserFields {
   voterIdDocUrl?: string;
   kycStatus: KycStatus;
   isActive: boolean;
+  language: Language;
   createdBy?: Types.ObjectId;
   // Weekly recurring availability — officers only. Purely informational for citizens
   // browsing a department before requesting an appointment; the actual date/time is
@@ -50,6 +51,7 @@ const userSchema = new Schema<UserFields, UserModelType, UserMethods>(
     voterIdDocUrl: { type: String },
     kycStatus: { type: String, enum: KYC_STATUSES, default: 'pending' },
     isActive: { type: Boolean, default: true },
+    language: { type: String, enum: LANGUAGES, default: 'en' },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     availability: {
       type: [

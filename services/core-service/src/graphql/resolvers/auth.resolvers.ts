@@ -4,6 +4,7 @@ import { UserModel } from '../../models/User.js';
 import { signToken } from '../../auth/jwt.js';
 import { requestOtp as sendOtp, verifyOtp as checkOtp } from '../../auth/otp.js';
 import { requireAuth, badInput } from '../../auth/authorize.js';
+import { env } from '../../config/env.js';
 import { mapUser } from '../serialize.js';
 import type { GraphQLContext } from '../../auth/context.js';
 
@@ -61,6 +62,13 @@ export const authResolvers = {
       return true;
     },
 
+    requestOtpDebug: async (_: unknown, { mobile }: { mobile: string }) => {
+      if (!env.exposeOtpForTesting) return null;
+      const user = await UserModel.findOne({ mobile });
+      if (!user || !user.isActive) return null;
+      return sendOtp(mobile);
+    },
+
     verifyOtp: async (_: unknown, { mobile, code }: { mobile: string; code: string }) => {
       const result = await checkOtp(mobile, code);
       if (result !== 'ok') {
@@ -69,6 +77,12 @@ export const authResolvers = {
       const user = await UserModel.findOne({ mobile });
       if (!user || !user.isActive) badInput('No active account for this mobile number');
       return issueAuthPayload(user);
+    },
+
+    setLanguage: async (_: unknown, { language }: { language: string }, ctx: GraphQLContext) => {
+      const user = requireAuth(ctx);
+      await UserModel.updateOne({ _id: user._id }, { language: language.toLowerCase() });
+      return true;
     },
   },
 };
