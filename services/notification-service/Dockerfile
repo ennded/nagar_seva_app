@@ -4,7 +4,8 @@ WORKDIR /repo
 COPY package.json ./
 COPY services/notification-service/package.json services/notification-service/package.json
 COPY shared shared
-RUN npm install --workspace services/notification-service --no-audit --no-fund
+RUN npm install --workspace shared --workspace services/notification-service --no-audit --no-fund
+RUN npm run build --workspace shared
 COPY services/notification-service services/notification-service
 RUN npm run build --workspace services/notification-service
 

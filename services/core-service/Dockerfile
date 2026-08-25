@@ -4,7 +4,8 @@ WORKDIR /repo
 COPY package.json ./
 COPY services/core-service/package.json services/core-service/package.json
 COPY shared shared
-RUN npm install --workspace services/core-service --no-audit --no-fund
+RUN npm install --workspace shared --workspace services/core-service --no-audit --no-fund
+RUN npm run build --workspace shared
 COPY services/core-service services/core-service
 RUN npm run build --workspace services/core-service
 
