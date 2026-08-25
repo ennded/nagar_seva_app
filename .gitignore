@@ -11,3 +11,11 @@ services/media-service/uploads/kyc/*
 .DS_Store
 infra/k8s/01-secrets.yaml
 Guide.doc
+admin-mock/
+citizen-mock/
+driver-mock/
+nagaradhyaksh-mock/
+nagarsevak-mock/
+officer-mock/
+Nagar_Seva_citizen_screem.pdf
+show-qr.js
