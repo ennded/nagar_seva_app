@@ -20,6 +20,8 @@ async function main() {
   // Internal endpoint — only core-service calls this, over the private docker/k8s network.
   app.post('/internal/notify', json(), handleNotify);
 
+  app.get('/healthz', (_req, res) => res.json({ ok: true }));
+
   const apollo = new ApolloServer({
     schema: buildSubgraphSchema({ typeDefs, resolvers: resolvers as any }),
   });
