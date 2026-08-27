@@ -61,7 +61,9 @@
     "searchCity": "Search city...",
     "popularCities": "Popular Cities",
     "noCities": "No cities are onboarded yet.",
-    "noSearchResults": "No cities found."
+    "noSearchResults": "No cities found.",
+    "connecting": "Connecting to server... this can take up to a minute if the service was idle.",
+    "retryNow": "Retry now"
   },
   "citizen": {
     "dashboard": "My Dashboard",

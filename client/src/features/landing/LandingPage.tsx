@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useTranslation } from "react-i18next";
@@ -105,9 +106,30 @@ export function LandingPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { data: citiesData, loading: citiesLoading } = useQuery<{
+  const {
+    data: citiesData,
+    loading: citiesLoading,
+    error: citiesError,
+    refetch: refetchCities,
+  } = useQuery<{
     cities: City[];
   }>(CITIES);
+
+  // A cold backend (Render free-tier services waking up) surfaces as a query error, not an empty
+  // result — retry with backoff instead of treating it the same as "genuinely zero cities onboarded".
+  const retryCountRef = useRef(0);
+  useEffect(() => {
+    if (!citiesError) {
+      retryCountRef.current = 0;
+      return;
+    }
+    const delay = Math.min(5000 * 2 ** retryCountRef.current, 30000);
+    const timer = setTimeout(() => {
+      retryCountRef.current += 1;
+      refetchCities().catch(() => {});
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [citiesError, refetchCities]);
 
   const citySlug = paramSlug || citiesData?.cities[0]?.slug || "";
 
@@ -137,6 +159,29 @@ export function LandingPage() {
         {t("common.loading")}
       </p>
     );
+  if (citiesError) {
+    return (
+      <div style={{ padding: 40, fontFamily: "Public Sans, sans-serif" }}>
+        <p>{t("landing.connecting")}</p>
+        <button
+          type="button"
+          onClick={() => refetchCities().catch(() => {})}
+          style={{
+            marginTop: 12,
+            padding: "8px 16px",
+            border: "none",
+            borderRadius: 8,
+            background: NAVY,
+            color: "#FFFFFF",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          {t("landing.retryNow")}
+        </button>
+      </div>
+    );
+  }
   if (!citiesData?.cities.length) {
     return (
       <p style={{ padding: 40, fontFamily: "Public Sans, sans-serif" }}>
